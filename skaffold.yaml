@@ -1,0 +1,60 @@
+apiVersion: skaffold/v2beta6
+kind: Config
+deploy:
+  kubectl:
+    manifests:
+      - ./infra/k8s/*
+build:
+  # local:
+  #   push: false
+  #   concurrency: 0
+  artifacts:
+    - image: mypracticecontainerregistry.azurecr.io/auth
+      context: auth
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .
+    - image: mypracticecontainerregistry.azurecr.io/client
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+        - src: '**/*.js'
+          dest: .
+    - image: mypracticecontainerregistry.azurecr.io/tickets
+      context: tickets
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+        - src: 'src/**/*.ts'
+          dest: .
+    - image: mypracticecontainerregistry.azurecr.io/orders
+      context: orders
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+        - src: 'src/**/*.ts'
+          dest: .     
+    - image: mypracticecontainerregistry.azurecr.io/expiration
+      context: expiration
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+        - src: 'src/**/*.ts'
+          dest: .     
+    - image: mypracticecontainerregistry.azurecr.io/payments
+      context: payments
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+        - src: 'src/**/*.ts'
+          dest: .     
+              
