@@ -12,9 +12,9 @@ jobs:
    runs-on: ubuntu-latest
    steps:
      - uses: actions/checkout@v2
-     - run: cd auth && docker build -t kelvinch/auth .
+     - run: cd auth && docker build -t mypracticecontainerregistry.azurecr.io/auth .
      - run: docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
        env:
          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-     - run: docker push kelvinch/auth
+     - run: docker push mypracticecontainerregistry.azurecr.io/auth
