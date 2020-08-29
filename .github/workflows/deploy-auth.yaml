@@ -11,10 +11,21 @@ jobs:
   build:
    runs-on: ubuntu-latest
    steps:
-     - uses: actions/checkout@v2
-     - run: cd auth && docker build -t mypracticecontainerregistry.azurecr.io/auth .
-     - run: docker login mypracticecontainerregistry.azurecr.io --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
-       env:
-         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-     - run: docker push mypracticecontainerregistry.azurecr.io/auth
+     - name: 'Checkout GitHub Action'
+       uses: actions/checkout@master
+       
+     - name: 'Login via Azure CLI'
+       uses: azure/login@v1
+       with:
+         creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+     - name: 'Build and push image'
+       uses: azure/docker-login@v1
+       with:
+         login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+         username: ${{ secrets.REGISTRY_USERNAME }}
+         password: ${{ secrets.REGISTRY_PASSWORD }}
+     - run: |
+         cd auth
+         docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/auth:${{ github.sha }}
+         docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/auth:${{ github.sha }}
