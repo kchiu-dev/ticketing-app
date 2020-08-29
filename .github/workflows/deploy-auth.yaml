@@ -12,9 +12,9 @@ jobs:
    runs-on: ubuntu-latest
    steps:
      - uses: actions/checkout@v2
-     - run: cd auth && docker build -t `${DOCKER_ACRNAME}/auth` .
      - run: docker login $DOCKER_ACRNAME --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
-     - run: docker push `${DOCKER_ACRNAME}/auth`
+     - run: cd auth && docker build -t ${DOCKER_ACRNAME}/auth .  
+     - run: docker push ${DOCKER_ACRNAME}/auth
        env:
          DOCKER_ACRNAME: ${{ secrets.DOCKER_ACRNAME }}
          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
