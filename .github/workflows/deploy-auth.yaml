@@ -29,3 +29,37 @@ jobs:
          cd auth
          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/auth:${{ github.sha }}
          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/auth:${{ github.sha }}
+         
+         
+     - uses: azure/k8s-set-context@v1
+       with:
+         cred: '${{ secrets.AZURE_CREDENTIALS }}'
+         cluster-name: ticktingCluster
+         resource-group: myResourceGroup
+       
+     - uses: azure/k8s-create-secret@v1
+       with:
+         container-registry-url: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+         container-registry-username:  ${{ secrets.REGISTRY_USERNAME }}
+         container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+         secret-name: 'acr-secret'
+     - uses: azure/k8s-create-secret@v1
+       with:
+         secret-type: 'generic'
+         arguments: --from-literal=jwt-secret=${{ secrets.JWT_SECRET }}
+         secret-name: 'jwt-secret'
+     - uses: azure/k8s-create-secret@v1
+       with:
+         secret-type: 'generic'
+         arguments: --from-literal=stripe-secret=${{ secrets.STRIPE_SECRET }}
+         secret-name: 'stripe-secret'
+         
+     - uses: Azure/k8s-deploy@v1
+       with:
+         manifests: |
+           infra/k8s/auth-depl.yaml
+           infra/k8s/auth-mongo-depl.yaml
+         images: |
+           ${{ secrets.REGISTRY_LOGIN_SERVER }}/auth:${{ github.sha }}
+         imagepullsecrets: |
+           acr-secret
