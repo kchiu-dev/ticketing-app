@@ -34,7 +34,7 @@ jobs:
      - name: 'Set the target AKS cluster'
        uses: Azure/aks-set-context@v1
        with:
-         cred: '${{ secrets.AZURE_CREDENTIALS }}'
+         creds: '${{ secrets.AZURE_CREDENTIALS }}'
          cluster-name: ticktingCluster
          resource-group: myResourceGroup
        
