@@ -20,7 +20,7 @@ jobs:
          creds: ${{ secrets.AZURE_CREDENTIALS }}
         
      - name: 'Build and push image'
-       uses: azure/docker-login@v1
+       uses: Azure/docker-login@v1
        with:
          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
          username: ${{ secrets.REGISTRY_USERNAME }}
@@ -31,30 +31,35 @@ jobs:
          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/auth:${{ github.sha }}
          
          
-     - uses: azure/k8s-set-context@v1
+     - name: 'Set the target AKS cluster'
+       uses: Azure/aks-set-context@v1
        with:
          cred: '${{ secrets.AZURE_CREDENTIALS }}'
          cluster-name: ticktingCluster
          resource-group: myResourceGroup
        
-     - uses: azure/k8s-create-secret@v1
+     - name: 'Create a acr-secret (docker-registry)'
+       uses: Azure/k8s-create-secret@v1
        with:
          container-registry-url: ${{ secrets.REGISTRY_LOGIN_SERVER }}
          container-registry-username:  ${{ secrets.REGISTRY_USERNAME }}
          container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
          secret-name: 'acr-secret'
-     - uses: azure/k8s-create-secret@v1
+     - name: 'Create jwt-secret (generic)'
+       uses: Azure/k8s-create-secret@v1
        with:
          secret-type: 'generic'
          arguments: --from-literal=jwt-secret=${{ secrets.JWT_SECRET }}
          secret-name: 'jwt-secret'
-     - uses: azure/k8s-create-secret@v1
+     - name: 'Create stripe-secret (generic)'
+       uses: Azure/k8s-create-secret@v1
        with:
          secret-type: 'generic'
          arguments: --from-literal=stripe-secret=${{ secrets.STRIPE_SECRET }}
          secret-name: 'stripe-secret'
          
-     - uses: Azure/k8s-deploy@v1
+     - name: 'Deploy to the target AKS cluster'
+       uses: Azure/k8s-deploy@v1
        with:
          manifests: |
            infra/k8s/auth-depl.yaml
