@@ -59,7 +59,7 @@ jobs:
          manifests: |
            infra/k8s/auth-depl.yaml
            infra/k8s/auth-mongo-depl.yaml
-         images: '${{ secrets.REGISTRY_LOGIN_SERVER }}/auth:${{ github.sha }}'
+         images: |
+           ${{ secrets.REGISTRY_LOGIN_SERVER }}/auth:${{ github.sha }}
          imagepullsecrets: |
            acr-secret
-         kubectl-version: 'latest'
