@@ -52,6 +52,9 @@ jobs:
          secret-type: 'generic'
          arguments: --from-literal=STRIPE_KEY=${{ secrets.STRIPE_KEY }}
          secret-name: 'stripe-secret'
+     - run: |
+         kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.35.0/deploy/static/provider/cloud/deploy.yaml
+        
          
      - name: 'Deploy to the target AKS cluster'
        uses: Azure/k8s-deploy@v1
@@ -59,7 +62,6 @@ jobs:
          manifests: |
            infra/k8s/
            infra/k8s-prod/
-           https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.35.0/deploy/static/provider/cloud/deploy.yaml
          images: |
            ${{ secrets.REGISTRY_LOGIN_SERVER }}/auth:${{ github.sha }}
          imagepullsecrets: |
