@@ -53,12 +53,28 @@ jobs:
          arguments: --from-literal=STRIPE_KEY=${{ secrets.STRIPE_KEY }}
          secret-name: 'stripe-secret'
 
+    - name: Setup ingress-nginx
+      uses: azure/setup-helm@v1
+    - run: |
+        helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+        helm install my-release ingress-nginx/ingress-nginx
          
      - name: 'Deploy to the target AKS cluster'
        uses: Azure/k8s-deploy@v1
        with:
          manifests: |
-           'infra/k8s/**'
+           'infra/k8s/auth-depl.yaml'
+           'infra/k8s/auth-mongo-deply.yaml'
+           'infra/k8s/client-depl.yaml'
+           'infra/k8s/expiration-depl.yaml'
+           'infra/k8s/expiration-redis-depl.yaml'
+           'infra/k8s/nats-depl.yaml'
+           'infra/k8s/orders-depl.yaml'
+           'infra/k8s/orders-mongo-depl.yaml'
+           'infra/k8s/payments-depl.yaml'
+           'infra/k8s/payments-mongo-depl.yaml'
+           'infra/k8s/tickets-depl.yaml'
+           'infra/k8s/tickets-mongo-depl.yaml'
            'infra/k8s-prod/ingress-srv.yaml'
          images: |
            ${{ secrets.REGISTRY_LOGIN_SERVER }}/auth:${{ github.sha }}
