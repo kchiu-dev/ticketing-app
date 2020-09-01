@@ -60,6 +60,7 @@ jobs:
          manifests: |
            infra/k8s/auth-depl.yaml
            infra/k8s/auth-mongo-depl.yaml
+           infra/k8s/nats-depl.yaml
            infra/k8s-prod/ingress-srv.yaml
          images: |
            ${{ secrets.REGISTRY_LOGIN_SERVER }}/auth:${{ github.sha }}
