@@ -1,0 +1,66 @@
+name: deploy-auth
+
+on:
+  push:
+    branches: 
+      - master
+    paths:
+      - 'auth/**'
+        
+jobs:
+  build:
+   runs-on: ubuntu-latest
+   steps:
+     - name: 'Checkout GitHub Action'
+       uses: actions/checkout@master
+        
+     - name: 'Build and push image'
+       uses: Azure/docker-login@v1
+       with:
+         login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+         username: ${{ secrets.REGISTRY_USERNAME }}
+         password: ${{ secrets.REGISTRY_PASSWORD }}
+     - run: |
+         cd auth
+         docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/auth:${{ github.sha }}
+         docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/auth:${{ github.sha }}
+         
+         
+     - name: 'Set the target AKS cluster'
+       uses: Azure/aks-set-context@v1
+       with:
+         creds: '${{ secrets.AZURE_CREDENTIALS }}'
+         cluster-name: ticketingCluster
+         resource-group: myResourceGroup
+       
+     - name: 'Create a acr-secret (docker-registry)'
+       uses: Azure/k8s-create-secret@v1
+       with:
+         container-registry-url: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+         container-registry-username:  ${{ secrets.REGISTRY_USERNAME }}
+         container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+         secret-name: 'acr-secret'
+     - name: 'Create jwt-secret (generic)'
+       uses: Azure/k8s-create-secret@v1
+       with:
+         secret-type: 'generic'
+         arguments: --from-literal=JWT_KEY=${{ secrets.JWT_KEY }}
+         secret-name: 'jwt-secret'
+     - name: 'Create stripe-secret (generic)'
+       uses: Azure/k8s-create-secret@v1
+       with:
+         secret-type: 'generic'
+         arguments: --from-literal=STRIPE_KEY=${{ secrets.STRIPE_KEY }}
+         secret-name: 'stripe-secret'
+
+         
+     - name: 'Deploy to the target AKS cluster'
+       uses: Azure/k8s-deploy@v1
+       with:
+         manifests: |
+           'infra/k8s/**'
+           'infra/k8s-prod/ingress-srv.yaml'
+         images: |
+           ${{ secrets.REGISTRY_LOGIN_SERVER }}/auth:${{ github.sha }}
+         imagepullsecrets: |
+           acr-secret
