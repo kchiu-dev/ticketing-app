@@ -1,0 +1,67 @@
+name: deploy-manifests
+
+on:
+  push:
+    branches: 
+      - master
+    paths:
+      - 'infra/k8s/**'
+      - 'infra/k8s-prod/**'
+        
+jobs:
+  build:
+   runs-on: ubuntu-latest
+   steps:
+     - name: 'Checkout GitHub Action'
+       uses: actions/checkout@master
+         
+     - name: 'Set the target AKS cluster'
+       uses: Azure/aks-set-context@v1
+       with:
+         creds: '${{ secrets.AZURE_CREDENTIALS }}'
+         cluster-name: ticketingCluster
+         resource-group: myResourceGroup
+       
+     - name: 'Create a acr-secret (docker-registry)'
+       uses: Azure/k8s-create-secret@v1
+       with:
+         container-registry-url: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+         container-registry-username:  ${{ secrets.REGISTRY_USERNAME }}
+         container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+         secret-name: 'acr-secret'
+     - name: 'Create jwt-secret (generic)'
+       uses: Azure/k8s-create-secret@v1
+       with:
+         secret-type: 'generic'
+         arguments: --from-literal=JWT_KEY=${{ secrets.JWT_KEY }}
+         secret-name: 'jwt-secret'
+     - name: 'Create stripe-secret (generic)'
+       uses: Azure/k8s-create-secret@v1
+       with:
+         secret-type: 'generic'
+         arguments: --from-literal=STRIPE_KEY=${{ secrets.STRIPE_KEY }}
+         secret-name: 'stripe-secret'
+
+     - name: Setup ingress-nginx
+       uses: azure/setup-helm@v1
+     - run: |
+         helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+         helm upgrade my-release ingress-nginx/ingress-nginx
+         
+     - name: 'Deploy to the target AKS cluster'
+       uses: Azure/k8s-deploy@v1
+       with:
+         manifests: |
+           infra/k8s/auth-depl.yaml
+           infra/k8s/auth-mongo-depl.yaml
+           infra/k8s/client-depl.yaml
+           infra/k8s/expiration-depl.yaml
+           infra/k8s/expiration-redis-depl.yaml
+           infra/k8s/nats-depl.yaml
+           infra/k8s/orders-depl.yaml
+           infra/k8s/orders-mongo-depl.yaml
+           infra/k8s/payments-depl.yaml
+           infra/k8s/payments-mongo-depl.yaml
+           infra/k8s/tickets-depl.yaml
+           infra/k8s/tickets-mongo-depl.yaml
+           infra/k8s-prod/ingress-srv.yaml
