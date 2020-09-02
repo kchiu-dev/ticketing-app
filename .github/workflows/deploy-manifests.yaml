@@ -1,12 +1,7 @@
 name: deploy-manifests
 
 on:
-  push:
-    branches: 
-      - master
-    paths:
-      - 'infra/k8s/**'
-      - 'infra/k8s-prod/**'
+  [push]
         
 jobs:
   build:
