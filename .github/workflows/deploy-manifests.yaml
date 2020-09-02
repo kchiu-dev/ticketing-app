@@ -63,4 +63,3 @@ jobs:
            infra/k8s/payments-mongo-depl.yaml
            infra/k8s/tickets-depl.yaml
            infra/k8s/tickets-mongo-depl.yaml
-           infra/k8s-prod/ingress-srv.yaml
