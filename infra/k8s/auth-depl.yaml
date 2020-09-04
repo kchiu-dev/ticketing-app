@@ -24,8 +24,7 @@ spec:
                   name: jwt-secret
                   key: JWT_KEY
       imagePullSecrets:
-        - name: acr-secret
-        
+        - name: acr-secret        
 ---
 apiVersion: v1
 kind: Service
