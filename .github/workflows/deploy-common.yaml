@@ -2,8 +2,6 @@ name: deploy-common
 
 on:
   push:
-    branches: 
-      - submodule.common.branch
     paths:
       - 'common/**'
         
@@ -13,6 +11,14 @@ jobs:
    steps:
      - name: 'Checkout GitHub Action'
        uses: actions/checkout@master
+     - name: 'Update Submodule Branch'
+       run: |
+         git submodule sync
+         git submodule update --init --remote
+     - name: 'Checkout Submodule Master Branch'
+       run: |
+         cd common
+         git checkout -b master origin/master
         
      - name: 'Build and push image'
        uses: Azure/docker-login@v1
