@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { updateIfCurrentPlugin } from "mongoose-update-if-current";
-import { OrderStatus } from "@sgtickets/common";
+
+import { OrderStatus } from "../../../common";
 import { TicketDoc } from "./ticket";
 
 export { OrderStatus };
