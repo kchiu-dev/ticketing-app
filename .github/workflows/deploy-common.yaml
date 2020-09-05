@@ -3,7 +3,7 @@ name: deploy-common
 on:
   push:
     branches: 
-      - submodule.common.master
+      - submodule.common.branch
     paths:
       - 'common/**'
         
