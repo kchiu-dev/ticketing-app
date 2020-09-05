@@ -54,6 +54,7 @@ jobs:
            infra/k8s/auth-depl.yaml
            infra/k8s/auth-mongo-depl.yaml
            infra/k8s/client-depl.yaml
+           infra/k8s/common-depl.yaml
            infra/k8s/expiration-depl.yaml
            infra/k8s/expiration-redis-depl.yaml
            infra/k8s/nats-depl.yaml
