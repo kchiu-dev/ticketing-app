@@ -26,6 +26,14 @@ build:
         manual:
         - src: '**/*.js'
           dest: .
+    - image: mypracticecontainerregistry.azurecr.io/common
+      context: common
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+        - src: '**/*.js'
+          dest: .
     - image: mypracticecontainerregistry.azurecr.io/tickets
       context: tickets
       docker:
