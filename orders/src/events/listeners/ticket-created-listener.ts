@@ -1,5 +1,6 @@
 import { Message } from "node-nats-streaming";
-import { Listener, Subjects, TicketCreatedEvent } from "@sgtickets/common";
+
+import { Listener, Subjects, TicketCreatedEvent } from "../../../../common";
 import { Ticket } from "../../models/ticket";
 import { queueGroupName } from "./queue-group-name";
 

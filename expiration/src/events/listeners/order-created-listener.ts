@@ -1,6 +1,7 @@
-import { Listener, OrderCreatedEvent, Subjects } from "@sgtickets/common";
-import { queueGroupName } from "./queue-group-name";
 import { Message } from "node-nats-streaming";
+
+import { Listener, OrderCreatedEvent, Subjects } from "../../../../common";
+import { queueGroupName } from "./queue-group-name";
 import { expirationQueue } from "../../queues/expiration-queue";
 
 export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
