@@ -1,10 +1,11 @@
+import { Message } from "node-nats-streaming";
+
 import {
   OrderCancelledEvent,
   Subjects,
   Listener,
   OrderStatus,
-} from "@sgtickets/common";
-import { Message } from "node-nats-streaming";
+} from "../../../../common";
 import { queueGroupName } from "./queue-group-name";
 import { Order } from "../../models/order";
 
