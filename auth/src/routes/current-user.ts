@@ -1,6 +1,6 @@
 import express from "express";
 
-import { currentUser } from "@sgtickets/common";
+import { currentUser } from "../../../common";
 
 const router = express.Router();
 
