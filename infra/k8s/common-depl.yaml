@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: common
-          image: mypracticecontainerregistry.azurecr.io/common:latest
+          image: mypracticecontainerregistry.azurecr.io/common
       imagePullSecrets:
         - name: acr-secret
