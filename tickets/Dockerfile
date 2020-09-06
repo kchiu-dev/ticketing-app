@@ -1,6 +1,6 @@
 FROM node:alpine
 
-WORKDIR /app
+WORKDIR /app/tickets
 COPY package.json .
 RUN npm install --only=prod
 COPY . .
