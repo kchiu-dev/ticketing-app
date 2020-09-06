@@ -1,11 +1,6 @@
-name: deploy-expiration
+name: deploy-common
 
-on:
-  push:
-    branches: 
-      - master
-    paths:
-      - 'expiration/**'
+on: push
         
 jobs:
   build:
@@ -23,9 +18,9 @@ jobs:
          username: ${{ secrets.REGISTRY_USERNAME }}
          password: ${{ secrets.REGISTRY_PASSWORD }}
      - run: |
-         cd expiration
-         docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/expiration:${{ github.sha }}
-         docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/expiration:${{ github.sha }}
+         cd common
+         docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/common:${{ github.sha }}
+         docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/common:${{ github.sha }}
          
          
      - name: 'Set the target AKS cluster'
@@ -34,14 +29,14 @@ jobs:
          creds: '${{ secrets.AZURE_CREDENTIALS }}'
          cluster-name: ticketingCluster
          resource-group: myResourceGroup
+  
 
-         
      - name: 'Deploy to the target AKS cluster'
        uses: Azure/k8s-deploy@v1
        with:
          manifests: |
            infra/k8s-prod/ingress-srv.yaml 
          images: |
-           ${{ secrets.REGISTRY_LOGIN_SERVER }}/expiration:${{ github.sha }}
+           ${{ secrets.REGISTRY_LOGIN_SERVER }}/common:${{ github.sha }}
          imagepullsecrets: |
            acr-secret
