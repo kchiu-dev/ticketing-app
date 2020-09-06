@@ -19,8 +19,8 @@ jobs:
          password: ${{ secrets.REGISTRY_PASSWORD }}
      - run: |
          cd common
-         docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/common:${{ github.sha }}
-         docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/common:${{ github.sha }}
+         docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/common
+         docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/common
          
          
      - name: 'Set the target AKS cluster'
@@ -37,6 +37,6 @@ jobs:
          manifests: |
            infra/k8s-prod/ingress-srv.yaml 
          images: |
-           ${{ secrets.REGISTRY_LOGIN_SERVER }}/common:${{ github.sha }}
+           ${{ secrets.REGISTRY_LOGIN_SERVER }}/common
          imagepullsecrets: |
            acr-secret
