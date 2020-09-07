@@ -10,7 +10,7 @@ build:
   #   push: false
   #   concurrency: 0
   artifacts:
-    - image: mypracticecontainerregistry.azurecr.io/auth
+    - image: ghcr.io/kchiu-dev/auth
       context: auth
       docker:
         dockerfile: Dockerfile
@@ -18,7 +18,7 @@ build:
         manual:
           - src: 'src/**/*.ts'
             dest: .
-    - image: mypracticecontainerregistry.azurecr.io/client
+    - image: ghcr.io/kchiu-dev/client
       context: client
       docker:
         dockerfile: Dockerfile
@@ -26,7 +26,7 @@ build:
         manual:
         - src: '**/*.js'
           dest: .
-    - image: mypracticecontainerregistry.azurecr.io/common
+    - image: ghcr.io/kchiu-dev/common
       context: common
       docker:
         dockerfile: Dockerfile
@@ -34,7 +34,7 @@ build:
         manual:
         - src: '**/*.ts'
           dest: .
-    - image: mypracticecontainerregistry.azurecr.io/tickets
+    - image: ghcr.io/kchiu-dev/tickets
       context: tickets
       docker:
         dockerfile: Dockerfile
@@ -42,7 +42,7 @@ build:
         manual:
         - src: 'src/**/*.ts'
           dest: .
-    - image: mypracticecontainerregistry.azurecr.io/orders
+    - image: ghcr.io/kchiu-dev/orders
       context: orders
       docker:
         dockerfile: Dockerfile
@@ -50,7 +50,7 @@ build:
         manual:
         - src: 'src/**/*.ts'
           dest: .     
-    - image: mypracticecontainerregistry.azurecr.io/expiration
+    - image: ghcr.io/kchiu-dev/expiration
       context: expiration
       docker:
         dockerfile: Dockerfile
@@ -58,7 +58,7 @@ build:
         manual:
         - src: 'src/**/*.ts'
           dest: .     
-    - image: mypracticecontainerregistry.azurecr.io/payments
+    - image: ghcr.io/kchiu-dev/payments
       context: payments
       docker:
         dockerfile: Dockerfile
