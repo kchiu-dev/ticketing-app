@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: expiration
-          image: mypracticecontainerregistry.azurecr.io/expiration
+          image: mypracticecontainerregistry.azurecr.io/expiration:latest
           env:
             - name: NATS_CLIENT_ID
               valueFrom:
