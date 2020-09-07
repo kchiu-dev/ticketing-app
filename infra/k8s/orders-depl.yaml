@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: orders
-          image: mypracticecontainerregistry.azurecr.io/orders:latest
+          image: ghcr.io/kchiu-dev/orders
           env:
             - name: NATS_CLIENT_ID
               valueFrom:
