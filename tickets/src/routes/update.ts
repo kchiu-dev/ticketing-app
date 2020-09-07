@@ -7,7 +7,8 @@ import {
   requireAuth,
   NotAuthorizedError,
   BadRequestError,
-} from "../../../common";
+} from "@kchiu-dev/common";
+
 import { Ticket } from "../models/ticket";
 import { TicketUpdatedPublisher } from "../events/publishers/ticket-updated-publisher";
 import { natsWrapper } from "../nats-wrapper";

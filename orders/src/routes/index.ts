@@ -1,5 +1,7 @@
 import express, { Request, Response } from "express";
-import { requireAuth } from "../../../common";
+
+import { requireAuth } from "@kchiu-dev/common";
+
 import { Order } from "../models/order";
 
 const router = express.Router();

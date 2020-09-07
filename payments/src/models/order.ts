@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { updateIfCurrentPlugin } from "mongoose-update-if-current";
 
-import { OrderStatus } from "../../../common";
+import { OrderStatus } from "@kchiu-dev/common";
 
 interface OrderAttrs {
   id: string;
