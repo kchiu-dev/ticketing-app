@@ -8,7 +8,8 @@ import {
   NotFoundError,
   OrderStatus,
   BadRequestError,
-} from "../../../common";
+} from "@kchiu-dev/common";
+
 import { Ticket } from "../models/ticket";
 import { Order } from "../models/order";
 import { OrderCreatedPublisher } from "../events/publishers/order-created-publisher";

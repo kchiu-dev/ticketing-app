@@ -1,6 +1,7 @@
 import { Message } from "node-nats-streaming";
 
-import { Listener, Subjects, TicketCreatedEvent } from "../../../../common";
+import { Listener, Subjects, TicketCreatedEvent } from "@kchiu-dev/common";
+
 import { Ticket } from "../../models/ticket";
 import { queueGroupName } from "./queue-group-name";
 
