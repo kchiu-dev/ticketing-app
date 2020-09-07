@@ -2,7 +2,7 @@ import {
   ExpirationCompleteEvent,
   Publisher,
   Subjects,
-} from "../../../../common";
+} from "@kchiu-dev/common";
 
 export class ExpirationCompletePublisher extends Publisher<
   ExpirationCompleteEvent

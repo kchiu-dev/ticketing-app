@@ -1,4 +1,5 @@
-import { Listener, OrderCancelledEvent, Subjects } from "../../../../common";
+import { Listener, OrderCancelledEvent, Subjects } from "@kchiu-dev/common";
+
 import { Message } from "node-nats-streaming";
 import { queueGroupName } from "./queue-group-name";
 import { Ticket } from "../../models/ticket";

@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 import { Message } from "node-nats-streaming";
 
-import { OrderStatus, ExpirationCompleteEvent } from "../../../../../common";
+import { OrderStatus, ExpirationCompleteEvent } from "@kchiu-dev/common";
+
 import { ExpirationCompleteListener } from "../expiration-complete-listener";
 import { natsWrapper } from "../../../nats-wrapper";
 import { Order } from "../../../models/order";
