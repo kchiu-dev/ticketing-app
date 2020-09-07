@@ -18,6 +18,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@kchiu-dev/common": "^1.0.0",
     "@types/bull": "^3.14.0",
     "bull": "^3.16.0",
     "node-nats-streaming": "^0.3.2",
