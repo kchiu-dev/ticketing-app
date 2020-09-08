@@ -17,9 +17,8 @@ jobs:
         uses: actions/setup-node@master
         with:
           node-version: 12
-          npm-registry:
-            - registry: 'https://npm.pkg.github.com'
-              scope: '@kchiu-dev'
-              token: '${{ secrets.CR_PAT }}'
+          registry-url: 'https://npm.pkg.github.com'
       - name: 'Running tests for auth'
         run: npm install && npm run test:ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.CR_PAT }}
