@@ -9,7 +9,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: 'Running tests for auth'
+      - name: 'Checkout auth'
         uses: actions/checkout@master
-      - run: cd auth && npm install && npm run test:ci
+      - name: 'Move to auth folder'
+        run: cd auth
+      - name: 'Login to GitHub Package Registry'
+        uses: actions/setup-node@v1
+        with:
+          registry-url: 'https://npm.pkg.github.com'
+      - name: 'Running tests for auth'
+        run: npm install && npm run test:ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.CR_PAT }}
          

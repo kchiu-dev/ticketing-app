@@ -22,7 +22,7 @@ jobs:
          username: ${{ secrets.CR_USERNAME }}
          password: ${{ secrets.CR_PAT }}
          registry: ghcr.io
-         repository: ${{ secrets.CR_USERNAME }}/auth
+         repository: payments
          tags: latest
          
          
