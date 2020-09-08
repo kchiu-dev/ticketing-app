@@ -20,7 +20,7 @@ jobs:
           registry-url: https://npm.pkg.github.com/
           scope: '@kchiu-dev' 
       - name: 'Running tests for auth'
-        run: npm install && npm run test:ci
+        run: npm install
         env:
           CI: true
           NODE_AUTH_TOKEN: ${{ secrets.CR_PAT }}
