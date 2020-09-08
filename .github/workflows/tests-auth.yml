@@ -12,7 +12,9 @@ jobs:
       - name: 'Checkout auth'
         uses: actions/checkout@master
       - name: 'Login to GitHub Package Registry'
-        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.CR_PAT }}" > ~/.npmrc
+        run: |
+          npm config set registry https://npm.pkg.github.com/kchiu-dev
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.CR_PAT }}" > ~/.npmrc
       - name: 'Running tests for auth'
         run: cd auth && npm install && npm run test:ci
          
