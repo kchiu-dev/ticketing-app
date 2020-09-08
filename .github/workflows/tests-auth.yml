@@ -20,6 +20,5 @@ jobs:
           registry-url: https://npm.pkg.github.com/
           scope: '@kchiu-dev'
       - name: 'Running tests for auth'
-        run: | 
-          npm install
-          npm run test:ci
+        run: npm install
+      - run: npm run test:ci
