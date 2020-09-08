@@ -11,14 +11,5 @@ jobs:
     steps:
       - name: 'Checkout auth'
         uses: actions/checkout@master
-      - name: 'Switch to auth'
-        run: cd auth
-      - name: 'Authenticate to GitHub Packages'
-        uses: actions/setup-node@master
-        with:
-          node-version: 12
-          registry-url: https://npm.pkg.github.com/
-          scope: '@kchiu-dev'
       - name: 'Running tests for auth'
-        run: npm install
-      - run: jest
+        run: cd auth && npm install && npm run test:ci
