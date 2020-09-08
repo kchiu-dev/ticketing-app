@@ -12,9 +12,11 @@ jobs:
       - name: 'Checkout auth'
         uses: actions/checkout@master
       - name: 'Login to GitHub Package Registry'
-        run: |
-          npm install -g npm-cli-login
-          npm-cli-login -u ${{ secrets.CR_USERNAME }} -p ${{ secrets.CR_PAT }} -e chiu.kelvinch@gmail.com -r https://npm.pkg.github.com
+        uses: actions/setup-node@v1
+        with:
+          registry-url: 'https://npm.pkg.github.com'
       - name: 'Running tests for auth'
         run: cd auth && npm install && npm run test:ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.CR_PAT }}
          
