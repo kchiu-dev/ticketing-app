@@ -11,6 +11,6 @@ jobs:
     steps:
       - name: 'Running tests for payments'
         uses: actions/checkout@master
-      - name: 'Login to GitHub Package Registry'
+      - name: 'Authenticate to GitHub Package Registry'
         run: npm set //npm.pkg.github.com/:_authToken ${{ secrets.CR_PAT }}
       - run: cd payments && npm install && npm run test:ci
