@@ -21,4 +21,4 @@ jobs:
           scope: '@kchiu-dev'
       - name: 'Running tests for auth'
         run: npm install
-      - run: npm run test:ci
+      - run: jest
