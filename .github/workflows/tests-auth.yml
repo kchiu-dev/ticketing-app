@@ -14,11 +14,7 @@ jobs:
       - name: 'Change to auth folder'
         run: cd auth
       - name: 'Authenticate to GitHub Package Registry'
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12
-          registry-url: https://npm.pkg.github.com/
-          scope: '@kchiu-dev' 
+        run: echo -e "\n//npm.pkg.github.com/:_authToken=${{ secrets.CR_PAT }}" >> auth/.npmrc
       - name: 'Running tests for auth'
         run: npm install
         env:
