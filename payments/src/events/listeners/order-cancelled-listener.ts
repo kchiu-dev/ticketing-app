@@ -5,7 +5,8 @@ import {
   Subjects,
   Listener,
   OrderStatus,
-} from "../../../../common";
+} from "@kchiu-dev/common";
+
 import { queueGroupName } from "./queue-group-name";
 import { Order } from "../../models/order";
 

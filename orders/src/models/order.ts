@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 import { updateIfCurrentPlugin } from "mongoose-update-if-current";
 
-import { OrderStatus } from "../../../common";
+import { OrderStatus } from "@kchiu-dev/common";
+
 import { TicketDoc } from "./ticket";
 
 export { OrderStatus };
