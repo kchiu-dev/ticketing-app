@@ -23,5 +23,3 @@ jobs:
         run: | 
           npm install
           npm run test:ci
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.CR_PAT }}
