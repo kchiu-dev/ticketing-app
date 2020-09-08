@@ -11,14 +11,7 @@ jobs:
     steps:
       - name: 'Checkout auth'
         uses: actions/checkout@master
-      - name: 'Change to auth directory'
-        run: cd auth
       - name: 'Authenticate to GitHub Package Registry'
-        uses: actions/setup-node@master
-        with:
-          node-version: 12
-          registry-url: 'https://npm.pkg.github.com'
+        run: echo -e "\n//npm.pkg.github.com/:_authToken=${{ secrets.CR_PAT }}" >> auth/.npmrc
       - name: 'Running tests for auth'
-        run: npm install && npm run test:ci
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.CR_PAT }}
+        run: cd auth && npm install && npm run test:ci
