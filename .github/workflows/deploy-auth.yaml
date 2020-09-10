@@ -15,11 +15,10 @@ jobs:
        uses: actions/checkout@master
 
      - name: Set up Docker Buildx
+       id: buildx
        uses: docker/setup-buildx-action@v1
        with:
-        driver-opts: |
-          image=moby/buildkit:master
-          network=host
+        version: latest
         
      - name: 'Login to Docker'
        run: |
