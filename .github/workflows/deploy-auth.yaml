@@ -22,7 +22,7 @@ jobs:
         
      - name: 'Login to Docker'
        run: |
-         echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u ${{ secrets.CR_USERNAME }} --password-stdin
+         echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u kchiu-dev --password-stdin
     
      - name: 'Create temporary secret file for docker buildkit command'
        run: |
@@ -31,8 +31,8 @@ jobs:
      - name: 'Build and push image'
        run: |
         cd auth
-        docker buildx build --tag ghcr.io/${{ secrets.CR_USERNAME }}/auth:latest --secret id=cr_pat,src=cr_pat.txt .
-        docker push ghcr.io/${{ secrets.CR_USERNAME }}/auth:latest
+        docker buildx build --tag ghcr.io/kchiu-dev/auth --secret id=cr_pat,src=cr_pat.txt .
+        docker push ghcr.io/kchiu-dev/auth
          
          
     #  - name: 'Set the target AKS cluster'
