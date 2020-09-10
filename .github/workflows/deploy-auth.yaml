@@ -16,14 +16,18 @@ jobs:
        with:
          submodules: true
         
+     - name: 'Login to Docker'
+       run: |
+         echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u ${{ secrets.CR_USERNAME }} --password-stdin
+    
+     - name: 'Create temporary secret file for docker buildkit command'
+       run: |
+         echo ${{ secrets.CR_PAT }} > cr_pat.txt
+
      - name: 'Build and push image'
-       uses: docker/build-push-action@v1
-       with:
-         username: ${{ secrets.CR_USERNAME }}
-         password: ${{ secrets.CR_PAT }}
-         registry: ghcr.io
-         repository: auth
-         tags: latest
+       run: |
+         DOCKER_BUILDKIT=1 docker build . --tag ghcr.io/${{ secrets.CR_USERNAME }}/auth:$GITHUB_SHA --secret id=cr_pat,src=cr_pat.txt
+         docker push ghcr.io/${{ secrets.CR_USERNAME }}/auth:${{ GITHUB_SHA }}
          
          
      - name: 'Set the target AKS cluster'
@@ -40,6 +44,4 @@ jobs:
          manifests: |
            infra/k8s-prod/ingress-srv.yaml 
          images: |
-           ${{ secrets.REGISTRY_LOGIN_SERVER }}/auth:${{ github.sha }}
-         imagepullsecrets: |
-           acr-secret
+           ghcr.io/${{ secrets.CR_USERNAME }}/auth:${{ github.sha }}
