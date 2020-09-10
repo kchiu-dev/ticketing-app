@@ -42,7 +42,7 @@ jobs:
     
      - name: 'Remove temporary secret file'
        run: |
-         ls
+         ls auth/
          rm auth/cr_pat.txt
 
      - name: 'Set the target AKS cluster'
