@@ -25,10 +25,10 @@ jobs:
        with:
          version: latest
 
-     - name: Set up builder for Docker Buildx
-       run: |
-         docker buildx create --use --name builder
-         docker buildx inspect builder --bootstrap
+    #  - name: Set up builder for Docker Buildx
+    #    run: |
+    #      docker buildx create --use --name builder
+    #      docker buildx inspect builder --bootstrap
          
     
      - name: 'Create temporary secret file for docker buildkit command'
