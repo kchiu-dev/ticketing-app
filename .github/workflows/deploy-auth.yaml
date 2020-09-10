@@ -26,8 +26,8 @@ jobs:
 
      - name: 'Build and push image'
        run: |
-         DOCKER_BUILDKIT=1 docker build . --tag ghcr.io/${{ secrets.CR_USERNAME }}/auth:$GITHUB_SHA --secret id=cr_pat,src=cr_pat.txt
-         docker push ghcr.io/${{ secrets.CR_USERNAME }}/auth:${{ GITHUB_SHA }}
+         DOCKER_BUILDKIT=1 docker build . --tag ghcr.io/${{ secrets.CR_USERNAME }}/auth:${{ GITHUB.SHA }} --secret id=cr_pat,src=cr_pat.txt
+         docker push ghcr.io/${{ secrets.CR_USERNAME }}/auth:${{ GITHUB.SHA }}
          
          
      - name: 'Set the target AKS cluster'
@@ -44,4 +44,4 @@ jobs:
          manifests: |
            infra/k8s-prod/ingress-srv.yaml 
          images: |
-           ghcr.io/${{ secrets.CR_USERNAME }}/auth:${{ github.sha }}
+           ghcr.io/${{ secrets.CR_USERNAME }}/auth:${{ GITHUB.SHA }}
