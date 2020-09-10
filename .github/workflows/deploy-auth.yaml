@@ -31,7 +31,7 @@ jobs:
 
      - name: 'Build and push image'
        run: |
-         docker buildx build .
+         docker buildx build --tag ghcr.io/${{ secrets.CR_USERNAME }}/auth:${{ GITHUB.SHA }} --secret id=cr_pat,src=cr_pat.txt --file ./Dockerfile .
          docker push ghcr.io/${{ secrets.CR_USERNAME }}/auth:${{ GITHUB.SHA }}
          
          
