@@ -31,17 +31,9 @@ jobs:
 
      - name: 'Build and push image'
        run: |
-        pwd
-        ls
-        cp Dockerfile /etc/docker
-        cd /etc/docker
-        ls
-        #  docker buildx build \
-        #    --platform linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x \
-        #    --output "type=image,push=false" \
-        #    --file ./Dockerfile .
-        #  docker buildx build --tag ghcr.io/${{ secrets.CR_USERNAME }}/auth:${{ GITHUB.SHA }} --secret id=cr_pat,src=cr_pat.txt --file ./Dockerfile .
-        #  docker push ghcr.io/${{ secrets.CR_USERNAME }}/auth:${{ GITHUB.SHA }}
+        cd auth
+        docker buildx build --tag ghcr.io/${{ secrets.CR_USERNAME }}/auth:${{ GITHUB.SHA }} --secret id=cr_pat,src=cr_pat.txt .
+        docker push ghcr.io/${{ secrets.CR_USERNAME }}/auth:${{ GITHUB.SHA }}
          
          
     #  - name: 'Set the target AKS cluster'
