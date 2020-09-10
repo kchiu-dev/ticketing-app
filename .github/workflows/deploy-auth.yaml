@@ -42,7 +42,7 @@ jobs:
     
      - name: 'Remove temporary secret file'
        run: |
-         rm cr_pat.txt
+         ls
 
      - name: 'Set the target AKS cluster'
        uses: Azure/aks-set-context@v1
