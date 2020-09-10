@@ -32,6 +32,8 @@ jobs:
      - name: 'Build and push image'
        run: |
         pwd
+        ls
+        cp Dockerfile /etc/docker
         cd /etc/docker
         ls
         #  docker buildx build \
