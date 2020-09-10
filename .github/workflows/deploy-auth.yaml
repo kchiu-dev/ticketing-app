@@ -31,8 +31,8 @@ jobs:
      - name: 'Build and push image'
        run: |
         cd auth
-        docker buildx build --tag ghcr.io/${{ secrets.CR_USERNAME }}/auth --secret id=cr_pat,src=cr_pat.txt .
-        docker push ghcr.io/${{ secrets.CR_USERNAME }}/auth
+        docker buildx build --tag ghcr.io/${{ secrets.CR_USERNAME }}/auth:latest --secret id=cr_pat,src=cr_pat.txt .
+        docker push ghcr.io/${{ secrets.CR_USERNAME }}/auth:latest
          
          
     #  - name: 'Set the target AKS cluster'
