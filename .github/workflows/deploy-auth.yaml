@@ -13,8 +13,9 @@ jobs:
    steps:
      - name: 'Checkout GitHub Action'
        uses: actions/checkout@master
-       with:
-         submodules: true
+
+     - name: Set up Docker Buildx
+       uses: docker/setup-buildx-action@v1
         
      - name: 'Login to Docker'
        run: |
@@ -26,7 +27,7 @@ jobs:
 
      - name: 'Build and push image'
        run: |
-         DOCKER_BUILDKIT=1 docker build . --tag ghcr.io/${{ secrets.CR_USERNAME }}/auth:${{ GITHUB.SHA }} --secret id=cr_pat,src=cr_pat.txt
+         docker build . --tag ghcr.io/${{ secrets.CR_USERNAME }}/auth:${{ GITHUB.SHA }} --secret id=cr_pat,src=cr_pat.txt
          docker push ghcr.io/${{ secrets.CR_USERNAME }}/auth:${{ GITHUB.SHA }}
          
          
