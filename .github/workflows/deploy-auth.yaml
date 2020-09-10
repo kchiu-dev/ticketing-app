@@ -31,7 +31,7 @@ jobs:
     #      docker buildx inspect builder --bootstrap
          
     
-     - name: 'Create temporary secret file for docker buildkit command'
+     - name: 'Create temporary secret file for docker buildx'
        run: |
          echo ${{ secrets.CR_PAT }} > auth/cr_pat.txt
 
@@ -39,7 +39,10 @@ jobs:
        run: |
          cd auth
          docker buildx build --tag ghcr.io/${{ secrets.CR_USERNAME }}/auth --secret id=cr_pat,src=cr_pat.txt --push .
-         
+    
+     - name: 'Remove temporary secret file'
+       run: |
+         rm cr_pat.txt
 
      - name: 'Set the target AKS cluster'
        uses: Azure/aks-set-context@v1
