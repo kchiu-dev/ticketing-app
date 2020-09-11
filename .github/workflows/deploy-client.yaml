@@ -14,7 +14,7 @@ jobs:
      - name: 'Checkout GitHub Action'
        uses: actions/checkout@master
 
-     - name: 'Login to Docker'
+     - name: 'Login to GitHub Container Registry'
        run: |
          echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u ${{ secrets.CR_USERNAME }} --password-stdin
 

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: client
-          image: ghcr.io/kchiu-dev/client
+          image: ghcr.io/kchiu-dev/client:latest
       imagePullSecrets:
         - name: acr-secret
 ---
