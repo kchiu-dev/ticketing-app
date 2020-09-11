@@ -15,8 +15,6 @@ spec:
       containers:
         - name: client
           image: ghcr.io/kchiu-dev/client
-      imagePullSecrets:
-        - name: acr-secret
 ---
 apiVersion: v1
 kind: Service
