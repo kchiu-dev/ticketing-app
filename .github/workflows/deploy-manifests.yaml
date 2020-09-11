@@ -13,8 +13,10 @@ jobs:
    steps:
      - name: 'Checkout GitHub Action'
        uses: actions/checkout@master
-       with:
-         submodules: true
+
+     - name: 'Login to GitHub Container Registry'
+       run: |
+         echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u ${{ secrets.CR_USERNAME }} --password-stdin
          
      - name: 'Set the target AKS cluster'
        uses: Azure/aks-set-context@v1
