@@ -24,7 +24,7 @@ spec:
                   name: jwt-secret
                   key: JWT_KEY
       imagePullSecrets:
-        - name: ${{ secrets.CR_PAT }}        
+        - name: ghcr-secret       
 ---
 apiVersion: v1
 kind: Service

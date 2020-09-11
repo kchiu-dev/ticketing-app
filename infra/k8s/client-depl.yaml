@@ -16,7 +16,7 @@ spec:
         - name: client
           image: ghcr.io/kchiu-dev/client
       imagePullSecrets:
-        - name: ${{ secrets.CR_PAT }}
+        - name: ghcr-secret
 ---
 apiVersion: v1
 kind: Service
