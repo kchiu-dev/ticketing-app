@@ -24,12 +24,6 @@ jobs:
        uses: docker/setup-buildx-action@v1
        with:
          version: latest
-         skip-cache: false
-
-    #  - name: Set up builder for Docker Buildx
-    #    run: |
-    #      docker buildx create --use --name builder
-    #      docker buildx inspect builder --bootstrap
          
     
      - name: 'Create temporary secret file for docker buildx'
@@ -39,7 +33,13 @@ jobs:
      - name: 'Build and push image'
        run: |
          cd auth
-         docker buildx build --tag ghcr.io/${{ secrets.CR_USERNAME }}/auth --secret id=cr_pat,src=cr_pat.txt --build-arg BUILDKIT_INLINE_CACHE=1 --push .
+         docker buildx build \
+         --tag ghcr.io/${{ secrets.CR_USERNAME }}/auth \
+         --cache-to=type=inline \
+         --cache-from=type=registry,ref=ghcr.io/${{ secrets.CR_USERNAME }}/auth \
+         --secret id=cr_pat,src=cr_pat.txt \
+         --push \
+         .
     
      - name: 'Remove temporary secret file'
        run: |
