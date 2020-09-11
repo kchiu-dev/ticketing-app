@@ -13,33 +13,41 @@ jobs:
    steps:
      - name: 'Checkout GitHub Action'
        uses: actions/checkout@master
+
+     - name: 'Login to Docker'
+       run: |
+         echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u ${{ secrets.CR_USERNAME }} --password-stdin
+
+
+     - name: Set up Docker Buildx
+       id: buildx
+       uses: docker/setup-buildx-action@v1
        with:
-         submodules: true
-        
+         version: latest
+         
+
      - name: 'Build and push image'
-       uses: docker/build-push-action@v1
-       with:
-         username: ${{ secrets.CR_USERNAME }}
-         password: ${{ secrets.CR_PAT }}
-         registry: ghcr.io
-         repository: client
-         tags: latest
+       run: |
+         cd client
+         docker buildx build \
+         --tag ghcr.io/${{ secrets.CR_USERNAME }}/client \
+         --cache-to=type=inline \
+         --cache-from=type=registry,ref=ghcr.io/${{ secrets.CR_USERNAME }}/client \
+         --push \
          
-         
+
      - name: 'Set the target AKS cluster'
        uses: Azure/aks-set-context@v1
        with:
          creds: '${{ secrets.AZURE_CREDENTIALS }}'
          cluster-name: ticketingCluster
          resource-group: myResourceGroup
+  
 
-         
      - name: 'Deploy to the target AKS cluster'
        uses: Azure/k8s-deploy@v1
        with:
          manifests: |
            infra/k8s-prod/ingress-srv.yaml 
          images: |
-           ${{ secrets.REGISTRY_LOGIN_SERVER }}/client:${{ github.sha }}
-         imagepullsecrets: |
-           acr-secret
+           ghcr.io/${{ secrets.CR_USERNAME }}/client
