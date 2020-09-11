@@ -24,7 +24,14 @@ jobs:
          creds: '${{ secrets.AZURE_CREDENTIALS }}'
          cluster-name: ticketingCluster
          resource-group: myResourceGroup
-       
+    
+     - name: 'Create a GitHub Container Registry-secret (docker-registry)'
+       uses: Azure/k8s-create-secret@v1
+       with:
+        container-registry-url: ghcr.io
+        container-registry-username: ${{ secrets.CR_USERNAME }}
+        container-registry-password: ${{ secrets.CR_PAT }}
+        secret-name: 'ghcr-secret'
      - name: 'Create jwt-secret (generic)'
        uses: Azure/k8s-create-secret@v1
        with:
