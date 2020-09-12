@@ -14,7 +14,8 @@ build:
       context: auth
       docker:
         dockerfile: Dockerfile
-        cacheFrom: ghcr.io/kchiu-dev/auth
+        cacheFrom: 
+        - ghcr.io/kchiu-dev/auth
       sync:
         manual:
           - src: 'src/**/*.ts'
@@ -23,7 +24,8 @@ build:
       context: client
       docker:
         dockerfile: Dockerfile
-        cacheFrom: ghcr.io/kchiu-dev/client
+        cacheFrom: 
+        - ghcr.io/kchiu-dev/client
       sync:
         manual:
         - src: '**/*.js'
@@ -32,7 +34,8 @@ build:
       context: tickets
       docker:
         dockerfile: Dockerfile
-        cacheFrom: ghcr.io/kchiu-dev/tickets
+        cacheFrom: 
+        - ghcr.io/kchiu-dev/tickets
       sync:
         manual:
         - src: 'src/**/*.ts'
@@ -41,7 +44,8 @@ build:
       context: orders
       docker:
         dockerfile: Dockerfile
-        cacheFrom: ghcr.io/kchiu-dev/orders
+        cacheFrom: 
+        - ghcr.io/kchiu-dev/orders
       sync:
         manual:
         - src: 'src/**/*.ts'
@@ -50,7 +54,8 @@ build:
       context: expiration
       docker:
         dockerfile: Dockerfile
-        cacheFrom: ghcr.io/kchiu-dev/expiration
+        cacheFrom: 
+        - ghcr.io/kchiu-dev/expiration
       sync:
         manual:
         - src: 'src/**/*.ts'
@@ -59,7 +64,8 @@ build:
       context: payments
       docker:
         dockerfile: Dockerfile
-        cacheFrom: ghcr.io/kchiu-dev/payments
+        cacheFrom: 
+        - ghcr.io/kchiu-dev/payments
       sync:
         manual:
         - src: 'src/**/*.ts'
