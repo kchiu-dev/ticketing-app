@@ -35,6 +35,7 @@ jobs:
          cd tickets
          docker buildx build \
          --tag ghcr.io/${{ secrets.CR_USERNAME }}/tickets \
+         --file Dockerfile.production \
          --cache-to=type=inline \
          --cache-from=type=registry,ref=ghcr.io/${{ secrets.CR_USERNAME }}/tickets \
          --secret id=cr_pat,src=cr_pat.txt \
