@@ -14,8 +14,8 @@ build:
       context: auth
       docker:
         dockerfile: Dockerfile
-        cacheFrom: 
-        - ghcr.io/kchiu-dev/auth
+        cacheFrom:
+        - node:alpine
       sync:
         manual:
           - src: 'src/**/*.ts'
@@ -25,7 +25,7 @@ build:
       docker:
         dockerfile: Dockerfile
         cacheFrom: 
-        - ghcr.io/kchiu-dev/client
+        - node:alpine
       sync:
         manual:
         - src: '**/*.js'
@@ -35,7 +35,7 @@ build:
       docker:
         dockerfile: Dockerfile
         cacheFrom: 
-        - ghcr.io/kchiu-dev/tickets
+        - node:alpine
       sync:
         manual:
         - src: 'src/**/*.ts'
@@ -45,7 +45,7 @@ build:
       docker:
         dockerfile: Dockerfile
         cacheFrom: 
-        - ghcr.io/kchiu-dev/orders
+        - node:alpine
       sync:
         manual:
         - src: 'src/**/*.ts'
@@ -55,7 +55,7 @@ build:
       docker:
         dockerfile: Dockerfile
         cacheFrom: 
-        - ghcr.io/kchiu-dev/expiration
+        - node:alpine
       sync:
         manual:
         - src: 'src/**/*.ts'
@@ -65,7 +65,7 @@ build:
       docker:
         dockerfile: Dockerfile
         cacheFrom: 
-        - ghcr.io/kchiu-dev/payments
+        - node:alpine
       sync:
         manual:
         - src: 'src/**/*.ts'
