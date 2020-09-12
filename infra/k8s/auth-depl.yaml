@@ -24,8 +24,7 @@ spec:
                   name: jwt-secret
                   key: JWT_KEY
       imagePullSecrets:
-        - name: ghcr-secret
-               
+        - name: ghcr-secret       
 ---
 apiVersion: v1
 kind: Service
