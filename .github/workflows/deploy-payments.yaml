@@ -35,6 +35,7 @@ jobs:
          cd payments
          docker buildx build \
          --tag ghcr.io/${{ secrets.CR_USERNAME }}/payments \
+         --file Dockerfile.production \
          --cache-to=type=inline \
          --cache-from=type=registry,ref=ghcr.io/${{ secrets.CR_USERNAME }}/payments \
          --secret id=cr_pat,src=cr_pat.txt \

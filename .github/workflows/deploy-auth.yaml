@@ -35,6 +35,7 @@ jobs:
          cd auth
          docker buildx build \
          --tag ghcr.io/${{ secrets.CR_USERNAME }}/auth \
+         --file Dockerfile.production \
          --cache-to=type=inline \
          --cache-from=type=registry,ref=ghcr.io/${{ secrets.CR_USERNAME }}/auth \
          --secret id=cr_pat,src=cr_pat.txt \
