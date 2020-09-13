@@ -6,16 +6,16 @@ deploy:
       - ./infra/k8s/*
       - ./infra/k8s-dev/*
 build:
-  # local:
-  #   push: false
-  #   concurrency: 0
+  local:
+    useBuildkit: true
+    concurrency: 0
   artifacts:
     - image: ghcr.io/kchiu-dev/auth
       context: auth
       docker:
         dockerfile: Dockerfile
-        cacheFrom:
-        - node:alpine
+        buildArgs:
+          CR_PAT: "{{.CR_PAT}}"
       sync:
         manual:
           - src: 'src/**/*.ts'
@@ -24,8 +24,6 @@ build:
       context: client
       docker:
         dockerfile: Dockerfile
-        cacheFrom: 
-        - node:alpine
       sync:
         manual:
         - src: '**/*.js'
@@ -34,8 +32,8 @@ build:
       context: tickets
       docker:
         dockerfile: Dockerfile
-        cacheFrom: 
-        - node:alpine
+        buildArgs:
+          CR_PAT: "{{.CR_PAT}}"
       sync:
         manual:
         - src: 'src/**/*.ts'
@@ -44,8 +42,8 @@ build:
       context: orders
       docker:
         dockerfile: Dockerfile
-        cacheFrom: 
-        - node:alpine
+        buildArgs:
+          CR_PAT: "{{.CR_PAT}}"
       sync:
         manual:
         - src: 'src/**/*.ts'
@@ -54,8 +52,8 @@ build:
       context: expiration
       docker:
         dockerfile: Dockerfile
-        cacheFrom: 
-        - node:alpine
+        buildArgs:
+          CR_PAT: "{{.CR_PAT}}"
       sync:
         manual:
         - src: 'src/**/*.ts'
@@ -64,10 +62,9 @@ build:
       context: payments
       docker:
         dockerfile: Dockerfile
-        cacheFrom: 
-        - node:alpine
+        buildArgs:
+          CR_PAT: "{{.CR_PAT}}"
       sync:
         manual:
         - src: 'src/**/*.ts'
           dest: .     
-              
