@@ -25,17 +25,26 @@ jobs:
        with:
          version: latest
          
+    
+     - name: 'Create temporary secret file for docker buildx'
+       run: |
+         echo ${{ secrets.CR_PAT }} > expiration/cr_pat.txt
 
      - name: 'Build and push image'
        run: |
          cd expiration
          docker buildx build \
          --tag ghcr.io/${{ secrets.CR_USERNAME }}/expiration \
-         --build-arg CR_PAT=${{ secrets.CR_PAT }} \
+         --file Dockerfile.production \
          --cache-to=type=inline \
          --cache-from=type=registry,ref=ghcr.io/${{ secrets.CR_USERNAME }}/expiration \
+         --secret id=cr_pat,src=cr_pat.txt \
          --push \
          .
+    
+     - name: 'Remove temporary secret file'
+       run: |
+         rm expiration/cr_pat.txt
          
 
      - name: 'Set the target AKS cluster'
