@@ -9,6 +9,7 @@ build:
   local:
     useBuildkit: true
     concurrency: 0
+    push: false
   artifacts:
     - image: ghcr.io/kchiu-dev/auth
       context: auth
