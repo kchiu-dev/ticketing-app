@@ -1,2 +1,8 @@
 node_modules
 .idea
+auth/cr_pat.txt
+client/cr_pat.txt
+tickets/cr_pat.txt
+orders/cr_pat.txt
+expiration/cr_pat.txt
+payments/cr_pat.txt
