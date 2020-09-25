@@ -2,10 +2,17 @@ apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: ingress-service
+  namespace: ingress-basic
   annotations:
     kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
     nginx.ingress.kubernetes.io/use-regex: 'true'
 spec:
+  tls:
+    - hosts:
+      - www.ticketing-app.tk
+      secretName: tls-secret
   rules:
     - host: www.ticketing-app.tk
       http:
