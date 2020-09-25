@@ -1,10 +1,11 @@
+# syntax = docker/dockerfile:1.0-experimental
 FROM node:alpine
-ARG CR_PAT
 
 WORKDIR /app
 COPY package.json .npmrc ./
-RUN npm set //npm.pkg.github.com/:_authToken ${CR_PAT}
+# Authenticate to GitHub Packages
+RUN --mount=type=secret,id=cr_pat npm set //npm.pkg.github.com/:_authToken $(cat /run/secrets/cr_pat)
 RUN npm install --only=prod
 COPY . .
 
-CMD ["npm", "start"]
+ENTRYPOINT ["npm", "start"]
