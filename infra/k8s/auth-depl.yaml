@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: auth-depl
+  namespace: ingress-basic
 spec:
   replicas: 1
   selector:
@@ -24,13 +25,13 @@ spec:
                   name: jwt-secret
                   key: JWT_KEY
       imagePullSecrets:
-        - name: ghcr-secret
-               
+        - name: ghcr-secret       
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: auth-srv
+  namespace: ingress-basic
 spec:
   selector:
     app: auth
