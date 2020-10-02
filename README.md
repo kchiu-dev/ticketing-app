@@ -3,6 +3,8 @@
 This application is a website built upon a microservices infrastructure that allows business owners to sell tickets online based on the name and price. 
 Then other users who log in can purchase tickets posted online using a credit card.
 
+This is a rough draft of the application but many changes and improvements are on the way.
+
 
 # Tech Stack
 
@@ -11,8 +13,6 @@ Front end service is built with NextJS (ReactJS) and backend services are built 
 GitHub Actions have been created to help deploy the microservices app to Azure Kubernetes Services (AKS).
 
 
-
-This is a rough draft of the application but many changes and improvements are on the way.
 
 # Acknowledgements
 
