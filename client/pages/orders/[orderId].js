@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
-import StripeCheckout from "react-stripe-checkout";
+import { loadStripe } from "@stripe/stripe-js";
 import Router from "next/router";
 import useRequest from "../../hooks/use-request";
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUB);
 
 const OrderShow = ({ order, currentUser }) => {
   const [timeLeft, setTimeLeft] = useState(0);
   const { doRequest, errors } = useRequest({
-    url: "/api/paymnets",
+    url: "/api/payments",
     method: "post",
     body: {
       orderId: order.id,
@@ -32,15 +34,40 @@ const OrderShow = ({ order, currentUser }) => {
     return <div>Order Expired</div>;
   }
 
+  const handleClick = async (event) => {
+    console.log(`Stripe Key: ${process.env.NEXT_PUBLIC_STRIPE_PUB}`);
+    // Get Stripe.js instance
+    const stripe = await stripePromise;
+
+    // Call your backend to create the Checkout Session
+    const { id: session } = doRequest();
+
+    console.log(`My session: ${session}`);
+
+    // When the customer click on the button, redirect them to Checkout.
+    // const result = await stripe.redirectToCheckout({
+    //   sessionId: session,
+    // });
+
+    if (result.error) {
+      // If 'redirectToCheckout' fails due to a browser or network
+      // error, display the localized error message to your customer
+      // using 'result.error.message'.
+    }
+  };
+
   return (
     <div>
       Time left to pay: {timeLeft} seconds
-      <StripeCheckout
-        token={({ id }) => doRequest({ token: id })}
-        stripeKey="pk_test_PrpgBBthPrEe50LAS87tRRGk006VZx64SB"
-        amount={order.ticket.price * 100}
-        email={currentUser.email}
-      />
+      {/*<StripeCheckout*/}
+      {/*  token={({ id }) => doRequest({ token: id })}*/}
+      {/*  stripeKey=process.env.STRIPE_KEY*/}
+      {/*  amount={order.ticket.price * 100}*/}
+      {/*  email={currentUser.email}*/}
+      {/*/>*/}
+      <button role="link" onClick={handleClick}>
+        Checkout
+      </button>
       {errors}
     </div>
   );
