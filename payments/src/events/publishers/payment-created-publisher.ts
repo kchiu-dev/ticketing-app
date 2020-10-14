@@ -1,5 +1,5 @@
-import { Subjects, Publisher, PaymentCreatedEvent } from "@kchiu-dev/common";
+import { Subjects, Publisher, PaymentCreatedEvent } from "@kch-chiu/common";
 
-export class PaymnetCreatedPublisher extends Publisher<PaymentCreatedEvent> {
+export class PaymentCreatedPublisher extends Publisher<PaymentCreatedEvent> {
   subject: Subjects.PaymentCreated = Subjects.PaymentCreated;
 }

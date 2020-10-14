@@ -7,7 +7,7 @@ import {
   requireAuth,
   NotAuthorizedError,
   BadRequestError,
-} from "@kchiu-dev/common";
+} from "@kch-chiu/common";
 
 import { Ticket } from "../models/ticket";
 import { TicketUpdatedPublisher } from "../events/publishers/ticket-updated-publisher";

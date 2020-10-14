@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: expiration-depl
-  namespace: ingress-basic
 spec:
   replicas: 1
   selector:
@@ -15,7 +14,7 @@ spec:
     spec:
       containers:
         - name: expiration
-          image: ghcr.io/kchiu-dev/expiration
+          image: localhost:5000/expiration
           env:
             - name: NATS_CLIENT_ID
               valueFrom:
@@ -26,6 +25,7 @@ spec:
             - name: NATS_CLUSTER_ID
               value: ticketing
             - name: REDIS_HOST
-              value: expiration-redis-srv
-      imagePullSecrets:
-        - name: ghcr-secret      
+              value: expiration-redis-srv    
+          ports:
+            - containerPort: 9004   # run the container
+            - containerPort: 7004   # debug the container

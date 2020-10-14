@@ -4,7 +4,7 @@ import {
   requireAuth,
   NotFoundError,
   NotAuthorizedError,
-} from "@kchiu-dev/common";
+} from "@kch-chiu/common";
 
 import { Order } from "../models/order";
 
