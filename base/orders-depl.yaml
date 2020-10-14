@@ -1,21 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: tickets-depl
-  namespace: ingress-basic
+  name: orders-depl
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: tickets
+      app: orders
   template:
     metadata:
       labels:
-        app: tickets
+        app: orders
     spec:
       containers:
-        - name: tickets
-          image: ghcr.io/kchiu-dev/tickets
+        - name: orders
+          image: localhost:5000/orders
           env:
             - name: NATS_CLIENT_ID
               valueFrom:
@@ -26,25 +25,25 @@ spec:
             - name: NATS_CLUSTER_ID
               value: ticketing
             - name: MONGO_URI
-              value: "mongodb://tickets-mongo-srv:27017/tickets"
+              value: "mongodb://orders-mongo-srv:27017/orders"
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:
                   name: jwt-secret
-                  key: JWT_KEY
-      imagePullSecrets:
-        - name: ghcr-secret
+                  key: jwt-secret
+          ports:
+            - containerPort: 9003   # run the container
+            - containerPort: 7003   # debug the container
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: tickets-srv
-  namespace: ingress-basic
+  name: orders-srv
 spec:
   selector:
-    app: tickets
+    app: orders
   ports:
-    - name: tickets
+    - name: orders
       protocol: TCP
       port: 3000
       targetPort: 3000
