@@ -1,25 +1,21 @@
 import axios from "axios";
-import https from "https";
 
 export default ({ req }) => {
+  const env = process.env.NEXT_PUBLIC_ENV;
   if (typeof window === "undefined") {
     // We are on the server
-    if (process.env.NEXT_PUBLIC_ENV === "staging") {
+    if (env === "development") {
       return axios.create({
-        // Deal with SSL certificate issues
-        httpsAgent: new https.Agent({
-          rejectUnauthorized: false,
-        }),
+        // Local Cluster        baseURL: http://172.18.0.3:30761
         baseURL:
-          // Local Cluster
-          "https://ticketing-app-dev.tk",
+          "http://172.18.0.3:30761",
         headers: req.headers,
       });
     } else {
       return axios.create({
+        // Production Cluster   baseURL: https://ticketing-app.tk
         baseURL:
-          // Production Cluster
-          "http://www.ticketing-app.tk",
+          "https://ticketing-app.tk",
         headers: req.headers,
       });
     }
