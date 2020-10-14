@@ -1,21 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: orders-depl
-  namespace: ingress-basic
+  name: payments-depl
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: orders
+      app: payments
   template:
     metadata:
       labels:
-        app: orders
+        app: payments
     spec:
       containers:
-        - name: orders
-          image: ghcr.io/kchiu-dev/orders
+        - name: payments
+          image: localhost:5000/payments
           env:
             - name: NATS_CLIENT_ID
               valueFrom:
@@ -26,25 +25,30 @@ spec:
             - name: NATS_CLUSTER_ID
               value: ticketing
             - name: MONGO_URI
-              value: "mongodb://orders-mongo-srv:27017/orders"
+              value: "mongodb://payments-mongo-srv:27017/payments"
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:
                   name: jwt-secret
-                  key: JWT_KEY
-      imagePullSecrets:
-        - name: ghcr-secret
+                  key: jwt-secret
+            - name: STRIPE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: stripe-secret
+                  key: stripe-secret
+          ports:
+            - containerPort: 9005   # run the container
+            - containerPort: 7005   # debug the container
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: orders-srv
-  namespace: ingress-basic
+  name: payments-srv
 spec:
   selector:
-    app: orders
+    app: payments
   ports:
-    - name: orders
+    - name: payments
       protocol: TCP
       port: 3000
       targetPort: 3000
