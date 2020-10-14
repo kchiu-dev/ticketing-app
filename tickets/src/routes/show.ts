@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 
-import { NotFoundError } from "@kchiu-dev/common";
+import { NotFoundError } from "@kch-chiu/common";
 
 import { Ticket } from "../models/ticket";
 

@@ -1,6 +1,6 @@
 import { Message } from "node-nats-streaming";
 
-import { Listener, OrderCreatedEvent, Subjects } from "@kchiu-dev/common";
+import { Listener, OrderCreatedEvent, Subjects } from "@kch-chiu/common";
 
 import { queueGroupName } from "./queue-group-name";
 import { Order } from "../../models/order";
