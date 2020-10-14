@@ -5,7 +5,7 @@ import {
   Listener,
   PaymentCreatedEvent,
   OrderStatus,
-} from "@kchiu-dev/common";
+} from "@kch-chiu/common";
 
 import { queueGroupName } from "./queue-group-name";
 import { Order } from "../../models/order";

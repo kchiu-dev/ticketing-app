@@ -8,12 +8,12 @@ import {
   NotAuthorizedError,
   NotFoundError,
   OrderStatus,
-} from "@kchiu-dev/common";
+} from "@kch-chiu/common";
 
 import { stripe } from "../stripe";
 import { Order } from "../models/order";
 import { Payment } from "../models/payment";
-import { PaymnetCreatedPublisher } from "../events/publishers/payment-created-publisher";
+import { PaymentCreatedPublisher } from "../events/publishers/payment-created-publisher";
 import { natsWrapper } from "../nats-wrapper";
 
 const router = express.Router();
@@ -21,7 +21,7 @@ const router = express.Router();
 router.post(
   "/api/payments",
   requireAuth,
-  [body("token").not().isEmpty(), body("orderId").not().isEmpty()],
+  [body("orderId").not().isEmpty()],
   validateRequest,
   async (req: Request, res: Response) => {
     const { token, orderId } = req.body;
@@ -38,23 +38,42 @@ router.post(
       throw new BadRequestError("Cannot pay for an cancelled order");
     }
 
-    const charge = await stripe.charges.create({
-      currency: "usd",
-      amount: order.price * 100,
-      source: token,
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: "T-shirt",
+            },
+            unit_amount: 2000,
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      success_url: "/success",
+      cancel_url: "/cancel",
     });
+
+    // const charge = await stripe.charges.create({
+    //   currency: "usd",
+    //   amount: order.price * 100,
+    //   source: token,
+    // });
     const payment = Payment.build({
       orderId,
-      stripeId: charge.id,
+      stripeId: session.id,
     });
     await payment.save();
-    new PaymnetCreatedPublisher(natsWrapper.client).publish({
+    new PaymentCreatedPublisher(natsWrapper.client).publish({
       id: payment.id,
       orderId: payment.orderId,
       stripeId: payment.stripeId,
     });
 
-    res.status(201).send({ id: payment.id });
+    res.status(201).send({ id: payment.stripeId });
   }
 );
 
