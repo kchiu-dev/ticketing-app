@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { Message } from "node-nats-streaming";
 
-import { TicketUpdatedEvent } from "@kchiu-dev/common";
+import { TicketUpdatedEvent } from "@kch-chiu/common";
 
 import { TicketUpdatedListener } from "../ticket-updated-listener";
 import { natsWrapper } from "../../../nats-wrapper";

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import request from "supertest";
 
-import { OrderStatus } from "@kchiu-dev/common";
+import { OrderStatus } from "@kch-chiu/common";
 
 import { app } from "../../app";
 import { Order } from "../../models/order";

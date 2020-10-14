@@ -4,7 +4,7 @@ import {
   requireAuth,
   NotFoundError,
   NotAuthorizedError,
-} from "@kchiu-dev/common";
+} from "@kch-chiu/common";
 
 import { Order, OrderStatus } from "../models/order";
 import { OrderCancelledPublisher } from "../events/publishers/order-cancelled-publisher";

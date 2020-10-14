@@ -1,7 +1,7 @@
 import { Message } from "node-nats-streaming";
 import mongoose from "mongoose";
 
-import { OrderCreatedEvent, OrderStatus } from "@kchiu-dev/common";
+import { OrderCreatedEvent, OrderStatus } from "@kch-chiu/common";
 
 import { OrderCreatedListener } from "../order-created-listener";
 import { natsWrapper } from "../../../nats-wrapper";

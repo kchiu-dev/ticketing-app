@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 
-import { requireAuth } from "@kchiu-dev/common";
+import { requireAuth } from "@kch-chiu/common";
 
 import { Order } from "../models/order";
 

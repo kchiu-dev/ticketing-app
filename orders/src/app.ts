@@ -3,7 +3,7 @@ import "express-async-errors";
 import { json } from "body-parser";
 import cookieSession from "cookie-session";
 
-import { errorHandler, NotFoundError, currentUser } from "@kchiu-dev/common";
+import { errorHandler, NotFoundError, currentUser } from "@kch-chiu/common";
 
 import { deleteOrderRouter } from "./routes/delete";
 import { indexOrderRouter } from "./routes/index";
