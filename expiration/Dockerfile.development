@@ -1,0 +1,10 @@
+FROM node:alpine
+ARG authToken
+
+WORKDIR /app
+COPY package.json .npmrc ./
+RUN npm set //npm.pkg.github.com/:_authToken ${authToken}
+RUN npm install --only=prod
+COPY . .
+
+ENTRYPOINT ["npm", "start"]
