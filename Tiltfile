@@ -1,117 +1,212 @@
-# Step 0: Allow Remote Cluster
-
-allow_k8s_contexts('ticketingCluster')
-
 # Step 1: Deploy
 
-k8s_yaml(
-  [
-    './infra/k8s/auth-depl.yaml',
-    './infra/k8s/auth-mongo-depl.yaml',
-    './infra/k8s/client-depl.yaml',
-    './infra/k8s/expiration-depl.yaml',
-    './infra/k8s/expiration-redis-depl.yaml',
-    './infra/k8s/nats-depl.yaml',
-    './infra/k8s/orders-depl.yaml',
-    './infra/k8s/orders-mongo-depl.yaml',
-    './infra/k8s/payments-depl.yaml',
-    './infra/k8s/payments-mongo-depl.yaml',
-    './infra/k8s/tickets-depl.yaml',
-    './infra/k8s/tickets-mongo-depl.yaml'
-  ]
-)
+k8s_yaml(kustomize('overlays/development'))
 
 # Step 2: Build
 
-custom_build(
-  'ghcr.io/kchiu-dev/auth',
-  'docker buildx build --file "auth/Dockerfile" --tag $EXPECTED_REF \
-  --secret id=cr_pat,src=auth/cr_pat.txt --push auth',
-  ['./auth'],
-  skips_local_docker=True,
-  disable_push=True,
-  entrypoint='npm start',
+docker_build(
+  'localhost:5000/auth',
+  'auth',
+  build_args={'authToken': os.getenv('CR_PAT'), 'BUILDKIT_INLINE_CACHE': '1'},
+  cache_from='localhost:5000/auth',
+  dockerfile='auth/Dockerfile.development',
   live_update=[
     sync('./auth', '/app'),
     run('cd /app && npm install', trigger=['auth/package.json'])
   ]
 )
 
-custom_build(
-  'ghcr.io/kchiu-dev/client',
-  'docker buildx build --file "client/Dockerfile" --tag $EXPECTED_REF \
-  --secret id=cr_pat,src=client/cr_pat.txt --push client',
-  ['./client'],
-  skips_local_docker=True,
-  disable_push=True,
-  entrypoint='npm run dev',
+docker_build(
+  'localhost:5000/client',
+  'client',
+  build_args={'BUILDKIT_INLINE_CACHE': '1'},
+  cache_from='localhost:5000/client',
   live_update=[
     sync('./client', '/app'),
     run('cd /app && npm install', trigger=['client/package.json'])
   ]
 )
 
-custom_build(
-  'ghcr.io/kchiu-dev/tickets',
-  'docker buildx build --file "tickets/Dockerfile" --tag $EXPECTED_REF \
-  --secret id=cr_pat,src=tickets/cr_pat.txt --push tickets',
-  ['./tickets'],
-  skips_local_docker=True,
-  disable_push=True,
-  entrypoint='npm start',
+docker_build(
+  'localhost:5000/tickets',
+  'tickets',
+  build_args={'authToken': os.getenv('CR_PAT'), 'BUILDKIT_INLINE_CACHE': '1'},
+  cache_from='localhost:5000/tickets',
+  dockerfile='tickets/Dockerfile.development',
   live_update=[
     sync('./tickets', '/app'),
     run('cd /app && npm install', trigger=['tickets/package.json'])
   ]
 )
 
-custom_build(
-  'ghcr.io/kchiu-dev/orders',
-  'docker buildx build --file "orders/Dockerfile" --tag $EXPECTED_REF \
-  --secret id=cr_pat,src=orders/cr_pat.txt --push orders',
-  ['./orders'],
-  skips_local_docker=True,
-  disable_push=True,
-  entrypoint='npm start',
+docker_build(
+  'localhost:5000/orders',
+  'orders',
+  build_args={'authToken': os.getenv('CR_PAT'), 'BUILDKIT_INLINE_CACHE': '1'},
+  cache_from='localhost:5000/orders',
+  dockerfile='orders/Dockerfile.development',
   live_update=[
     sync('./orders', '/app'),
     run('cd /app && npm install', trigger=['orders/package.json'])
   ]
 )
 
-custom_build(
-  'ghcr.io/kchiu-dev/expiration',
-  'docker buildx build --file "expiration/Dockerfile" --tag $EXPECTED_REF \
-  --secret id=cr_pat,src=expiration/cr_pat.txt --push expiration',
-  ['./expiration'],
-  skips_local_docker=True,
-  disable_push=True,
-  entrypoint='npm start',
+docker_build(
+  'localhost:5000/expiration',
+  'expiration',
+  build_args={'authToken': os.getenv('CR_PAT'), 'BUILDKIT_INLINE_CACHE': '1'},
+  cache_from='localhost:5000/expiration',
+  dockerfile='expiration/Dockerfile.development',
   live_update=[
     sync('./expiration', '/app'),
     run('cd /app && npm install', trigger=['expiration/package.json'])
   ]
 )
 
-custom_build(
-  'ghcr.io/kchiu-dev/payments',
-  'docker buildx build --file "payments/Dockerfile" --tag $EXPECTED_REF \
-  --secret id=cr_pat,src=payments/cr_pat.txt --push payments',
-  ['./payments'],
-  skips_local_docker=True,
-  disable_push=True,
-  entrypoint='npm start',
+docker_build(
+  'localhost:5000/payments',
+  'payments',
+  build_args={'authToken': os.getenv('CR_PAT'), 'BUILDKIT_INLINE_CACHE': '1'},
+  cache_from='localhost:5000/payments',
+  dockerfile='payments/Dockerfile.development',
   live_update=[
     sync('./payments', '/app'),
     run('cd /app && npm install', trigger=['payments/package.json'])
   ]
 )
 
+# Production Builds
+
+# custom_build(
+#   'localhost:5000/auth',
+#   'docker buildx build --platform linux/amd64,linux/arm64 --file "auth/Dockerfile" --tag $EXPECTED_REF \
+#   --secret id=cr_pat,src=auth/cr_pat.txt \
+#   --cache-from type=registry,ref=localhost:5000/auth --cache-to type=inline --push auth',
+#   ['./auth'],
+#   skips_local_docker=True,
+#   disable_push=True,
+#   entrypoint='npm start',
+#   live_update=[
+#     sync('./auth', '/app'),
+#     run('cd /app && npm install', trigger=['auth/package.json'])
+#   ]
+# )
+
+# custom_build(
+#   'localhost:5000/client',
+#   'docker buildx build --platform linux/amd64,linux/arm64 --file "client/Dockerfile" --tag $EXPECTED_REF \
+#   --cache-from type=registry,ref=localhost:5000/client --cache-to type=inline --push client',
+#   ['./client'],
+#   skips_local_docker=True,
+#   disable_push=True,
+#   entrypoint='npm run dev',
+#   live_update=[
+#     sync('./client', '/app'),
+#     run('cd /app && npm install', trigger=['client/package.json'])
+#   ]
+# )
+
+# custom_build(
+#   'localhost:5000/tickets',
+#   'docker buildx build --platform linux/amd64,linux/arm64 --file "tickets/Dockerfile" --tag $EXPECTED_REF \
+#   --secret id=cr_pat,src=tickets/cr_pat.txt \
+#   --cache-from type=registry,ref=localhost:5000/tickets --cache-to type=inline --push tickets',
+#   ['./tickets'],
+#   skips_local_docker=True,
+#   disable_push=True,
+#   entrypoint='npm start',
+#   live_update=[
+#     sync('./tickets', '/app'),
+#     run('cd /app && npm install', trigger=['tickets/package.json'])
+#   ]
+# )
+
+# custom_build(
+#   'localhost:5000/orders',
+#   'docker buildx build --platform linux/amd64,linux/arm64 --file "orders/Dockerfile" --tag $EXPECTED_REF \
+#   --secret id=cr_pat,src=orders/cr_pat.txt \
+#   --cache-from type=registry,ref=localhost:5000/orders --cache-to type=inline --push orders',
+#   ['./orders'],
+#   skips_local_docker=True,
+#   disable_push=True,
+#   entrypoint='npm start',
+#   live_update=[
+#     sync('./orders', '/app'),
+#     run('cd /app && npm install', trigger=['orders/package.json'])
+#   ]
+# )
+
+# custom_build(
+#   'localhost:5000/expiration',
+#   'docker buildx build --platform linux/amd64,linux/arm64 --file "expiration/Dockerfile" --tag $EXPECTED_REF \
+#   --secret id=cr_pat,src=expiration/cr_pat.txt \
+#   --cache-from type=registry,ref=localhost:5000/expiration --cache-to type=inline --push expiration',
+#   ['./expiration'],
+#   skips_local_docker=True,
+#   disable_push=True,
+#   entrypoint='npm start',
+#   live_update=[
+#     sync('./expiration', '/app'),
+#     run('cd /app && npm install', trigger=['expiration/package.json'])
+#   ]
+# )
+
+# custom_build(
+#   'localhost:5000/payments',
+#   'docker buildx build --platform linux/amd64,linux/arm64 --file "payments/Dockerfile" --tag $EXPECTED_REF \
+#   --secret id=cr_pat,src=payments/cr_pat.txt \
+#   --cache-from type=registry,ref=localhost:5000/payments --cache-to type=inline --push payments',
+#   ['./payments'],
+#   skips_local_docker=True,
+#   disable_push=True,
+#   entrypoint='npm start',
+#   live_update=[
+#     sync('./payments', '/app'),
+#     run('cd /app && npm install', trigger=['payments/package.json'])
+#   ]
+# )
+
 # Step 3: Watch
 
-k8s_resource('auth-depl', port_forwards=9000)
-k8s_resource('client-depl', port_forwards=9001)
-k8s_resource('tickets-depl', port_forwards=9002)
-k8s_resource('orders-depl', port_forwards=9003)
-k8s_resource('expiration-depl', port_forwards=9004)
-k8s_resource('payments-depl', port_forwards=9005)
+k8s_resource(
+  workload='auth-depl',
+  port_forwards=[
+    port_forward(9000, 9000, 'run auth-depl'),
+    port_forward(7000, 7000, 'debug auth-depl'),
+  ]
+)
+k8s_resource(
+  workload='client-depl',
+  port_forwards=[
+    port_forward(9001, 9001, 'run client-depl'),
+    port_forward(7001, 7001, 'debug client-depl'),
+  ]
+)
+k8s_resource(
+  workload='tickets-depl',
+  port_forwards=[
+    port_forward(9002, 9002, 'run tickets-depl'),
+    port_forward(7002, 7002, 'debug tickets-depl'),
+  ]
+)
+k8s_resource(
+  workload='orders-depl',
+  port_forwards=[
+    port_forward(9003, 9003, 'run orders-depl'),
+    port_forward(7003, 7003, 'debug orders-depl'),
+  ]
+)
+k8s_resource(
+  workload='expiration-depl',
+  port_forwards=[
+    port_forward(9004, 9004, 'run expiration-depl'),
+    port_forward(7004, 7004, 'debug expiration-depl'),
+  ]
+)
+k8s_resource(
+  workload='payments-depl',
+  port_forwards=[
+    port_forward(9005, 9005, 'run payments-depl'),
+    port_forward(7005, 7005, 'debug payments-depl'),
+  ]
+)
