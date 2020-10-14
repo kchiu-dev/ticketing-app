@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: auth-depl
-  namespace: ingress-basic
 spec:
   replicas: 1
   selector:
@@ -15,7 +14,7 @@ spec:
     spec:
       containers:
         - name: auth
-          image: ghcr.io/kchiu-dev/auth
+          image: localhost:5000/auth
           env:
             - name: MONGO_URI
               value: 'mongodb://auth-mongo-srv:27017/auth'
@@ -23,15 +22,15 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: jwt-secret
-                  key: JWT_KEY
-      imagePullSecrets:
-        - name: ghcr-secret       
+                  key: jwt-secret
+          ports:
+            - containerPort: 9000   # run the container
+            - containerPort: 7000   # debug the container
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: auth-srv
-  namespace: ingress-basic
 spec:
   selector:
     app: auth

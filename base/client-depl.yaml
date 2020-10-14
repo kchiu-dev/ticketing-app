@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: client-depl
-  namespace: ingress-basic
 spec:
   replicas: 1
   selector:
@@ -15,26 +14,26 @@ spec:
     spec:
       containers:
         - name: client
-          image: ghcr.io/kchiu-dev/client
+          image: localhost:5000/client
           env:
             - name: NEXT_PUBLIC_STRIPE_PUB
-              valueFrom:
+              valueFrom: 
                 secretKeyRef:
                   name: stripe-pub
-                  key: STRIPE_PUB
+                  key: stripe-pub
             - name: NEXT_PUBLIC_ENV
-              valueFrom:
+              valueFrom: 
                 configMapKeyRef:
                   name: env-config
                   key: ENV
-      imagePullSecrets:
-        - name: ghcr-secret
+          ports:
+            - containerPort: 9001   # run the container
+            - containerPort: 7001   # debug the container
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: client-srv
-  namespace: ingress-basic
 spec:
   selector:
     app: client
