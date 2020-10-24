@@ -36,9 +36,6 @@ spec:
                 secretKeyRef:
                   name: stripe-secret
                   key: stripe-secret
-          ports:
-            - containerPort: 9005   # run the container
-            - containerPort: 7005   # debug the container
 ---
 apiVersion: v1
 kind: Service
