@@ -6,9 +6,9 @@ export default ({ req }) => {
     // We are on the server
     if (env === "development") {
       return axios.create({
-        // Local Cluster        baseURL: http://172.18.0.3:30761
+        // Local Cluster        baseURL: http://172.18.0.3:30495
         baseURL:
-          "http://172.18.0.3:30761",
+          "http://172.18.0.3:30495",
         headers: req.headers,
       });
     } else {

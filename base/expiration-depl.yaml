@@ -26,6 +26,3 @@ spec:
               value: ticketing
             - name: REDIS_HOST
               value: expiration-redis-srv    
-          ports:
-            - containerPort: 9004   # run the container
-            - containerPort: 7004   # debug the container

@@ -21,6 +21,7 @@ docker_build(
   'client',
   build_args={'BUILDKIT_INLINE_CACHE': '1'},
   cache_from='localhost:5000/client',
+  dockerfile='client/Dockerfile.development',
   live_update=[
     sync('./client', '/app'),
     run('cd /app && npm install', trigger=['client/package.json'])
@@ -171,42 +172,36 @@ docker_build(
 k8s_resource(
   workload='auth-depl',
   port_forwards=[
-    port_forward(9000, 9000, 'run auth-depl'),
-    port_forward(7000, 7000, 'debug auth-depl'),
+    port_forward(9000, 9000, 'debug auth-depl'),
   ]
 )
 k8s_resource(
   workload='client-depl',
   port_forwards=[
-    port_forward(9001, 9001, 'run client-depl'),
-    port_forward(7001, 7001, 'debug client-depl'),
+    port_forward(9001, 9001, 'debug client-depl'),
   ]
 )
 k8s_resource(
   workload='tickets-depl',
   port_forwards=[
-    port_forward(9002, 9002, 'run tickets-depl'),
-    port_forward(7002, 7002, 'debug tickets-depl'),
+    port_forward(9002, 9002, 'debug tickets-depl'),
   ]
 )
 k8s_resource(
   workload='orders-depl',
   port_forwards=[
-    port_forward(9003, 9003, 'run orders-depl'),
-    port_forward(7003, 7003, 'debug orders-depl'),
+    port_forward(9003, 9003, 'debug orders-depl'),
   ]
 )
 k8s_resource(
   workload='expiration-depl',
   port_forwards=[
-    port_forward(9004, 9004, 'run expiration-depl'),
-    port_forward(7004, 7004, 'debug expiration-depl'),
+    port_forward(9004, 9004, 'debug expiration-depl'),
   ]
 )
 k8s_resource(
   workload='payments-depl',
   port_forwards=[
-    port_forward(9005, 9005, 'run payments-depl'),
-    port_forward(7005, 7005, 'debug payments-depl'),
+    port_forward(9005, 9005, 'debug payments-depl'),
   ]
 )
