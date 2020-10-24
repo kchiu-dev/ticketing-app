@@ -26,9 +26,6 @@ spec:
                 configMapKeyRef:
                   name: env-config
                   key: ENV
-          ports:
-            - containerPort: 9001   # run the container
-            - containerPort: 7001   # debug the container
 ---
 apiVersion: v1
 kind: Service

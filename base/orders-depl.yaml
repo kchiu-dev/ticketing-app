@@ -31,9 +31,6 @@ spec:
                 secretKeyRef:
                   name: jwt-secret
                   key: jwt-secret
-          ports:
-            - containerPort: 9003   # run the container
-            - containerPort: 7003   # debug the container
 ---
 apiVersion: v1
 kind: Service
