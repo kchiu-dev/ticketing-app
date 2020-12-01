@@ -7,5 +7,3 @@ tickets/cr_pat.txt
 orders/cr_pat.txt
 expiration/cr_pat.txt
 payments/cr_pat.txt
-base/secrets
-overlays/production/secrets
