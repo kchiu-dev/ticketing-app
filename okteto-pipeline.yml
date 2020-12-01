@@ -1,9 +1,14 @@
 deploy:
-  - DOCKER_BUILDKIT=1 okteto build --tag okteto.dev/auth:${OKTETO_GIT_COMMIT} --secret id=cr_pat,src=cr_pat.txt auth
-  - DOCKER_BUILDKIT=1 okteto build --tag okteto.dev/client:${OKTETO_GIT_COMMIT} --secret id=cr_pat,src=cr_pat.txt client
-  - DOCKER_BUILDKIT=1 okteto build --tag okteto.dev/expiration:${OKTETO_GIT_COMMIT} --secret id=cr_pat,src=cr_pat.txt expiration
-  - DOCKER_BUILDKIT=1 okteto build --tag okteto.dev/tickets:${OKTETO_GIT_COMMIT} --secret id=cr_pat,src=cr_pat.txt tickets
-  - DOCKER_BUILDKIT=1 okteto build --tag okteto.dev/orders:${OKTETO_GIT_COMMIT} --secret id=cr_pat,src=cr_pat.txt orders
-  - DOCKER_BUILDKIT=1 okteto build --tag okteto.dev/payments:${OKTETO_GIT_COMMIT} --secret id=cr_pat,src=cr_pat.txt payments
+  - envsubst < auth/Dockerfile.template > auth/Dockerfile
+  - okteto build --tag okteto.dev/auth:${OKTETO_GIT_COMMIT} auth
+  - okteto build --tag okteto.dev/client:${OKTETO_GIT_COMMIT} client
+  - envsubst < expiration/Dockerfile.template > expiration/Dockerfile
+  - okteto build --tag okteto.dev/expiration:${OKTETO_GIT_COMMIT} expiration
+  - envsubst < tickets/Dockerfile.template > tickets/Dockerfile
+  - okteto build --tag okteto.dev/tickets:${OKTETO_GIT_COMMIT} tickets
+  - envsubst < orders/Dockerfile.template > orders/Dockerfile
+  - okteto build --tag okteto.dev/orders:${OKTETO_GIT_COMMIT} orders
+  - envsubst < payments/Dockerfile.template > payments/Dockerfile
+  - okteto build --tag okteto.dev/payments:${OKTETO_GIT_COMMIT} payments
   - envsubst < base/kustomization.template.yml > base/kustomization.yml
   - kustomize build overlays/development | kubectl apply -f -
