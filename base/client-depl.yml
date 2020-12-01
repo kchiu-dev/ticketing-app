@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: client
-          image: localhost:5000/client
+          image: okteto.dev/client:latest
           env:
             - name: NEXT_PUBLIC_STRIPE_PUB
               valueFrom: 
