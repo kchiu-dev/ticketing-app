@@ -14,6 +14,7 @@ resources:
   - payments-mongo-depl.yml
   - tickets-depl.yml
   - tickets-mongo-depl.yml
+  - ingress-srv.yml
 
 secretGenerator:
 - name: jwt-secret
