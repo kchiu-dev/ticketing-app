@@ -1,0 +1,30 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - auth-depl.yml
+  - auth-mongo-depl.yml
+  - client-depl.yml
+  - expiration-depl.yml
+  - expiration-redis-depl.yml
+  - nats-depl.yml
+  - orders-depl.yml
+  - orders-mongo-depl.yml
+  - payments-depl.yml
+  - payments-mongo-depl.yml
+  - tickets-depl.yml
+  - tickets-mongo-depl.yml
+
+secretGenerator:
+- name: jwt-secret
+  literals:
+  - jwt-secret=$JWT_SECRET
+- name: stripe-secret
+  literals:
+  - stripe-secret=$STRIPE_SECRET
+- name: stripe-pub
+  literals:
+  - stripe-pub=$STRIPE_PUB
+
+generatorOptions:
+  disableNameSuffixHash: true

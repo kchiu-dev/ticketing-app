@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: expiration
-          image: localhost:5000/expiration
+          image: okteto.dev/expiration:latest
           env:
             - name: NATS_CLIENT_ID
               valueFrom:
