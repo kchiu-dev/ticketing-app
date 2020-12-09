@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: expiration
-          image: okteto.dev/expiration:latest
+          image: okteto/expiration:buildTag
           env:
             - name: NATS_CLIENT_ID
               valueFrom:
