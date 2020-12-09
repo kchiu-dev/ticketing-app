@@ -1,4 +1,5 @@
 deploy:
+  - envsubst < base/kustomization.template.yml > base/kustomization.yml
   - envsubst < auth/Dockerfile.template > auth/Dockerfile
   - okteto build -t okteto.dev/auth:$OKTETO_GIT_COMMIT auth
   - cd base; kustomize edit set image okteto/auth:buildTag=okteto.dev/auth:$OKTETO_GIT_COMMIT
@@ -16,5 +17,4 @@ deploy:
   - envsubst < payments/Dockerfile.template > payments/Dockerfile
   - okteto build -t okteto.dev/payments:$OKTETO_GIT_COMMIT payments
   - cd base; kustomize edit set image okteto/payments:buildTag=okteto.dev/payments:$OKTETO_GIT_COMMIT
-  - envsubst < base/kustomization.template.yml > base/kustomization.yml
   - kustomize build overlays/development | kubectl apply -f -
