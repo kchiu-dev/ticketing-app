@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: tickets
-          image: okteto.dev/tickets:latest
+          image: okteto/tickets:buildTag
           env:
             - name: NATS_CLIENT_ID
               valueFrom:
