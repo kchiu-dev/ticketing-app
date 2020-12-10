@@ -31,6 +31,13 @@ spec:
                 secretKeyRef:
                   name: jwt-secret
                   key: jwt-secret
+          resources:
+            requests:
+              memory: '300Mi'
+              cpu: '200m'
+            limits:
+              memory: '600Mi'
+              cpu: '300m'
 ---
 apiVersion: v1
 kind: Service
