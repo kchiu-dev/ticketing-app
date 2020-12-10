@@ -26,6 +26,13 @@ spec:
                 configMapKeyRef:
                   name: env-config
                   key: ENV
+          resources:
+            requests:
+              memory: '300Mi'
+              cpu: '200m'
+            limits:
+              memory: '600Mi'
+              cpu: '300m'
 ---
 apiVersion: v1
 kind: Service
