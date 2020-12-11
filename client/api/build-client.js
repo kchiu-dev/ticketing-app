@@ -2,6 +2,7 @@ import axios from "axios";
 
 export default ({ req }) => {
   const env = process.env.NEXT_PUBLIC_ENV;
+  console.log(`env is: ${env}`);
   if (typeof window === "undefined") {
     // We are on the server
     if (env === "development") {
