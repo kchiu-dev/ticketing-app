@@ -1,46 +1,32 @@
-apiVersion: networking.k8s.io/v1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: ingress-service
   annotations:
     dev.okteto.com/generate-host: "true"
     kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: 'true'
 spec:
   rules:
     - http:
         paths:
-          - path: /api/payments
-            pathType: Prefix
+          - path: /api/payments/?(.*)
             backend:
-              service:
-                name: payments-srv
-                port:
-                  number: 3000
-          - path: /api/users
-            pathType: Prefix
+              serviceName: payments-srv
+              servicePort: 3000
+          - path: /api/users/?(.*)
             backend:
-              service: 
-                name: auth-srv
-                port:
-                  number: 3000
-          - path: /api/tickets
-            pathType: Prefix
+              serviceName: auth-srv
+              servicePort: 3000
+          - path: /api/tickets/?(.*)
             backend:
-              service:
-                name: tickets-srv
-                port:
-                  number: 3000
-          - path: /api/orders
-            pathType: Prefix
+              serviceName: tickets-srv
+              servicePort: 3000
+          - path: /api/orders/?(.*)
             backend:
-              service:
-                name: orders-srv
-                port:
-                  number: 3000
-          - path: /
-            pathType: Prefix
+              serviceName: orders-srv
+              servicePort: 3000
+          - path: /?(.*)
             backend:
-              service:
-                name: client-srv
-                port:
-                  number: 3000
+              serviceName: client-srv
+              servicePort: 3000
