@@ -16,16 +16,10 @@ spec:
         - name: client
           image: okteto/client:buildTag
           env:
+            - name: NEXT_PUBLIC_BASE_URL
+              value: 'https://ticketing-app-kch-chiu.cloud.okteto.net'
             - name: NEXT_PUBLIC_STRIPE_PUB
-              valueFrom: 
-                secretKeyRef:
-                  name: stripe-pub
-                  key: stripe-pub
-            - name: NEXT_PUBLIC_ENV
-              valueFrom: 
-                configMapKeyRef:
-                  name: env-config
-                  key: ENV
+              value: 'pk_test_PrpgBBthPrEe50LAS87tRRGk006VZx64SB'
           resources:
             requests:
               memory: '300Mi'
