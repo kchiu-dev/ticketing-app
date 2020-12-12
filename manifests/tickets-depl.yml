@@ -22,17 +22,17 @@ spec:
                   fieldPath: metadata.name
             - name: NATS_URL
               valueFrom:
-                configMapRef:
+                configMapKeyRef:
                   name: nats-config
                   key: nats-url
             - name: NATS_CLUSTER_ID
               valueFrom:
-                configMapRef:
+                configMapKeyRef:
                   name: nats-config
                   key: nats-cluster-id
             - name: MONGO_URI
               valueFrom:
-                configMapRef:
+                configMapKeyRef:
                   name: mongo-config
                   key: mongo-tickets-uri
             - name: JWT_KEY
