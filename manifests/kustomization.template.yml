@@ -23,9 +23,6 @@ secretGenerator:
 - name: stripe-secret
   literals:
   - stripe-secret=$STRIPE_SECRET
-- name: stripe-pub
-  literals:
-  - stripe-pub=$STRIPE_PUB
 
 generatorOptions:
   disableNameSuffixHash: true
