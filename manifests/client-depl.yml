@@ -17,9 +17,15 @@ spec:
           image: okteto/client:buildTag
           env:
             - name: NEXT_PUBLIC_BASE_URL
-              value: 'https://ticketing-app-kch-chiu.cloud.okteto.net'
+              valueFrom:
+                configMapRef:
+                  name: client-config
+                  key: client-base-url
             - name: NEXT_PUBLIC_STRIPE_PUB
-              value: 'pk_test_PrpgBBthPrEe50LAS87tRRGk006VZx64SB'
+              valueFrom:
+                configMapRef:
+                  name: client-config
+                  key: client-stripe-pub
           resources:
             requests:
               memory: '300Mi'
