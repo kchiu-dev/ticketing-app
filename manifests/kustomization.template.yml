@@ -17,12 +17,23 @@ resources:
   - ingress-srv.yml
 
 configMapGenerator:
-- name: nats-url
+- name: client-config
+  literals:
+  - client-base-url=https://ticketing-app-kch-chiu.cloud.okteto.net
+  - client-stripe-pub=pk_test_PrpgBBthPrEe50LAS87tRRGk006VZx64SB
+- name: nats-config
   literals:
   - nats-url=http://nats-srv:4222
-- name: nats-cluster-id
-  literals:
   - nats-cluster-id=ticketing
+- name: mongo-config
+  literals:
+  - mongo-auth-uri=mongodb://auth-mongo-srv:27017/auth
+  - mongo-orders-uri=mongodb://orders-mongo-srv:27017/orders
+  - mongo-payments-uri=mongodb://payments-mongo-srv:27017/payments
+  - mongo-tickets-uri=mongodb://tickets-mongo-srv:27017/tickets
+- name: redis-config
+  literals:
+  - redis-expiration-host=expiration-redis-srv
 
 secretGenerator:
 - name: jwt-secret
