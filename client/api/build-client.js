@@ -7,7 +7,7 @@ export default ({ req }) => {
     // We are on the server
     return axios.create({
       // Remote Cluster
-      baseURL: `{baseURL}`,
+      baseURL: `${baseURL}`,
       headers: req.headers,
     });
   } else {
