@@ -16,6 +16,14 @@ resources:
   - tickets-mongo-depl.yml
   - ingress-srv.yml
 
+configMapGenerator:
+- name: nats-url
+  literals:
+  - nats-url=http://nats-srv:4222
+- name: nats-cluster-id
+  literals:
+  - nats-cluster-id=ticketing
+
 secretGenerator:
 - name: jwt-secret
   literals:
