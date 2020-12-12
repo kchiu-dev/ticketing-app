@@ -18,12 +18,12 @@ spec:
           env:
             - name: NEXT_PUBLIC_BASE_URL
               valueFrom:
-                configMapRef:
+                configMapKeyRef:
                   name: client-config
                   key: client-base-url
             - name: NEXT_PUBLIC_STRIPE_PUB
               valueFrom:
-                configMapRef:
+                configMapKeyRef:
                   name: client-config
                   key: client-stripe-pub
           resources:
