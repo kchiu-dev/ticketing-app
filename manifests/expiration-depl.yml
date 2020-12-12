@@ -22,17 +22,17 @@ spec:
                   fieldPath: metadata.name
             - name: NATS_URL
               valueFrom:
-                configMapRef:
+                configMapKeyRef:
                   name: nats-config
                   key: nats-url
             - name: NATS_CLUSTER_ID
               valueFrom:
-                configMapRef:
+                configMapKeyRef:
                   name: nats-config
                   key: nats-cluster-id
             - name: REDIS_HOST
               valueFrom:
-                configMapRef:
+                configMapKeyRef:
                   name: redis-config
                   key: redis-expiration-host
           resources:
