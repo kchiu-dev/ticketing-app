@@ -10,7 +10,9 @@ This is a rough draft of the application but many changes and improvements are o
 
 Front end service is built with NextJS (ReactJS) and backend services are built with NodeJS and Typescript. Basic tests are written in Jest.
 
-GitHub Actions have been created to help deploy the microservices app to Azure Kubernetes Services (AKS).
+The application is deployed to Okteto Cloud using kustomize and kubectl. It's ready to run on Okteto Cloud by clicking on the big green button below:
+
+[![Develop on Okteto](https://okteto.com/develop-okteto.svg)](https://cloud.okteto.com/deploy)
 
 
 
