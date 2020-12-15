@@ -1,7 +1,6 @@
 deploy:
   - envsubst < manifests/kustomization.template.yml > manifests/kustomization.yml
   - envsubst < auth/Dockerfile.template > auth/Dockerfile
-  - envsubst < .github/workflows/tests-auth.template.yml > .github/workflows/tests-auth.yml
   - okteto build -t okteto.dev/auth:$OKTETO_GIT_COMMIT auth
   - cd manifests; kustomize edit set image okteto/auth:buildTag=okteto.dev/auth:$OKTETO_GIT_COMMIT
   - okteto build -t okteto.dev/client:$OKTETO_GIT_COMMIT client
@@ -10,15 +9,12 @@ deploy:
   - okteto build -t okteto.dev/expiration:$OKTETO_GIT_COMMIT expiration
   - cd manifests; kustomize edit set image okteto/expiration:buildTag=okteto.dev/expiration:$OKTETO_GIT_COMMIT
   - envsubst < tickets/Dockerfile.template > tickets/Dockerfile
-  - envsubst < .github/workflows/tests-tickets.template.yml > .github/workflows/tests-tickets.yml
   - okteto build -t okteto.dev/tickets:$OKTETO_GIT_COMMIT tickets
   - cd manifests; kustomize edit set image okteto/tickets:buildTag=okteto.dev/tickets:$OKTETO_GIT_COMMIT
   - envsubst < orders/Dockerfile.template > orders/Dockerfile
-  - envsubst < .github/workflows/tests-orders.template.yml > .github/workflows/tests-orders.yml
   - okteto build -t okteto.dev/orders:$OKTETO_GIT_COMMIT orders
   - cd manifests; kustomize edit set image okteto/orders:buildTag=okteto.dev/orders:$OKTETO_GIT_COMMIT
   - envsubst < payments/Dockerfile.template > payments/Dockerfile
-  - envsubst < .github/workflows/tests-payments.template.yml > .github/workflows/tests-payments.yml
   - okteto build -t okteto.dev/payments:$OKTETO_GIT_COMMIT payments
   - cd manifests; kustomize edit set image okteto/payments:buildTag=okteto.dev/payments:$OKTETO_GIT_COMMIT
   - kustomize build manifests | kubectl apply -f -
