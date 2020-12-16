@@ -6,6 +6,7 @@ interface PaymentAttrs {
 }
 
 interface PaymentDoc extends mongoose.Document {
+  id: string;
   orderId: string;
   stripeId: string;
 }
@@ -16,6 +17,10 @@ interface PaymentModel extends mongoose.Model<PaymentDoc> {
 
 const paymentSchema = new mongoose.Schema(
   {
+    id: {
+      required: true,
+      type: String,
+    },
     orderId: {
       required: true,
       type: String,
