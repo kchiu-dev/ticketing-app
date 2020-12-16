@@ -25,7 +25,7 @@ jobs:
     - name: Trigger the pipeline
       uses: okteto/pipeline@master
       with: 
-        namespace: pr-${{ github.event.number }}
+        namespace: pr-${{ github.event.number }}-kch-chiu
 
     - name: comment PR
       uses: unsplash/comment-on-pr@master
