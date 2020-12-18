@@ -17,19 +17,7 @@ jobs:
       with:
         token: ${{ secrets.OKTETO_TOKEN }}
 
-    - name: Create namespace
-      uses: okteto/create-namespace@master
-      with:
-        namespace: pr-${{ github.event.number }}-kch-chiu
-
     - name: Trigger the pipeline
       uses: okteto/pipeline@master
       with: 
-        namespace: pr-${{ github.event.number }}-kch-chiu
-
-    - name: comment PR
-      uses: unsplash/comment-on-pr@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        msg: "Preview environment available at https://ticketing-app-${{ github.event.number }}-kch-chiu.cloud.okteto.net"
+        namespace: kch-chiu
