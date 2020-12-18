@@ -17,7 +17,7 @@ jobs:
       with:
         token: ${{ secrets.OKTETO_TOKEN }}
 
-    - name: Delete namespace
-      uses: okteto/delete-namespace@master
+    - name: Destroy the pipeline
+      uses: okteto/destroy-pipeline@master
       with:
-        namespace: pr-${{ github.event.number }}-kch-chiu
+        namespace: kch-chiu
