@@ -33,10 +33,10 @@ spec:
             ]
           resources:
             requests:
-              memory: '100Mi'
+              memory: '200Mi'
               cpu: '100m'
             limits:
-              memory: '200Mi'
+              memory: '400Mi'
               cpu: '200m'
 ---
 apiVersion: v1
