@@ -1,4 +1,4 @@
-name: orders
+name: orders-depl
 image: okteto/node:12
 command: bash
 sync:

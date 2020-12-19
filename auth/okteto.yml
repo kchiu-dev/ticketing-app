@@ -1,4 +1,4 @@
-name: auth
+name: auth-depl
 image: okteto/node:12
 command: bash
 sync:
