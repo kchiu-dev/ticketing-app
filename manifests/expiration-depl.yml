@@ -37,11 +37,11 @@ spec:
                   key: redis-expiration-host
           resources:
             requests:
-              memory: '300Mi'
-              cpu: '200m'
+              memory: '100Mi'
+              cpu: '100m'
             limits:
-              memory: '600Mi'
-              cpu: '300m'
+              memory: '200Mi'
+              cpu: '200m'
 ---
 apiVersion: v1
 kind: Service
