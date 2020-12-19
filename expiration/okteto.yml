@@ -1,4 +1,4 @@
-name: expiration
+name: expiration-depl
 image: okteto/node:12
 command: bash
 sync:
