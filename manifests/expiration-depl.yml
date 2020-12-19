@@ -42,3 +42,16 @@ spec:
             limits:
               memory: '600Mi'
               cpu: '300m'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: expiration-srv
+spec:
+  selector:
+    app: expiration
+  ports:
+    - name: expiration
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
