@@ -4,8 +4,8 @@ command: bash
 sync:
 - .:/usr/src/app
 forward:
-- 9229:9229
-- 3000:3000
+- 9233:9233
+- 3004:3004
 resources:
   requests:
     memory: '200Mi'
