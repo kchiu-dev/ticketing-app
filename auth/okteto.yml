@@ -9,7 +9,9 @@ forward:
 resources:
   requests:
     memory: '200Mi'
-    cpu: '100m'
+    cpu: '200m'
   limits:
     memory: '400Mi'
-    cpu: '200m'
+    cpu: '300m'
+persistentVolume:
+  enabled: false
