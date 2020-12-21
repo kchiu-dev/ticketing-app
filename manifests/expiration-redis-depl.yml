@@ -22,6 +22,8 @@ spec:
             limits:
               memory: '300Mi'
               cpu: '150m'
+      stragegy:
+        type: Recreate
 ---
 apiVersion: v1
 kind: Service
