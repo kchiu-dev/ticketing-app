@@ -22,7 +22,7 @@ spec:
             limits:
               memory: '300Mi'
               cpu: '150m'
-      stragegy:
+      strategy:
         type: Recreate
 ---
 apiVersion: v1
