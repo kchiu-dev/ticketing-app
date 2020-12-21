@@ -1,8 +1,17 @@
-name: expiration
+name: expiration-depl
 image: okteto/node:12
 command: bash
 sync:
 - .:/usr/src/app
 forward:
-- 9229:9229
-- 3000:3000
+- 9232:9232
+- 3003:3003
+resources:
+  requests:
+    memory: '200Mi'
+    cpu: '100m'
+  limits:
+    memory: '300Mi'
+    cpu: '150m'
+persistentVolume:
+  enabled: false
