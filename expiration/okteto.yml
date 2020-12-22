@@ -13,5 +13,3 @@ resources:
   limits:
     memory: '300Mi'
     cpu: '150m'
-persistentVolume:
-  enabled: false
