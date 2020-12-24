@@ -40,20 +40,5 @@ spec:
               memory: '200Mi'
               cpu: '100m'
             limits:
-              memory: '300Mi'
-              cpu: '150m'
-  strategy:
-    type: Recreate
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: expiration-srv
-spec:
-  selector:
-    app: expiration
-  ports:
-    - name: expiration
-      protocol: TCP
-      port: 3000
-      targetPort: 3000
+              memory: '600Mi'
+              cpu: '300m'
