@@ -4,8 +4,8 @@ command: bash
 sync:
 - .:/usr/src/app
 forward:
-- 9234:9234
 - 3005:3005
+- 9234:9234
 resources:
   requests:
     memory: '200Mi'
@@ -13,5 +13,3 @@ resources:
   limits:
     memory: '300Mi'
     cpu: '150m'
-persistentVolume:
-  enabled: false

@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "next"
+    "start": "next",
+    "dev": "NODE_OPTIONS='--inspect=0.0.0.0' next dev"
   },
   "keywords": [],
   "author": "",
