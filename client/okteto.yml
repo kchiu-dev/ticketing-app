@@ -6,10 +6,3 @@ sync:
 forward:
 - 3000:3000
 - 9229:9229
-resources:
-  requests:
-    memory: '200Mi'
-    cpu: '100m'
-  limits:
-    memory: '300Mi'
-    cpu: '150m'
