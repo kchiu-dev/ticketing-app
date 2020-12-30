@@ -2,9 +2,8 @@ FROM okteto/node:12
 
 WORKDIR /app
 COPY package.json .npmrc ./
-# Authenticate to GitHub Packages
-RUN npm set //npm.pkg.github.com/:_authToken $CR_PAT
 RUN npm install --only=prod
+RUN rm -f .npmrc
 COPY . .
 
 ENTRYPOINT ["npm", "start"]
