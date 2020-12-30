@@ -9,9 +9,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: 'Checkout master branch'
+      - name: 'Checkout'
         uses: actions/checkout@master
-      - name: 'Authenticate to GitHub Package Registry'
-        run: npm set //npm.pkg.github.com/:_authToken ${{ secrets.CR_PAT }}
+      - name: 'Setup Node'
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@kch-chiu'
       - name: 'Running tests for tickets service'
         run: cd tickets && npm install && npm run test:ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PAT }}
