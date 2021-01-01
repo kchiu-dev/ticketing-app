@@ -12,53 +12,30 @@ jobs:
     - name: checkout
       uses: actions/checkout@master
 
-    - name: Change to auth service
-      run: cd auth
-
     - name: Setup Node for auth
-      uses: actions/setup-node@v1
-      with:
-        node-version: '12.x'
-        registry-url: 'https://npm.pkg.github.com'
-
-    - name: Change to expiration service
-      run: cd expiration
+      run: echo "//npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN" >> auth/.npmrc
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
       
     - name: Setup Node for expiration
-      uses: actions/setup-node@v1
-      with:
-        node-version: '12.x'
-        registry-url: 'https://npm.pkg.github.com'
-
-    - name: Change to tickets service
-      run: cd tickets
+      run: echo "//npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN" >> expiration/.npmrc
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
 
     - name: Setup Node for tickets
-      uses: actions/setup-node@v1
-      with:
-        node-version: '12.x'
-        registry-url: 'https://npm.pkg.github.com'
-
-    - name: Change to orders service
-      run: cd orders
+      run: echo "//npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN" >> tickets/.npmrc
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
 
     - name: Setup Node for orders
-      uses: actions/setup-node@v1
-      with:
-        node-version: '12.x'
-        registry-url: 'https://npm.pkg.github.com'
-
-    - name: Change to payments service
-      run: cd payments
+      run: echo "//npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN" >> orders/.npmrc
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
 
     - name: Setup Node for payments
-      uses: actions/setup-node@v1
-      with:
-        node_version: '12.x'
-        registry-url: 'https://npm.pkg.github.com'
-
-    - name: Change to project directory
-      run: cd ..
+      run: echo "//npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN" >> payments/.npmrc
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
 
     - name: Login
       uses: okteto/login@master
@@ -69,5 +46,3 @@ jobs:
       uses: okteto/pipeline@master
       with: 
         namespace: kch-chiu
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
