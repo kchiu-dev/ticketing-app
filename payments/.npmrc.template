@@ -1,1 +1,3 @@
-@kch-chiu:registry=https://npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN
+//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
+@kch-chiu:registry=https://npm.pkg.github.com
+always-auth=true
