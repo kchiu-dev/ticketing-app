@@ -12,31 +12,6 @@ jobs:
     - name: checkout
       uses: actions/checkout@master
 
-    - name: Setup Node for auth
-      run: echo "//npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN" >> auth/.npmrc
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
-      
-    - name: Setup Node for expiration
-      run: echo "//npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN" >> expiration/.npmrc
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
-
-    - name: Setup Node for tickets
-      run: echo "//npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN" >> tickets/.npmrc
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
-
-    - name: Setup Node for orders
-      run: echo "//npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN" >> orders/.npmrc
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
-
-    - name: Setup Node for payments
-      run: echo "//npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN" >> payments/.npmrc
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
-
     - name: Login
       uses: okteto/login@master
       with:
