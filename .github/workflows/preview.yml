@@ -13,7 +13,7 @@ jobs:
       uses: actions/checkout@master
 
     - name: Change to auth service
-      run: cd auth
+      run: cd ~/auth
 
     - name: Setup Node for auth
       uses: actions/setup-node@v1
@@ -22,7 +22,7 @@ jobs:
         registry-url: 'https://npm.pkg.github.com'
 
     - name: Change to expiration service
-      run: cd ../expiration
+      run: cd ~/expiration
       
     - name: Setup Node for expiration
       uses: actions/setup-node@v1
@@ -31,7 +31,7 @@ jobs:
         registry-url: 'https://npm.pkg.github.com'
 
     - name: Change to tickets service
-      run: cd ../tickets
+      run: cd ~/tickets
 
     - name: Setup Node for tickets
       uses: actions/setup-node@v1
@@ -40,7 +40,7 @@ jobs:
         registry-url: 'https://npm.pkg.github.com'
 
     - name: Change to orders service
-      run: cd ../orders
+      run: cd ~/orders
 
     - name: Setup Node for orders
       uses: actions/setup-node@v1
@@ -49,7 +49,7 @@ jobs:
         registry-url: 'https://npm.pkg.github.com'
 
     - name: Change to payments service
-      run: cd ../payments
+      run: cd ~/payments
 
     - name: Setup Node for payments
       uses: actions/setup-node@v1
