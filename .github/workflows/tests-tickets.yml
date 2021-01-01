@@ -11,12 +11,9 @@ jobs:
     steps:
       - name: 'Checkout'
         uses: actions/checkout@master
-      - name: 'Setup Node'
-        uses: actions/setup-node@v1
-        with:
-          node-version: '12.x'
-          registry-url: 'https://npm.pkg.github.com'
-      - name: 'Running tests for tickets service'
-        run: cd tickets && npm install && npm run test:ci
+      - name: 'Setup Node for tickets'
+        run: echo "//npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN" >> tickets/.npmrc"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+      - name: 'Running tests for tickets service'
+        run: cd tickets && npm install && npm run test:ci
