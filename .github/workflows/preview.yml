@@ -12,40 +12,53 @@ jobs:
     - name: checkout
       uses: actions/checkout@master
 
-    - name: Setup Node for auth
+    - name: Change to auth service
       run: cd auth
+
+    - name: Setup Node for auth
       uses: actions/setup-node@v1
       with:
         node-version: '12.x'
         registry-url: 'https://npm.pkg.github.com'
 
+    - name: Change to expiration service
+      run: cd ../expiration
+      
     - name: Setup Node for expiration
-      run: cd expiration
       uses: actions/setup-node@v1
       with:
         node-version: '12.x'
         registry-url: 'https://npm.pkg.github.com'
+
+    - name: Change to tickets service
+      run: cd ../tickets
 
     - name: Setup Node for tickets
-      run: cd tickets
       uses: actions/setup-node@v1
       with:
         node-version: '12.x'
         registry-url: 'https://npm.pkg.github.com'
+
+    - name: Change to orders service
+      run: cd ../orders
 
     - name: Setup Node for orders
-      run: cd orders
       uses: actions/setup-node@v1
       with:
         node-version: '12.x'
         registry-url: 'https://npm.pkg.github.com'
 
+    - name: Change to payments service
+      run: cd ../payments
+
     - name: Setup Node for payments
-      run: cd payments
       uses: actions/setup-node@v1
       with:
         node_version: '12.x'
         registry-url: 'https://npm.pkg.github.com'
+
+    - name: Change to project directory
+      run: cd ..
 
     - name: Login
       uses: okteto/login@master
