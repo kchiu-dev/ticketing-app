@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: 'Checkout'
         uses: actions/checkout@master
-      - name: 'Setup Node for payments'
+      - name: 'Setup node and run tests for payments service'
         shell: bash
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
@@ -19,5 +19,7 @@ jobs:
           echo '//npm.pkg.github.com/:_authToken="$NODE_AUTH_TOKEN"\n'\
           '@kch-chiu:registry=https://npm.pkg.github.com\n'\
           'always-auth=true' >> payments/.npmrc
-      - name: 'Running tests for payments service'
-        run: cd payments && npm ci && rm -f .npmrc && npm run test:ci
+          cd payments
+          npm ci
+          rm -f .npmrc
+          npm run test:ci
