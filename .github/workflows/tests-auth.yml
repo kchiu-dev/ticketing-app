@@ -12,7 +12,10 @@ jobs:
       - name: 'Checkout'
         uses: actions/checkout@master
       - name: 'Setup Node for auth'
-        run: echo //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN} >> auth/.npmrc
+        run: |
+          echo '//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}\n'\
+          '@kch-chiu:registry:https://npm.pkg.github.com\n'\
+          'always-auth=true' >> auth/.npmrc
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
       - name: 'Running tests for auth service'
