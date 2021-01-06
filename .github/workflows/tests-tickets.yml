@@ -13,11 +13,11 @@ jobs:
         uses: actions/checkout@master
       - name: 'Setup Node for tickets'
         shell: bash
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
         run: |
           echo '//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}\n'\
           '@kch-chiu:registry=https://npm.pkg.github.com\n'\
           'always-auth=true' >> tickets/.npmrc
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
       - name: 'Running tests for tickets service'
         run: cd tickets && npm ci && rm -f .npmrc && npm run test:ci
