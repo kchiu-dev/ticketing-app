@@ -1,7 +1,7 @@
 FROM okteto/node:12
 
 WORKDIR /app
-COPY package.json .
+COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
 

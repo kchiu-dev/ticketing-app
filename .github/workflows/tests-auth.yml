@@ -16,4 +16,4 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
       - name: 'Running tests for auth service'
-        run: cd auth && npm install && npm run test:ci
+        run: cd auth && npm ci && npm run test:ci
