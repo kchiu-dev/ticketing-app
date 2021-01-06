@@ -19,7 +19,4 @@ jobs:
           echo '//npm.pkg.github.com/:_authToken="$NODE_AUTH_TOKEN"\n'\
           '@kch-chiu:registry:https://npm.pkg.github.com\n'\
           'always-auth=true' >> auth/.npmrc
-          cd auth
-          npm ci
-          rm -f .npmrc
-          npm run test:ci
+          cat auth/.npmrc
