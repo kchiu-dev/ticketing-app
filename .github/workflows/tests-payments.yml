@@ -16,9 +16,9 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
         run: |
-          echo '//npm.pkg.github.com/:_authToken="$NODE_AUTH_TOKEN"\n'\
-          '@kch-chiu:registry=https://npm.pkg.github.com\n'\
-          'always-auth=true' >> payments/.npmrc
+          echo //npm.pkg.github.com/:_authToken="$NODE_AUTH_TOKEN" >> payments/.npmrc
+          echo @kch-chiu:registry=https://npm.pkg.github.com >> payments/.npmrc
+          echo always-auth=true >> payments/.npmrc
           cd payments
           npm ci
           rm -f .npmrc
