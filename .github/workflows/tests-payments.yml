@@ -12,6 +12,7 @@ jobs:
       - name: 'Checkout'
         uses: actions/checkout@master
       - name: 'Setup Node for payments'
+        shell: bash
         run: |
           echo '//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}\n'\
           '@kch-chiu:registry=https://npm.pkg.github.com\n'\
