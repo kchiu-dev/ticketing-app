@@ -12,7 +12,7 @@ jobs:
       - name: 'Checkout'
         uses: actions/checkout@master
       - name: 'Setup Node for orders'
-        run: echo "//npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN" >> orders/.npmrc"
+        run: echo "//npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN" >> orders/.npmrc
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
       - name: 'Running tests for orders service'
