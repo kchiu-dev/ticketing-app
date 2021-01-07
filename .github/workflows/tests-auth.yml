@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: 'Checkout'
         uses: actions/checkout@master
-      - name: 'Setup node and run tests for auth service'
+      - name: 'Setup node for auth service'
         shell: bash
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
@@ -19,6 +19,8 @@ jobs:
           echo //npm.pkg.github.com/:_authToken="$NODE_AUTH_TOKEN" >> auth/.npmrc
           echo @kch-chiu:registry=https://npm.pkg.github.com >> auth/.npmrc
           echo always-auth=true >> auth/.npmrc
+      - name: 'Run tests for auth service'
+        run: |
           cd auth
           npm ci
           rm -f .npmrc
