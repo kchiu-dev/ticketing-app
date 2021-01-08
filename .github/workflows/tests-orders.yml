@@ -9,9 +9,19 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: 'Checkout master branch'
+      - name: 'Checkout'
         uses: actions/checkout@master
-      - name: 'Authenticate to GitHub Package Registry'
-        run: npm set //npm.pkg.github.com/:_authToken ${{ secrets.CR_PAT }}
-      - name: 'Running tests for orders service'
-        run: cd orders && npm install && npm run test:ci
+      - name: 'Setup node for orders service'
+        shell: bash
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+        run: |
+          echo //npm.pkg.github.com/:_authToken="$NODE_AUTH_TOKEN" >> orders/.npmrc
+          echo @kch-chiu:registry=https://npm.pkg.github.com >> orders/.npmrc
+          echo always-auth=true >> orders/.npmrc
+      - name: 'Run tests for orders service'  
+        run: |
+          cd orders
+          npm ci
+          rm -f .npmrc
+          npm run test:ci

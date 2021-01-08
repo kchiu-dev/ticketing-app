@@ -47,11 +47,11 @@ spec:
                   key: stripe-secret
           resources:
             requests:
-              memory: '200Mi'
-              cpu: '100m'
+              memory: '250Mi'
+              cpu: '125m'
             limits:
-              memory: '300Mi'
-              cpu: '150m'
+              memory: '500Mi'
+              cpu: '250m'
   strategy:
     type: Recreate
 ---
