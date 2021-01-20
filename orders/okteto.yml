@@ -6,3 +6,5 @@ sync:
 forward:
 - 3002:3002
 - 9231:9231
+persistentVolume:
+  size: 500Mi
