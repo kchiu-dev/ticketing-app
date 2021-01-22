@@ -7,9 +7,6 @@ on:
 jobs:
   preview:
     runs-on: ubuntu-latest
-
-branch:
-- dev
     steps:
     - name: checkout
       uses: actions/checkout@master
