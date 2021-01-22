@@ -1,15 +1,15 @@
 name: preview
 
 on:
-  pull_request:
-    branches:
-      - master
   schedule:
-    - cron: '0 15,22 * * *'
+    - cron: '0 15,23 * * *'
 
 jobs:
   preview:
     runs-on: ubuntu-latest
+
+branch:
+- dev
     steps:
     - name: checkout
       uses: actions/checkout@master
