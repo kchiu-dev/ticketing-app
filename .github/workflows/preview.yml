@@ -2,7 +2,7 @@ name: preview
 
 on:
   schedule:
-    - cron: '0 10,22 * * *'
+    - cron: '0 3,15 * * *'
 
 jobs:
   preview:
