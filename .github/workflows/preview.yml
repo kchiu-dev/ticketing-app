@@ -14,8 +14,12 @@ jobs:
       with:
         token: ${{ secrets.OKTETO_TOKEN }}
 
+    - name: Activate Namespace
+      uses: okteto/namespace@master
+      with:
+        name: kch-chiu
+
     - name: Trigger the pipeline
       uses: okteto/pipeline@master
       with: 
-        namespace: kch-chiu
         timeout: 10m
