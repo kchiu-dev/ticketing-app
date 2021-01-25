@@ -1,8 +1,6 @@
 name: preview
 
-on:
-  schedule:
-    - cron: '0 15,3 * * *'
+on: workflow_dispatch
 
 jobs:
   preview:
@@ -20,3 +18,4 @@ jobs:
       uses: okteto/pipeline@master
       with: 
         namespace: kch-chiu
+        timeout: 10m
