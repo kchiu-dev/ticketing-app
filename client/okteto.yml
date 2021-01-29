@@ -7,4 +7,5 @@ forward:
 - 3000:3000
 - 9229:9229
 persistentVolume:
-  size: 500Mi
+  enabled: true
+  size: 1Gi
