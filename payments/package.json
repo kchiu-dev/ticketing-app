@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node-dev --transpile-only src/index.ts",
-    "dev": "ts-node-dev --inspect=0.0.0.0:9234 --respawn --transpile-only src/index.ts",
+    "dev": "ts-node-dev --inspect=0.0.0.0:9234 --respawn --transpile-only --watch src src/index.ts",
     "test": "jest --watchAll --no-cache",
     "test:ci": "jest"
   },
