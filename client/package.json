@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "next build && next start",
+    "start": "next start",
     "dev": "NODE_OPTIONS='--inspect' next dev"
   },
   "keywords": [],
