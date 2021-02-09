@@ -11,12 +11,10 @@ import { indexTicketRouter } from "./routes/index";
 import { updateTicketRouter } from "./routes/update";
 
 const app = express();
-app.set("trust proxy", true);
 app.use(json());
 app.use(
   cookieSession({
     signed: false,
-    secure: false,
   })
 );
 app.use(currentUser);
