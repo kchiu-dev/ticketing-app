@@ -1,13 +1,13 @@
 import axios from "axios";
 
 export default ({ req }) => {
-  const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
-  console.log(`base-url is: ${baseURL}`);
+  const authURL = process.env.NEXT_PUBLIC_AUTH_URL;
+  console.log(`client-auth-url is: ${authURL}`);
   if (typeof window === "undefined") {
     // We are on the server
     return axios.create({
       // Remote Cluster
-      baseURL: `${baseURL}`,
+      baseURL: authURL,
       headers: req.headers,
     });
   } else {
