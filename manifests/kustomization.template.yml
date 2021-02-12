@@ -19,7 +19,9 @@ resources:
 configMapGenerator:
 - name: client-config
   literals:
-  - client-base-url=https://ticketing-app-kch-chiu.cloud.okteto.net
+  - client-auth-url=http://auth-srv
+  - client-tickets-url=http://tickets-srv
+  - client-orders-url=http://orders-srv
   - client-stripe-pub=pk_test_PrpgBBthPrEe50LAS87tRRGk006VZx64SB
 - name: nats-config
   literals:

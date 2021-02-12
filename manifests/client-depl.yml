@@ -16,11 +16,21 @@ spec:
         - name: client
           image: okteto/client:buildTag
           env:
-            - name: NEXT_PUBLIC_BASE_URL
+            - name: NEXT_PUBLIC_AUTH_URL
               valueFrom:
                 configMapKeyRef:
                   name: client-config
-                  key: client-base-url
+                  key: client-auth-url
+            - name: NEXT_PUBLIC_TICKETS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: client-config
+                  key: client-tickets-url
+            - name: NEXT_PUBLIC_ORDERS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: client-config
+                  key: client-orders-url
             - name: NEXT_PUBLIC_STRIPE_PUB
               valueFrom:
                 configMapKeyRef:
