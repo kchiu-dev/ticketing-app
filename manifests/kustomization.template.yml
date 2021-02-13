@@ -19,9 +19,9 @@ resources:
 configMapGenerator:
 - name: client-config
   literals:
-  - client-auth-url=http://auth-srv
-  - client-tickets-url=http://tickets-srv
-  - client-orders-url=http://orders-srv
+  - client-auth-url=http://auth-srv:3000
+  - client-tickets-url=http://tickets-srv:3000
+  - client-orders-url=http://orders-srv:3000
   - client-stripe-pub=pk_test_PrpgBBthPrEe50LAS87tRRGk006VZx64SB
 - name: nats-config
   literals:
