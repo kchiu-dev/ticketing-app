@@ -1,7 +1,8 @@
 import Router from "next/router";
+import buildTicketsClient from "../../api/buildTicketsClient";
 import useRequest from "../../hooks/use-request";
 
-const TicketShow = ({ ticket, currentUser }) => {
+const TicketShow = ({ ticket }) => {
   const { doRequest, errors } = useRequest({
     url: "/api/orders",
     method: "post",
@@ -24,16 +25,12 @@ const TicketShow = ({ ticket, currentUser }) => {
   );
 };
 
-TicketShow.getInitialProps = async (
-  ctx,
-  authClient,
-  ticketsClient,
-  ordersClient
-) => {
-  const { ticketId } = ctx.query;
+export const getServerSideProps = async (context) => {
+  const ticketsClient = buildTicketsClient(context);
+  const { ticketId } = context.query;
   const { data } = await ticketsClient.get(`/api/tickets/${ticketId}`);
 
-  return { ticket: data };
+  return { props: { ticket: data } };
 };
 
 export default TicketShow;
