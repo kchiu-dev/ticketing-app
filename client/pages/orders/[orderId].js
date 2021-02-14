@@ -73,8 +73,13 @@ const OrderShow = ({ order, currentUser }) => {
   );
 };
 
-OrderShow.getInitialProps = async (context, ordersClient) => {
-  const { orderId } = context.query;
+OrderShow.getInitialProps = async (
+  ctx,
+  authClient,
+  ticketsClient,
+  ordersClient
+) => {
+  const { orderId } = ctx.query;
   const { data } = await ordersClient.get(`/api/orders/${orderId}`);
 
   return { order: data };
