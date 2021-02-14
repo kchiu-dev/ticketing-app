@@ -9,35 +9,33 @@ const AppComponent = ({ Component, pageProps, currentUser }) => {
     <div>
       <Header currentUser={currentUser} />
       <div className="container">
-        <Component currentUser={currentUser} {...pageProps} />
+        <Component {...pageProps} currentUser={currentUser} />
       </div>
     </div>
   );
 };
 
 AppComponent.getInitialProps = async (appContext) => {
-  const context = appContext.ctx;
-  const authClient = buildAuthClient(context);
-  const ticketsClient = buildTicketsClient(context);
-  const ordersClient = buildOrdersClient(context);
+  const { ctx, Component } = appContext;
+  const authClient = buildAuthClient(ctx);
+  const ticketsClient = buildTicketsClient(ctx);
+  const ordersClient = buildOrdersClient(ctx);
 
   const { data } = await authClient.get("/api/users/currentuser");
+  const { currentUser } = data;
 
-  let pageProps = {};
-  if (appContext.Component.getInitialProps) {
-    pageProps = await appContext.Component.getInitialProps(
-      context,
+  let props = {};
+  if (Component.getInitialProps) {
+    const pageProps = await Component.getInitialProps(
+      ctx,
       authClient,
       ticketsClient,
-      ordersClient,
-      data.currentUser
+      ordersClient
     );
+    props = { pageProps, currentUser };
   }
 
-  return {
-    pageProps,
-    ...data,
-  };
+  return props;
 };
 
 export default AppComponent;
