@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-const LandingPage = ({ currentUser, tickets }) => {
+const LandingPage = ({ tickets, currentUser }) => {
   const ticketList = tickets.map((ticket) => {
     return (
       <tr key={ticket.id}>
@@ -32,7 +32,12 @@ const LandingPage = ({ currentUser, tickets }) => {
   );
 };
 
-LandingPage.getInitialProps = async (ticketsClient) => {
+LandingPage.getInitialProps = async (
+  ctx,
+  authClient,
+  ticketsClient,
+  ordersClient
+) => {
   const { data } = await ticketsClient.get("/api/tickets");
 
   return { tickets: data };
