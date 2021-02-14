@@ -1,4 +1,4 @@
-const OrderIndex = ({ orders }) => {
+const OrderIndex = ({ orders, currentUser }) => {
   return (
     <ul>
       {orders.map((order) => {
@@ -12,7 +12,12 @@ const OrderIndex = ({ orders }) => {
   );
 };
 
-OrderIndex.getInitialProps = async (ordersClient) => {
+OrderIndex.getInitialProps = async (
+  ctx,
+  authClient,
+  ticketsClient,
+  ordersClient
+) => {
   const { data } = await ordersClient.get("/api/orders");
 
   return { orders: data };
