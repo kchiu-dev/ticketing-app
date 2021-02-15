@@ -1,5 +1,5 @@
 import Link from "next/link";
-import buildTicketsClient from "../api/buildTicketsClient";
+import buildClient from "../api/buildClient";
 
 const LandingPage = ({ tickets }) => {
   const ticketList = tickets.map((ticket) => {
@@ -34,7 +34,7 @@ const LandingPage = ({ tickets }) => {
 };
 
 export const getServerSideProps = async (context) => {
-  const ticketsClient = buildTicketsClient(context);
+  const ticketsClient = buildClient(context, 'tickets');
   const { data } = await ticketsClient.get("/api/tickets");
 
   return { props: { tickets: data } };

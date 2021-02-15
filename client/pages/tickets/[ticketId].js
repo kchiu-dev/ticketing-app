@@ -1,5 +1,5 @@
 import Router from "next/router";
-import buildTicketsClient from "../../api/buildTicketsClient";
+import buildClient from "../../api/buildClient";
 import useRequest from "../../hooks/use-request";
 
 const TicketShow = ({ ticket }) => {
@@ -26,7 +26,7 @@ const TicketShow = ({ ticket }) => {
 };
 
 export const getServerSideProps = async (context) => {
-  const ticketsClient = buildTicketsClient(context);
+  const ticketsClient = buildClient(context, 'tickets');
   const { ticketId } = context.query;
   const { data } = await ticketsClient.get(`/api/tickets/${ticketId}`);
 
