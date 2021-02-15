@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import Router from "next/router";
 import useRequest from "../../hooks/use-request";
+import buildClient from "../../api/buildClient";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUB);
 
-const OrderShow = ({ order, currentUser }) => {
+const OrderShow = ({ order }) => {
   const [timeLeft, setTimeLeft] = useState(0);
   const { doRequest, errors } = useRequest({
     url: "/api/payments",
@@ -73,16 +74,12 @@ const OrderShow = ({ order, currentUser }) => {
   );
 };
 
-OrderShow.getInitialProps = async (
-  ctx,
-  authClient,
-  ticketsClient,
-  ordersClient
-) => {
-  const { orderId } = ctx.query;
+export const getServerSideProps = async (context) => {
+  const ordersClient = buildClient(context, 'orders');
+  const { orderId } = context.query;
   const { data } = await ordersClient.get(`/api/orders/${orderId}`);
 
-  return { order: data };
+  return { props: { order: data } };
 };
 
 export default OrderShow;

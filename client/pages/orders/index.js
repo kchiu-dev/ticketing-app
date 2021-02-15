@@ -1,4 +1,6 @@
-const OrderIndex = ({ orders, currentUser }) => {
+import buildClient from "../../api/buildClient";
+
+const OrderIndex = ({ orders }) => {
   return (
     <ul>
       {orders.map((order) => {
@@ -12,15 +14,11 @@ const OrderIndex = ({ orders, currentUser }) => {
   );
 };
 
-OrderIndex.getInitialProps = async (
-  ctx,
-  authClient,
-  ticketsClient,
-  ordersClient
-) => {
+export const getServerSideProps = async (context) => {
+  const ordersClient = buildClient(context, 'orders');
   const { data } = await ordersClient.get("/api/orders");
 
-  return { orders: data };
+  return { props: { orders: data } };
 };
 
 export default OrderIndex;
