@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default ({ currentUser }) => {
+const Header = ({ currentUser }) => {
   const links = [
     !currentUser && { label: "Sign Up", href: "/auth/signup" },
     !currentUser && { label: "Sign In", href: "/auth/signin" },
@@ -31,3 +31,12 @@ export default ({ currentUser }) => {
     </nav>
   );
 };
+
+export const getServerSideProps = async (context) => {
+  const authClient = buildClient(context, 'auth');
+  const { data } = await authClient.get("/api/users/currentuser");
+
+  return { props: { currentUser: data } };
+};
+
+export default Header;

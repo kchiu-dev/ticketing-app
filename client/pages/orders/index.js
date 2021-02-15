@@ -1,4 +1,4 @@
-import buildOrdersClient from "../../api/buildOrdersClient";
+import buildClient from "../../api/buildClient";
 
 const OrderIndex = ({ orders }) => {
   return (
@@ -15,7 +15,7 @@ const OrderIndex = ({ orders }) => {
 };
 
 export const getServerSideProps = async (context) => {
-  const ordersClient = buildOrdersClient(context);
+  const ordersClient = buildClient(context, 'orders');
   const { data } = await ordersClient.get("/api/orders");
 
   return { props: { orders: data } };
