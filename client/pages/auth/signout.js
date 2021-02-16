@@ -3,8 +3,9 @@ import Router from "next/router";
 import useRequest from "../../hooks/use-request";
 
 export default () => {
+  const authRelativeURL = process.env.NEXT_PUBLIC_AUTH_RELATIVEURL;
   const { doRequest } = useRequest({
-    url: "/api/users/signout",
+    url: `${authRelativeURL}signout`,
     method: "post",
     body: {},
     onSuccess: () => Router.push("/"),

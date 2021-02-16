@@ -35,7 +35,9 @@ const LandingPage = ({ tickets }) => {
 
 export const getServerSideProps = async (context) => {
   const ticketsClient = buildClient(context, 'tickets');
-  const { data } = await ticketsClient.get("/api/tickets");
+
+  const ticketsRelativeURL = process.env.NEXT_PUBLIC_TICKETS_RELATIVEURL;
+  const { data } = await ticketsClient.get(`${ticketsRelativeURL}`);
 
   return { props: { tickets: data } };
 };

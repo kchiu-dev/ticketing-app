@@ -16,7 +16,9 @@ const OrderIndex = ({ orders }) => {
 
 export const getServerSideProps = async (context) => {
   const ordersClient = buildClient(context, 'orders');
-  const { data } = await ordersClient.get("/api/orders");
+
+  const ordersRelativeURL = process.env.NEXT_PUBLIC_ORDERS_RELATIVEURL;
+  const { data } = await ordersClient.get(`${ordersRelativeURL}`);
 
   return { props: { orders: data } };
 };
