@@ -4,13 +4,13 @@ export default ({ req }, service) => {
   let baseURL;
   switch (service) {
     case 'auth':
-      baseURL = process.env.NEXT_PUBLIC_AUTH_URL;
+      baseURL = process.env.NEXT_PUBLIC_AUTH_BASEURL;
       break;
     case 'tickets':
-      baseURL = process.env.NEXT_PUBLIC_TICKETS_URL;
+      baseURL = process.env.NEXT_PUBLIC_TICKETS_BASEURL;
       break;
     case 'orders':
-      baseURL = process.env.NEXT_PUBLIC_ORDERS_URL;
+      baseURL = process.env.NEXT_PUBLIC_ORDERS_BASEURL;
       break;
     default:
       baseURL = '/'
