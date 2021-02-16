@@ -34,7 +34,9 @@ const Header = ({ currentUser }) => {
 
 export const getServerSideProps = async (context) => {
   const authClient = buildClient(context, 'auth');
-  const { data } = await authClient.get("/api/users/currentuser");
+
+  const authRelativeURL = process.env.NEXT_PUBLIC_AUTH_RELATIVEURL;
+  const { data } = await authClient.get(`${authRelativeURL}currentuser`);
 
   return { props: { currentUser: data } };
 };

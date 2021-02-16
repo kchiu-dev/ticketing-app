@@ -5,8 +5,9 @@ import useRequest from "../../hooks/use-request";
 export default () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const authRelativeURL = process.env.NEXT_PUBLIC_AUTH_RELATIVEURL;
   const { doRequest, errors } = useRequest({
-    url: "/api/users/signin",
+    url: `${authRelativeURL}signin`,
     method: "post",
     body: {
       email,

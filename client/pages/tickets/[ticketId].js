@@ -3,8 +3,9 @@ import buildClient from "../../api/buildClient";
 import useRequest from "../../hooks/use-request";
 
 const TicketShow = ({ ticket }) => {
+  const ordersRelativeURL = process.env.NEXT_PUBLIC_ORDERS_RELATIVEURL;
   const { doRequest, errors } = useRequest({
-    url: "/api/orders",
+    url: `${ordersRelativeURL}`,
     method: "post",
     body: {
       ticketId: ticket.id,
@@ -27,8 +28,10 @@ const TicketShow = ({ ticket }) => {
 
 export const getServerSideProps = async (context) => {
   const ticketsClient = buildClient(context, 'tickets');
+
+  const ticketsRelativeURL = process.env.NEXT_PUBLIC_TICKETS_RELATIVEURL;
   const { ticketId } = context.query;
-  const { data } = await ticketsClient.get(`/api/tickets/${ticketId}`);
+  const { data } = await ticketsClient.get(`${ticketsRelativeURL}${ticketId}`);
 
   return { props: { ticket: data } };
 };

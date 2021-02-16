@@ -8,8 +8,9 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUB);
 
 const OrderShow = ({ order }) => {
   const [timeLeft, setTimeLeft] = useState(0);
+  const paymentsRelativeURL = process.env.NEXT_PUBLIC_PAYMENTS_RELATIVEURL;
   const { doRequest, errors } = useRequest({
-    url: "/api/payments",
+    url: `${paymentsRelativeURL}`,
     method: "post",
     body: {
       orderId: order.id,
@@ -76,8 +77,10 @@ const OrderShow = ({ order }) => {
 
 export const getServerSideProps = async (context) => {
   const ordersClient = buildClient(context, 'orders');
+
+  const ordersRelativeURL = process.env.NEXT_PUBLIC_ORDERS_RELATIVEURL;
   const { orderId } = context.query;
-  const { data } = await ordersClient.get(`/api/orders/${orderId}`);
+  const { data } = await ordersClient.get(`${ordersRelativeURL}${orderId}`);
 
   return { props: { order: data } };
 };
