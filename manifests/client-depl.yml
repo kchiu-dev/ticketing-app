@@ -16,21 +16,41 @@ spec:
         - name: client
           image: okteto/client:buildTag
           env:
-            - name: NEXT_PUBLIC_AUTH_URL
+            - name: NEXT_PUBLIC_PAYMENTS_RELATIVEURL
               valueFrom:
                 configMapKeyRef:
                   name: client-config
-                  key: client-auth-url
-            - name: NEXT_PUBLIC_TICKETS_URL
+                  key: client-payments-relativeurl
+            - name: NEXT_PUBLIC_AUTH_BASEURL
               valueFrom:
                 configMapKeyRef:
                   name: client-config
-                  key: client-tickets-url
-            - name: NEXT_PUBLIC_ORDERS_URL
+                  key: client-auth-baseurl
+            - name: NEXT_PUBLIC_AUTH_RELATIVEURL
               valueFrom:
                 configMapKeyRef:
                   name: client-config
-                  key: client-orders-url
+                  key: client-auth-relativeurl
+            - name: NEXT_PUBLIC_TICKETS_BASEURL
+              valueFrom:
+                configMapKeyRef:
+                  name: client-config
+                  key: client-tickets-baseurl
+            - name: NEXT_PUBLIC_TICKETS_RELATIVEURL
+              valueFrom:
+                configMapKeyRef:
+                  name: client-config
+                  key: client-tickets-relativeurl
+            - name: NEXT_PUBLIC_ORDERS_BASEURL
+              valueFrom:
+                configMapKeyRef:
+                  name: client-config
+                  key: client-orders-baseurl
+            - name: NEXT_PUBLIC_ORDERS_RELATIVEURL
+              valueFrom:
+                configMapKeyRef:
+                  name: client-config
+                  key: client-orders-relativeurl
             - name: NEXT_PUBLIC_STRIPE_PUB
               valueFrom:
                 configMapKeyRef:
