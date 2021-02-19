@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import Router from "next/router";
 import useRequest from "../../hooks/use-request";
 
-export default () => {
+const signOutPage = () => {
   const authRelativeURL = process.env.NEXT_PUBLIC_AUTH_RELATIVEURL;
   const { doRequest } = useRequest({
     url: `${authRelativeURL}signout`,
@@ -17,3 +17,5 @@ export default () => {
 
   return <div>Signing you out...</div>;
 };
+
+export default signOutPage;
