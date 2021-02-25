@@ -25,3 +25,5 @@ jobs:
           npm ci
           rm -f .npmrc
           npm run test:ci
+        env:
+          JWT_KEY: ${{ secrets.JWT_KEY }}
