@@ -9,19 +9,19 @@ spec:
   rules:
     - http:
         paths:
-          - path: /api/payments/
+          - path: /api/payments
             backend:
               serviceName: payments-srv
               servicePort: 3000
-          - path: /api/users/
+          - path: /api/users
             backend:
               serviceName: auth-srv
               servicePort: 3000
-          - path: /api/tickets/
+          - path: /api/tickets
             backend:
               serviceName: tickets-srv
               servicePort: 3000
-          - path: /api/orders/
+          - path: /api/orders
             backend:
               serviceName: orders-srv
               servicePort: 3000
