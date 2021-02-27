@@ -19,13 +19,13 @@ resources:
 configMapGenerator:
 - name: client-config
   literals:
-  - client-payments-relativeurl=/api/payments/
+  - client-payments-relativeurl=/api/payments
   - client-auth-baseurl=http://auth-srv:3000
-  - client-auth-relativeurl=/api/users/
+  - client-auth-relativeurl=/api/users
   - client-tickets-baseurl=http://tickets-srv:3000
-  - client-tickets-relativeurl=/api/tickets/
+  - client-tickets-relativeurl=/api/tickets
   - client-orders-baseurl=http://orders-srv:3000
-  - client-orders-relativeurl=/api/orders/
+  - client-orders-relativeurl=/api/orders
   - client-stripe-pub=pk_test_PrpgBBthPrEe50LAS87tRRGk006VZx64SB
 - name: nats-config
   literals:
