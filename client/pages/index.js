@@ -44,7 +44,7 @@ export const getServerSideProps = async (context) => {
   const authRelativeURL = process.env.NEXT_PUBLIC_AUTH_RELATIVEURL;
   const ticketsRelativeURL = process.env.NEXT_PUBLIC_TICKETS_RELATIVEURL;
   const { data: currentUserData } = await authClient.get(
-    `${authRelativeURL}currentuser`
+    `${authRelativeURL}/currentuser`
   );
   const { currentUser } = currentUserData;
   const { data: tickets } = await ticketsClient.get(`${ticketsRelativeURL}`);

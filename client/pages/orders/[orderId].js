@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
-import Router from "next/router";
 import useRequest from "../../hooks/use-request";
 import buildClient from "../../api/buildClient";
 
@@ -9,13 +8,14 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUB);
 const OrderShow = ({ order }) => {
   const [timeLeft, setTimeLeft] = useState(0);
   const paymentsRelativeURL = process.env.NEXT_PUBLIC_PAYMENTS_RELATIVEURL;
+  const { id: orderId, ticket: orderTicket } = order;
   const { doRequest, errors } = useRequest({
     url: `${paymentsRelativeURL}`,
     method: "post",
     body: {
-      orderId: order.id,
+      orderId,
+      orderTicket,
     },
-    onSuccess: () => Router.push("/orders"),
   });
 
   useEffect(() => {
@@ -37,19 +37,19 @@ const OrderShow = ({ order }) => {
   }
 
   const handleClick = async (event) => {
-    console.log(`Stripe Key: ${process.env.NEXT_PUBLIC_STRIPE_PUB}`);
+    event.preventDefault();
+    //window.removeEventListener('beforeunload', event);
+
     // Get Stripe.js instance
     const stripe = await stripePromise;
 
-    // Call your backend to create the Checkout Session
-    const { id: session } = doRequest();
+    // Return sessionId to create the Checkout Session
+    const { id: sessionId } = await doRequest();
 
-    console.log(`My session: ${session}`);
-
-    // When the customer click on the button, redirect them to Checkout.
-    // const result = await stripe.redirectToCheckout({
-    //   sessionId: session,
-    // });
+    // When the customer click on the button, redirect them to Checkout using the sessionId.
+    const result = await stripe.redirectToCheckout({
+      sessionId,
+    });
 
     if (result.error) {
       // If 'redirectToCheckout' fails due to a browser or network
@@ -61,12 +61,6 @@ const OrderShow = ({ order }) => {
   return (
     <div>
       Time left to pay: {timeLeft} seconds
-      {/*<StripeCheckout*/}
-      {/*  token={({ id }) => doRequest({ token: id })}*/}
-      {/*  stripeKey=process.env.STRIPE_KEY*/}
-      {/*  amount={order.ticket.price * 100}*/}
-      {/*  email={currentUser.email}*/}
-      {/*/>*/}
       <button role="link" onClick={handleClick}>
         Checkout
       </button>
@@ -76,11 +70,11 @@ const OrderShow = ({ order }) => {
 };
 
 export const getServerSideProps = async (context) => {
-  const ordersClient = buildClient(context, 'orders');
+  const ordersClient = buildClient(context, "orders");
 
   const ordersRelativeURL = process.env.NEXT_PUBLIC_ORDERS_RELATIVEURL;
   const { orderId } = context.query;
-  const { data } = await ordersClient.get(`${ordersRelativeURL}${orderId}`);
+  const { data } = await ordersClient.get(`${ordersRelativeURL}/${orderId}`);
 
   return { props: { order: data } };
 };
