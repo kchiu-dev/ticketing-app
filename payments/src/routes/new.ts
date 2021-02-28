@@ -21,12 +21,17 @@ const router = express.Router();
 router.post(
   "/api/payments",
   requireAuth,
-  [body("orderId").not().isEmpty()],
+  [body("orderId").not().isEmpty(), body("orderTicket").not().isEmpty()],
   validateRequest,
   async (req: Request, res: Response) => {
-    const { token, orderId } = req.body;
+    const { orderId, orderTicket } = req.body;
 
     const order = await Order.findById(orderId);
+    const {
+      id: ticketId,
+      title: ticketTitle,
+      price: ticketPrice,
+    } = orderTicket;
 
     if (!order) {
       throw new NotFoundError();
@@ -45,31 +50,23 @@ router.post(
           price_data: {
             currency: "usd",
             product_data: {
-              name: "T-shirt",
+              name: ticketTitle,
             },
-            unit_amount: 2000,
+            unit_amount: ticketPrice * 100,
           },
           quantity: 1,
         },
       ],
       mode: "payment",
-      success_url: "/success",
-      cancel_url: "/cancel",
+      success_url: `https://ticketing-app-kch-chiu.cloud.okteto.net/orders/success`,
+      cancel_url: `http://ticketing-app-kch-chiu.cloud.okteto.net/tickets/${ticketId}`,
     });
 
-    // const charge = await stripe.charges.create({
-    //   currency: "usd",
-    //   amount: order.price * 100,
-    //   source: token,
-    // });
     const payment = Payment.build({
-      orderId,
       stripeId: session.id,
     });
     await payment.save();
     new PaymentCreatedPublisher(natsWrapper.client).publish({
-      id: payment.id,
-      orderId: payment.orderId,
       stripeId: payment.stripeId,
     });
 

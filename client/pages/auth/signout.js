@@ -5,7 +5,7 @@ import useRequest from "../../hooks/use-request";
 const signOutPage = () => {
   const authRelativeURL = process.env.NEXT_PUBLIC_AUTH_RELATIVEURL;
   const { doRequest } = useRequest({
-    url: `${authRelativeURL}signout`,
+    url: `${authRelativeURL}/signout`,
     method: "post",
     body: {},
     onSuccess: () => Router.push("/"),

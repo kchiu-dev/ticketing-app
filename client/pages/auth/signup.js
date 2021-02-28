@@ -9,7 +9,7 @@ const signUpPage = ({ currentUser }) => {
   const [password, setPassword] = useState("");
   const authRelativeURL = process.env.NEXT_PUBLIC_AUTH_RELATIVEURL;
   const { doRequest, errors } = useRequest({
-    url: `${authRelativeURL}signup`,
+    url: `${authRelativeURL}/signup`,
     method: "post",
     body: {
       email,
@@ -60,7 +60,7 @@ export const getServerSideProps = async (context) => {
 
   const authRelativeURL = process.env.NEXT_PUBLIC_AUTH_RELATIVEURL;
   const { data: currentUserData } = await authClient.get(
-    `${authRelativeURL}currentuser`
+    `${authRelativeURL}/currentuser`
   );
   const { currentUser } = currentUserData;
 
