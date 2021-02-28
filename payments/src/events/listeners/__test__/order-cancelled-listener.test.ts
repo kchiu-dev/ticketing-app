@@ -28,7 +28,7 @@ const setup = async () => {
   };
 
   // @ts-ignore
-  const msg: MEssage = {
+  const msg: Message = {
     ack: jest.fn(),
   };
 

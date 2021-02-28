@@ -5,7 +5,7 @@ import "bootstrap/dist/css/bootstrap.css";
 const AppComponent = ({ Component, pageProps }) => {
   const authRelativeURL = process.env.NEXT_PUBLIC_AUTH_RELATIVEURL;
   const { doRequest } = useRequest({
-    url: `${authRelativeURL}signout`,
+    url: `${authRelativeURL}/signout`,
     method: "post",
     body: {},
     onSuccess: () => {},
@@ -19,12 +19,9 @@ const AppComponent = ({ Component, pageProps }) => {
     }
   };
 
-  useEffect(() => {
-    window.addEventListener('beforeunload', handleAlert);
-    return () => {
-      window.removeEventListener('beforeunload', handleAlert);
-    }
-  }, []);
+  // useEffect(() => {
+  //   window.addEventListener('beforeunload', handleAlert);
+  // }, []);
 
   return (
     <div>
