@@ -12,8 +12,12 @@ it("returns a 404 when purchasing an order that does not exist", async () => {
     .post("/api/payments")
     .set("Cookie", global.signin())
     .send({
-      token: "asldkfj",
       orderId: mongoose.Types.ObjectId().toHexString(),
+      orderTicket: {
+        id: mongoose.Types.ObjectId().toHexString(),
+        title: 'concert',
+        price: 80
+      }
     })
     .expect(404);
 });
@@ -32,8 +36,12 @@ it("returns a 401 when purchasing an order that doesnt belong to the user", asyn
     .post("/api/payments")
     .set("Cookie", global.signin())
     .send({
-      token: "asldkfj",
       orderId: order.id,
+      orderTicket: {
+        id: mongoose.Types.ObjectId().toHexString(),
+        title: 'concert',
+        price: 80
+      }
     })
     .expect(401);
 });
@@ -54,7 +62,11 @@ it("returns a 400 when purchasing a cancelled order", async () => {
     .set("Cookie", global.signin(userId))
     .send({
       orderId: order.id,
-      token: "asklkfj",
+      orderTicket: {
+        id: mongoose.Types.ObjectId().toHexString(),
+        title: 'concert',
+        price: 80
+      }
     })
     .expect(400);
 });
