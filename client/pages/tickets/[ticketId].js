@@ -38,12 +38,12 @@ export const getServerSideProps = async (context) => {
   const ticketsRelativeURL = process.env.NEXT_PUBLIC_TICKETS_RELATIVEURL;
 
   const { data: currentUserData } = await authClient.get(
-    `${authRelativeURL}currentuser`
+    `${authRelativeURL}/currentuser`
   );
   const { currentUser } = currentUserData;
   const { ticketId } = context.query;
   const { data: ticket } = await ticketsClient.get(
-    `${ticketsRelativeURL}${ticketId}`
+    `${ticketsRelativeURL}/${ticketId}`
   );
 
   return { props: { currentUser, ticket } };
