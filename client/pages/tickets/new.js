@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Router from "next/router";
 import useRequest from "../../hooks/use-request";
-import buildClient from "../../api/buildClient";
 import Header from "../../components/header";
 
-const NewTicket = ({ currentUser }) => {
+const NewTicket = () => {
+  const [currentUser, setCurrentUser] = useState();
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const { doRequest, errors } = useRequest({
@@ -19,7 +19,6 @@ const NewTicket = ({ currentUser }) => {
 
   const onSubmit = async (event) => {
     event.preventDefault();
-    window.removeEventListener('beforeunload', event);
 
     await doRequest();
   };
@@ -34,7 +33,12 @@ const NewTicket = ({ currentUser }) => {
     setPrice(value.toFixed(2));
   };
 
-  return (
+  useEffect(() => {
+    const currentUserSession = sessionStorage.getItem("user");
+    currentUserSession ? setCurrentUser(currentUserSession) : Router.push("/");
+  }, []);
+
+  return currentUser ? (
     <div>
       <Header currentUser={currentUser} />
       <div className="container">
@@ -62,19 +66,9 @@ const NewTicket = ({ currentUser }) => {
         </form>
       </div>
     </div>
+  ) : (
+    <div>Loading</div>
   );
-};
-
-export const getServerSideProps = async (context) => {
-  const authClient = buildClient(context, "auth");
-
-  const authRelativeURL = process.env.NEXT_PUBLIC_AUTH_RELATIVEURL;
-  const { data: currentUserData } = await authClient.get(
-    `${authRelativeURL}/currentuser`
-  );
-  const { currentUser } = currentUserData;
-
-  return { props: { currentUser } };
 };
 
 export default NewTicket;

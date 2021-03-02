@@ -21,11 +21,6 @@ spec:
                 configMapKeyRef:
                   name: client-config
                   key: client-payments-relativeurl
-            - name: NEXT_PUBLIC_AUTH_BASEURL
-              valueFrom:
-                configMapKeyRef:
-                  name: client-config
-                  key: client-auth-baseurl
             - name: NEXT_PUBLIC_AUTH_RELATIVEURL
               valueFrom:
                 configMapKeyRef:

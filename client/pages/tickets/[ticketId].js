@@ -2,8 +2,10 @@ import Router from "next/router";
 import buildClient from "../../api/buildClient";
 import useRequest from "../../hooks/use-request";
 import Header from "../../components/header";
+import { useState, useEffect } from "react";
 
-const TicketShow = ({ currentUser, ticket }) => {
+const TicketShow = ({ ticket }) => {
+  const [currentUser, setCurrentUser] = useState();
   const ordersRelativeURL = process.env.NEXT_PUBLIC_ORDERS_RELATIVEURL;
   const { doRequest, errors } = useRequest({
     url: `${ordersRelativeURL}`,
@@ -15,7 +17,12 @@ const TicketShow = ({ currentUser, ticket }) => {
       Router.push("/orders/[orderId]", `/orders/${order.id}`),
   });
 
-  return (
+  useEffect(() => {
+    const currentUserSession = sessionStorage.getItem("user");
+    currentUserSession ? setCurrentUser(currentUserSession) : Router.push("/");
+  }, []);
+
+  return currentUser ? (
     <div>
       <Header currentUser={currentUser} />
       <div className="container">
@@ -27,26 +34,22 @@ const TicketShow = ({ currentUser, ticket }) => {
         </button>
       </div>
     </div>
+  ) : (
+    <div>Loading</div>
   );
 };
 
 export const getServerSideProps = async (context) => {
-  const authClient = buildClient(context, "auth");
   const ticketsClient = buildClient(context, "tickets");
 
-  const authRelativeURL = process.env.NEXT_PUBLIC_AUTH_RELATIVEURL;
   const ticketsRelativeURL = process.env.NEXT_PUBLIC_TICKETS_RELATIVEURL;
 
-  const { data: currentUserData } = await authClient.get(
-    `${authRelativeURL}/currentuser`
-  );
-  const { currentUser } = currentUserData;
   const { ticketId } = context.query;
   const { data: ticket } = await ticketsClient.get(
     `${ticketsRelativeURL}/${ticketId}`
   );
 
-  return { props: { currentUser, ticket } };
+  return { props: { ticket } };
 };
 
 export default TicketShow;
