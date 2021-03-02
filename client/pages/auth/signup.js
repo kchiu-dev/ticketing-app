@@ -1,10 +1,9 @@
 import { useState } from "react";
 import Router from "next/router";
 import useRequest from "../../hooks/use-request";
-import buildClient from "../../api/buildClient";
 import Header from "../../components/header";
 
-const signUpPage = ({ currentUser }) => {
+const signUpPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const authRelativeURL = process.env.NEXT_PUBLIC_AUTH_RELATIVEURL;
@@ -15,7 +14,10 @@ const signUpPage = ({ currentUser }) => {
       email,
       password,
     },
-    onSuccess: () => Router.push("/"),
+    onSuccess: (user) => {
+      sessionStorage.setItem("user", user);
+      Router.push("/");
+    },
   });
 
   const onSubmit = async (event) => {
@@ -26,7 +28,7 @@ const signUpPage = ({ currentUser }) => {
 
   return (
     <div>
-      <Header currentUser={currentUser} />
+      <Header currentUser={null} />
       <div className="container">
         <form onSubmit={onSubmit}>
           <h1>Sign Up</h1>
@@ -53,18 +55,6 @@ const signUpPage = ({ currentUser }) => {
       </div>
     </div>
   );
-};
-
-export const getServerSideProps = async (context) => {
-  const authClient = buildClient(context, "auth");
-
-  const authRelativeURL = process.env.NEXT_PUBLIC_AUTH_RELATIVEURL;
-  const { data: currentUserData } = await authClient.get(
-    `${authRelativeURL}/currentuser`
-  );
-  const { currentUser } = currentUserData;
-
-  return { props: { currentUser } };
 };
 
 export default signUpPage;

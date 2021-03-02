@@ -8,7 +8,10 @@ const signOutPage = () => {
     url: `${authRelativeURL}/signout`,
     method: "post",
     body: {},
-    onSuccess: () => Router.push("/"),
+    onSuccess: () => {
+      sessionStorage.removeItem("user");
+      Router.push("/");
+    },
   });
 
   useEffect(() => {

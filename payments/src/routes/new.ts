@@ -58,8 +58,8 @@ router.post(
         },
       ],
       mode: "payment",
-      success_url: `https://ticketing-app-kch-chiu.cloud.okteto.net/orders/success`,
-      cancel_url: `http://ticketing-app-kch-chiu.cloud.okteto.net/tickets/${ticketId}`,
+      success_url: `https://ticketing-app-kch-chiu.cloud.okteto.net/orders/${orderId}/success`,
+      cancel_url: `https://ticketing-app-kch-chiu.cloud.okteto.net/tickets/${ticketId}`,
     });
 
     const payment = Payment.build({
