@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import useRequest from "../../hooks/use-request";
 import buildClient from "../../api/buildClient";
+import Router from "next/router";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUB);
 
 const OrderShow = ({ order }) => {
+  const [currentUser, setCurrentUser] = useState();
   const [timeLeft, setTimeLeft] = useState(0);
   const paymentsRelativeURL = process.env.NEXT_PUBLIC_PAYMENTS_RELATIVEURL;
   const { id: orderId, ticket: orderTicket } = order;
@@ -19,6 +21,9 @@ const OrderShow = ({ order }) => {
   });
 
   useEffect(() => {
+    const currentUserSession = sessionStorage.getItem("user");
+    currentUserSession ? setCurrentUser(currentUserSession) : Router.push("/");
+    
     const findTimeLeft = () => {
       const msLeft = new Date(order.expiresAt) - new Date();
       setTimeLeft(Math.round(msLeft / 1000));
@@ -38,7 +43,6 @@ const OrderShow = ({ order }) => {
 
   const handleClick = async (event) => {
     event.preventDefault();
-    //window.removeEventListener('beforeunload', event);
 
     // Get Stripe.js instance
     const stripe = await stripePromise;
@@ -58,7 +62,7 @@ const OrderShow = ({ order }) => {
     }
   };
 
-  return (
+  return currentUser ? (
     <div>
       Time left to pay: {timeLeft} seconds
       <button role="link" onClick={handleClick}>
@@ -66,6 +70,8 @@ const OrderShow = ({ order }) => {
       </button>
       {errors}
     </div>
+  ) : (
+    <div>Loading</div>
   );
 };
 
@@ -73,10 +79,13 @@ export const getServerSideProps = async (context) => {
   const ordersClient = buildClient(context, "orders");
 
   const ordersRelativeURL = process.env.NEXT_PUBLIC_ORDERS_RELATIVEURL;
-  const { orderId } = context.query;
-  const { data } = await ordersClient.get(`${ordersRelativeURL}/${orderId}`);
 
-  return { props: { order: data } };
+  const { orderId } = context.query;
+  const { data: order } = await ordersClient.get(
+    `${ordersRelativeURL}/${orderId}`
+  );
+
+  return { props: { order } };
 };
 
 export default OrderShow;

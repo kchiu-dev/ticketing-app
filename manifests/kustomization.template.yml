@@ -20,7 +20,6 @@ configMapGenerator:
 - name: client-config
   literals:
   - client-payments-relativeurl=/api/payments
-  - client-auth-baseurl=http://auth-srv:3000
   - client-auth-relativeurl=/api/users
   - client-tickets-baseurl=http://tickets-srv:3000
   - client-tickets-relativeurl=/api/tickets
