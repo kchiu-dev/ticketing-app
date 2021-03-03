@@ -17,36 +17,36 @@ resources:
   - ingress-srv.yml
 
 configMapGenerator:
-- name: client-config
-  literals:
-  - client-payments-relativeurl=/api/payments
-  - client-auth-relativeurl=/api/users
-  - client-tickets-baseurl=http://tickets-srv:3000
-  - client-tickets-relativeurl=/api/tickets
-  - client-orders-baseurl=http://orders-srv:3000
-  - client-orders-relativeurl=/api/orders
-  - client-stripe-pub=pk_test_PrpgBBthPrEe50LAS87tRRGk006VZx64SB
-- name: nats-config
-  literals:
-  - nats-url=http://nats-srv:4222
-  - nats-cluster-id=ticketing
-- name: mongo-config
-  literals:
-  - mongo-auth-uri=mongodb://auth-mongo-srv:27017/auth
-  - mongo-orders-uri=mongodb://orders-mongo-srv:27017/orders
-  - mongo-payments-uri=mongodb://payments-mongo-srv:27017/payments
-  - mongo-tickets-uri=mongodb://tickets-mongo-srv:27017/tickets
-- name: redis-config
-  literals:
-  - redis-expiration-host=expiration-redis-srv
+  - name: client-config
+    literals:
+      - client-payments-relativeurl=/api/payments
+      - client-auth-relativeurl=/api/users
+      - client-tickets-baseurl=http://tickets-srv:3000
+      - client-tickets-relativeurl=/api/tickets
+      - client-orders-baseurl=http://orders-srv:3000
+      - client-orders-relativeurl=/api/orders
+      - client-stripe-pub=pk_test_51FTiiHFzQH4GYdNSelC82u5p5X10AOC8sglP6ePVWcCy4v376diHYPDPvay5Y5M6m7qCqXOHRKwsjTpaL1baKbhB00VwJrOImM
+  - name: nats-config
+    literals:
+      - nats-url=http://nats-srv:4222
+      - nats-cluster-id=ticketing
+  - name: mongo-config
+    literals:
+      - mongo-auth-uri=mongodb://auth-mongo-srv:27017/auth
+      - mongo-orders-uri=mongodb://orders-mongo-srv:27017/orders
+      - mongo-payments-uri=mongodb://payments-mongo-srv:27017/payments
+      - mongo-tickets-uri=mongodb://tickets-mongo-srv:27017/tickets
+  - name: redis-config
+    literals:
+      - redis-expiration-host=expiration-redis-srv
 
 secretGenerator:
-- name: jwt-secret
-  literals:
-  - jwt-secret=$JWT_SECRET
-- name: stripe-secret
-  literals:
-  - stripe-secret=$STRIPE_SECRET
+  - name: jwt-secret
+    literals:
+      - jwt-secret=$JWT_SECRET
+  - name: stripe-secret
+    literals:
+      - stripe-secret=$STRIPE_SECRET
 
 generatorOptions:
   disableNameSuffixHash: true
