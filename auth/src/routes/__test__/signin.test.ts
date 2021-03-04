@@ -29,7 +29,7 @@ it("fails when an incorrect password is supplied", async () => {
     .expect(400);
 });
 
-it("responds with a cookie when given valid credentials", async () => {
+it("responds with a jwt when given valid credentials", async () => {
   await request(app)
     .post("/api/users/signup")
     .send({
@@ -45,6 +45,4 @@ it("responds with a cookie when given valid credentials", async () => {
       password: "password",
     })
     .expect(200);
-
-  expect(response.get("Set-Cookie")).toBeDefined();
 });
