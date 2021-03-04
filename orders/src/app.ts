@@ -1,9 +1,8 @@
 import express from "express";
 import "express-async-errors";
 import { json } from "body-parser";
-import cookieSession from "cookie-session";
 
-import { errorHandler, NotFoundError, currentUser } from "@kch-chiu/common";
+import { errorHandler, NotFoundError } from "@kch-chiu/common";
 
 import { deleteOrderRouter } from "./routes/delete";
 import { indexOrderRouter } from "./routes/index";
@@ -12,12 +11,6 @@ import { showOrderRouter } from "./routes/show";
 
 const app = express();
 app.use(json());
-app.use(
-  cookieSession({
-    signed: false,
-  })
-);
-app.use(currentUser);
 
 app.use(deleteOrderRouter);
 app.use(indexOrderRouter);
