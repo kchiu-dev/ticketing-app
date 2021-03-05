@@ -132,7 +132,7 @@ it("rejects updates if the ticket is reserved", async () => {
 
   const response = await request(app)
     .post("/api/tickets")
-    .set("Auhtorization", jwt)
+    .set("Authorization", jwt)
     .send({
       title: "asldkfj",
       price: 20,
