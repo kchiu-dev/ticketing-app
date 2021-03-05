@@ -2,12 +2,13 @@ import express from "express";
 import "express-async-errors";
 import { json } from "body-parser";
 
-import { errorHandler, NotFoundError } from "@kch-chiu/common";
+import { errorHandler, NotFoundError, currentUser } from "@kch-chiu/common";
 
 import { createChargeRouter } from "./routes/new";
 
 const app = express();
 app.use(json());
+app.use(currentUser);
 
 app.use(createChargeRouter);
 

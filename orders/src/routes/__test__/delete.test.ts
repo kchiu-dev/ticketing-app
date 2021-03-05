@@ -18,14 +18,14 @@ it("marks an order as cancelled", async () => {
   // make a request to create an order
   const { body: order } = await request(app)
     .post("/api/orders")
-    .set("Cookie", user)
+    .set("Authorization", user)
     .send({ ticketId: ticket.id })
     .expect(201);
 
   // make a request to cancel the order
   await request(app)
     .delete(`/api/orders/${order.id}`)
-    .set("Cookie", user)
+    .set("Authorization", user)
     .send()
     .expect(204);
 
@@ -47,14 +47,14 @@ it("emits a order cancelled event", async () => {
   // make a request to create an order
   const { body: order } = await request(app)
     .post("/api/orders")
-    .set("Cookie", user)
+    .set("Authorization", user)
     .send({ ticketId: ticket.id })
     .expect(201);
 
   // make a request to cancel the order
   await request(app)
     .delete(`/api/orders/${order.id}`)
-    .set("Cookie", user)
+    .set("Authorization", user)
     .send()
     .expect(204);
 
