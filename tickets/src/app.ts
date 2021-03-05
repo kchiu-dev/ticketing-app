@@ -2,7 +2,7 @@ import express from "express";
 import "express-async-errors";
 import { json } from "body-parser";
 
-import { errorHandler, NotFoundError } from "@kch-chiu/common";
+import { errorHandler, NotFoundError, currentUser } from "@kch-chiu/common";
 
 import { createTicketRouter } from "./routes/new";
 import { showTicketRouter } from "./routes/show";
@@ -11,6 +11,7 @@ import { updateTicketRouter } from "./routes/update";
 
 const app = express();
 app.use(json());
+app.use(currentUser);
 
 app.use(createTicketRouter);
 app.use(showTicketRouter);
