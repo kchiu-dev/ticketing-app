@@ -19,6 +19,9 @@ resources:
 configMapGenerator:
   - name: client-config
     literals:
+      - nextauth-url=https://ticketing-app-kch-chiu.cloud.okteto.net
+      - nextauth-url-internal=http://client-srv:3000
+      - github-client-id=d003635d4feaa49c2253
       - client-payments-relativeurl=/api/payments
       - client-auth-relativeurl=/api/users
       - client-tickets-baseurl=http://tickets-srv:3000
@@ -41,6 +44,9 @@ configMapGenerator:
       - redis-expiration-host=expiration-redis-srv
 
 secretGenerator:
+  - name: github-client-secret
+    literals:
+      - github-client-secret=$GITHUB_CLIENT_SECRET
   - name: jwt-secret
     literals:
       - jwt-secret=$JWT_SECRET
