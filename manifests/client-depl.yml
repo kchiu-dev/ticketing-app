@@ -36,6 +36,11 @@ spec:
                 secretKeyRef:
                   name: github-client-secret
                   key: github-client-secret
+            - name: NEXT_PUBLIC_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: jwt-secret
             - name: NEXT_PUBLIC_PAYMENTS_RELATIVEURL
               valueFrom:
                 configMapKeyRef:
