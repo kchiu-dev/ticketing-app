@@ -1,5 +1,5 @@
 import Router from "next/router";
-import buildClient from "../../api/buildClient";
+import buildApiClient from "../../ssr/buildApiClient";
 import useRequest from "../../hooks/use-request";
 import Header from "../../components/header";
 import { useState, useEffect } from "react";
@@ -40,7 +40,7 @@ const TicketShow = ({ ticket }) => {
 };
 
 export const getServerSideProps = async (context) => {
-  const ticketsClient = buildClient(context, "tickets");
+  const ticketsClient = buildApiClient(context, "tickets");
 
   const ticketsRelativeURL = process.env.NEXT_PUBLIC_TICKETS_RELATIVEURL;
 

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import buildClient from "../api/buildClient";
+import buildApiClient from "../ssr/buildApiClient";
 import Header from "../components/header";
 
 const LandingPage = ({ tickets }) => {
@@ -45,7 +45,7 @@ const LandingPage = ({ tickets }) => {
 };
 
 export const getServerSideProps = async (context) => {
-  const ticketsClient = buildClient(context, "tickets");
+  const ticketsClient = buildApiClient(context, "tickets");
 
   const ticketsRelativeURL = process.env.NEXT_PUBLIC_TICKETS_RELATIVEURL;
 

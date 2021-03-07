@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import useRequest from "../../hooks/use-request";
-import buildClient from "../../api/buildClient";
+import buildApiClient from "../../ssr/buildApiClient";
 import Router from "next/router";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUB);
@@ -76,7 +76,7 @@ const OrderShow = ({ order }) => {
 };
 
 export const getServerSideProps = async (context) => {
-  const ordersClient = buildClient(context, "orders");
+  const ordersClient = buildApiClient(context, "orders");
 
   const ordersRelativeURL = process.env.NEXT_PUBLIC_ORDERS_RELATIVEURL;
 

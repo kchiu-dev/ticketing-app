@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import buildClient from "../../../api/buildClient";
+import buildApiClient from "../../../ssr/buildApiClient";
 import Router from "next/router";
 
 const OrderSuccess = ({ order }) => {
@@ -31,7 +31,7 @@ const OrderSuccess = ({ order }) => {
 };
 
 export const getServerSideProps = async (context) => {
-  const ordersClient = buildClient(context, "orders");
+  const ordersClient = buildApiClient(context, "orders");
 
   const ordersRelativeURL = process.env.NEXT_PUBLIC_ORDERS_RELATIVEURL;
 
