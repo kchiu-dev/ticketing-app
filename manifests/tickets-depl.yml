@@ -16,6 +16,16 @@ spec:
         - name: tickets
           image: okteto/tickets:buildTag
           env:
+            - name: NEXTAUTH_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: client-config
+                  key: nextauth-url
+            - name: NEXTAUTH_URL_INTERVAL
+              valueFrom:
+                configMapKeyRef:
+                  name: client-config
+                  key: nextauth-url-internal          
             - name: NATS_CLIENT_ID
               valueFrom:
                 fieldRef:
