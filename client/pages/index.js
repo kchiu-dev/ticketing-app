@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useSession, getSession } from 'next-auth/client';
 import buildApiClient from "../ssr/buildApiClient";
 import Header from "../components/header";
 
 const LandingPage = ({ tickets }) => {
-  const [currentUser, setCurrentUser] = useState();
+  const [ session ] = useSession();
   const ticketList = tickets.map((ticket) => {
     return (
       <tr key={ticket.id}>
@@ -19,14 +19,9 @@ const LandingPage = ({ tickets }) => {
     );
   });
 
-  useEffect(() => {
-    const currentUserSession = sessionStorage.getItem("user");
-    setCurrentUser(currentUserSession);
-  }, []);
-
   return (
     <div>
-      <Header currentUser={currentUser} />
+      <Header session={session} />
       <div className="container">
         <h2>Tickets</h2>
         <table className="table">
@@ -45,13 +40,15 @@ const LandingPage = ({ tickets }) => {
 };
 
 export const getServerSideProps = async (context) => {
-  const ticketsClient = buildApiClient(context, "tickets");
+  const session = await getSession(context);
+  
+  const apiClient = buildApiClient(context);
 
   const ticketsRelativeURL = process.env.NEXT_PUBLIC_TICKETS_RELATIVEURL;
 
-  const { data: tickets } = await ticketsClient.get(`${ticketsRelativeURL}`);
+  const { data: tickets } = await apiClient.get(`${ticketsRelativeURL}`);
 
-  return { props: { tickets } };
+  return { props: { session, tickets } };
 };
 
 export default LandingPage;

@@ -1,15 +1,13 @@
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useSession, getSession } from "next-auth/client";
 import buildApiClient from "../../../ssr/buildApiClient";
-import Router from "next/router";
 
 const OrderSuccess = ({ order }) => {
-  const [currentUser, setCurrentUser] = useState();
-  useEffect(() => {
-    const currentUserSession = sessionStorage.getItem("user");
-    currentUserSession ? setCurrentUser(currentUserSession) : Router.push("/");
-  });
-  return currentUser ? (
+  const [session, loading] = useSession();
+
+  if (typeof window !== "undefined" && loading) return null;
+
+  return session ? (
     <div className="container">
       <div className="d-flex flex-column justify-content-center align-items-center vh-100">
         <div>
@@ -26,21 +24,22 @@ const OrderSuccess = ({ order }) => {
       </div>
     </div>
   ) : (
-    <div>Loading</div>
+    <div>Access Denied</div>
   );
 };
 
 export const getServerSideProps = async (context) => {
-  const ordersClient = buildApiClient(context, "orders");
+  const session = await getSession(context);
+  const apiClient = buildApiClient(context);
 
   const ordersRelativeURL = process.env.NEXT_PUBLIC_ORDERS_RELATIVEURL;
 
   const { orderId } = context.query;
-  const { data: order } = await ordersClient.get(
+  const { data: order } = await apiClient.get(
     `${ordersRelativeURL}/${orderId}`
   );
 
-  return { props: { order } };
+  return { props: { session, order } };
 };
 
 export default OrderSuccess;

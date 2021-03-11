@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
+import { useSession, getSession } from "next-auth/client";
 import { loadStripe } from "@stripe/stripe-js";
 import useRequest from "../../hooks/use-request";
 import buildApiClient from "../../ssr/buildApiClient";
-import Router from "next/router";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUB);
 
 const OrderShow = ({ order }) => {
-  const [currentUser, setCurrentUser] = useState();
+  const [session, loading] = useSession();
+
+  if (typeof window !== "undefined" && loading) return null;
+
   const [timeLeft, setTimeLeft] = useState(0);
   const paymentsRelativeURL = process.env.NEXT_PUBLIC_PAYMENTS_RELATIVEURL;
   const { id: orderId, ticket: orderTicket } = order;
@@ -21,9 +24,6 @@ const OrderShow = ({ order }) => {
   });
 
   useEffect(() => {
-    const currentUserSession = sessionStorage.getItem("user");
-    currentUserSession ? setCurrentUser(currentUserSession) : Router.push("/");
-    
     const findTimeLeft = () => {
       const msLeft = new Date(order.expiresAt) - new Date();
       setTimeLeft(Math.round(msLeft / 1000));
@@ -62,7 +62,7 @@ const OrderShow = ({ order }) => {
     }
   };
 
-  return currentUser ? (
+  return session ? (
     <div>
       Time left to pay: {timeLeft} seconds
       <button role="link" onClick={handleClick}>
@@ -71,21 +71,22 @@ const OrderShow = ({ order }) => {
       {errors}
     </div>
   ) : (
-    <div>Loading</div>
+    <div>Access Denied</div>
   );
 };
 
 export const getServerSideProps = async (context) => {
-  const ordersClient = buildApiClient(context, "orders");
+  const session = await getSession(context);
+  const apiClient = buildApiClient(context);
 
   const ordersRelativeURL = process.env.NEXT_PUBLIC_ORDERS_RELATIVEURL;
 
   const { orderId } = context.query;
-  const { data: order } = await ordersClient.get(
+  const { data: order } = await apiClient.get(
     `${ordersRelativeURL}/${orderId}`
   );
 
-  return { props: { order } };
+  return { props: { session, order } };
 };
 
 export default OrderShow;

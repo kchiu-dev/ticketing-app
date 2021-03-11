@@ -1,19 +1,19 @@
 import Link from "next/link";
+import { signIn, signOut } from 'next-auth/client';
 
-const Header = ({ currentUser }) => {
+const Header = ({ session }) => {
   const links = [
-    !currentUser && { label: "Sign Up", href: "/auth/signup" },
-    !currentUser && { label: "Sign In", href: "/auth/signin" },
-    currentUser && { label: "Sell Tickets", href: "/tickets/new" },
-    currentUser && { label: "My Orders", href: "/orders" },
-    currentUser && { label: "Sign Out", href: "/auth/signout" },
+    !session && { label: "Sign Up/Sign In", onClick: () => signIn(), href: "/" },
+    session && { label: "Sell Tickets", onClick: () => {}, href: "/tickets/new" },
+    session && { label: "My Orders", onClick: () => {}, href: "/orders" },
+    session && { label: "Sign Out", onClick: () => signOut(), href: "/" },
   ]
     .filter((linkConfig) => linkConfig)
-    .map(({ label, href }) => {
+    .map(({ label, onClick, href }) => {
       return (
         <li key={href} className="nav-item">
           <Link href={href}>
-            <a className="nav-link">{label}</a>
+            <a onClick={onClick} className="nav-link">{label}</a>
           </Link>
         </li>
       );
