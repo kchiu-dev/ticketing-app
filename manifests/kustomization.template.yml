@@ -2,8 +2,6 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - auth-depl.yml
-  - auth-mongo-depl.yml
   - client-depl.yml
   - expiration-depl.yml
   - expiration-redis-depl.yml
@@ -23,10 +21,7 @@ configMapGenerator:
       - nextauth-url-internal=http://client-srv:3000
       - github-client-id=d003635d4feaa49c2253
       - client-payments-relativeurl=/api/payments
-      - client-auth-relativeurl=/api/users
-      - client-tickets-baseurl=http://tickets-srv:3000
       - client-tickets-relativeurl=/api/tickets
-      - client-orders-baseurl=http://orders-srv:3000
       - client-orders-relativeurl=/api/orders
       - client-stripe-pub=pk_test_51FTiiHFzQH4GYdNSelC82u5p5X10AOC8sglP6ePVWcCy4v376diHYPDPvay5Y5M6m7qCqXOHRKwsjTpaL1baKbhB00VwJrOImM
   - name: nats-config
@@ -35,7 +30,6 @@ configMapGenerator:
       - nats-cluster-id=ticketing
   - name: mongo-config
     literals:
-      - mongo-auth-uri=mongodb://auth-mongo-srv:27017/auth
       - mongo-orders-uri=mongodb://orders-mongo-srv:27017/orders
       - mongo-payments-uri=mongodb://payments-mongo-srv:27017/payments
       - mongo-tickets-uri=mongodb://tickets-mongo-srv:27017/tickets

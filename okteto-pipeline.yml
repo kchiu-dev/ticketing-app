@@ -1,8 +1,5 @@
 deploy:
   - envsubst < manifests/kustomization.template.yml > manifests/kustomization.yml
-  - envsubst < auth/.template.npmrc > auth/.npmrc
-  - okteto build -t okteto.dev/auth:$OKTETO_GIT_COMMIT auth
-  - cd manifests; kustomize edit set image okteto/auth:buildTag=okteto.dev/auth:$OKTETO_GIT_COMMIT
   - okteto build -t okteto.dev/client:$OKTETO_GIT_COMMIT client
   - cd manifests; kustomize edit set image okteto/client:buildTag=okteto.dev/client:$OKTETO_GIT_COMMIT
   - envsubst < expiration/.template.npmrc > expiration/.npmrc
