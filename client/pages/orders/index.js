@@ -1,18 +1,15 @@
-import Router from "next/router";
-import { useState, useEffect } from "react";
-import buildClient from "../../api/buildClient";
+import { useSession, getSession } from 'next-auth/client';
+import buildApiClient from "../../ssr/buildApiClient";
 import Header from "../../components/header";
 
 const OrderIndex = ({ orders }) => {
-  const [currentUser, setCurrentUser] = useState();
-  useEffect(() => {
-    const currentUserSession = sessionStorage.getItem("user");
-    currentUserSession ? setCurrentUser(currentUserSession) : Router.push("/");
-  }, []);
+  const [session, loading] = useSession();
 
-  return currentUser ? (
+  if (typeof window !== 'undefined' && loading) return null;
+
+  return session ? (
     <div>
-      <Header currentUser={currentUser} />
+      <Header session={session} />
       <ul>
         {orders.map((order) => {
           return (
@@ -24,18 +21,19 @@ const OrderIndex = ({ orders }) => {
       </ul>
     </div>
   ) : (
-    <div>Loading</div>
+    <div>Access Denied</div>
   );
 };
 
 export const getServerSideProps = async (context) => {
-  const ordersClient = buildClient(context, "orders");
+  const session = await getSession(context);
+  const apiClient = buildApiClient(context);
 
   const ordersRelativeURL = process.env.NEXT_PUBLIC_ORDERS_RELATIVEURL;
 
-  const { data: orders } = await ordersClient.get(`${ordersRelativeURL}`);
+  const { data: orders } = await apiClient.get(`${ordersRelativeURL}`);
 
-  return { props: { orders } };
+  return { props: { session, orders } };
 };
 
 export default OrderIndex;

@@ -1,11 +1,14 @@
 import Router from "next/router";
-import buildClient from "../../api/buildClient";
+import { useSession, getSession } from "next-auth/client";
+import buildApiClient from "../../ssr/buildApiClient";
 import useRequest from "../../hooks/use-request";
 import Header from "../../components/header";
-import { useState, useEffect } from "react";
 
 const TicketShow = ({ ticket }) => {
-  const [currentUser, setCurrentUser] = useState();
+  const [session, loading] = useSession();
+
+  if (typeof window !== "undefined" && loading) return null;
+
   const ordersRelativeURL = process.env.NEXT_PUBLIC_ORDERS_RELATIVEURL;
   const { doRequest, errors } = useRequest({
     url: `${ordersRelativeURL}`,
@@ -17,14 +20,9 @@ const TicketShow = ({ ticket }) => {
       Router.push("/orders/[orderId]", `/orders/${order.id}`),
   });
 
-  useEffect(() => {
-    const currentUserSession = sessionStorage.getItem("user");
-    currentUserSession ? setCurrentUser(currentUserSession) : Router.push("/");
-  }, []);
-
-  return currentUser ? (
+  return session ? (
     <div>
-      <Header currentUser={currentUser} />
+      <Header session={session} />
       <div className="container">
         <h1>{ticket.title}</h1>
         <h4>Price: {ticket.price}</h4>
@@ -40,16 +38,17 @@ const TicketShow = ({ ticket }) => {
 };
 
 export const getServerSideProps = async (context) => {
-  const ticketsClient = buildClient(context, "tickets");
+  const session = await getSession(context);
+  const apiClient = buildApiClient(context);
 
   const ticketsRelativeURL = process.env.NEXT_PUBLIC_TICKETS_RELATIVEURL;
 
   const { ticketId } = context.query;
-  const { data: ticket } = await ticketsClient.get(
+  const { data: ticket } = await apiClient.get(
     `${ticketsRelativeURL}/${ticketId}`
   );
 
-  return { props: { ticket } };
+  return { props: { session, ticket } };
 };
 
 export default TicketShow;

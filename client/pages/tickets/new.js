@@ -1,10 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Router from "next/router";
+import { useSession, getSession } from "next-auth/client";
 import useRequest from "../../hooks/use-request";
 import Header from "../../components/header";
 
 const NewTicket = () => {
-  const [currentUser, setCurrentUser] = useState();
+  const [session, loading] = useSession();
+
+  if (typeof window !== "undefined" && loading) return null;
+
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const { doRequest, errors } = useRequest({
@@ -33,14 +37,9 @@ const NewTicket = () => {
     setPrice(value.toFixed(2));
   };
 
-  useEffect(() => {
-    const currentUserSession = sessionStorage.getItem("user");
-    currentUserSession ? setCurrentUser(currentUserSession) : Router.push("/");
-  }, []);
-
-  return currentUser ? (
+  return session ? (
     <div>
-      <Header currentUser={currentUser} />
+      <Header session={session} />
       <div className="container">
         <h1>Create a Ticket</h1>
         <form onSubmit={onSubmit}>
@@ -67,8 +66,15 @@ const NewTicket = () => {
       </div>
     </div>
   ) : (
-    <div>Loading</div>
+    <div>Access Denied</div>
   );
+};
+
+export const getServerSideProps = async (context) => {
+  const session = await getSession(context);
+  return {
+    props: { session },
+  };
 };
 
 export default NewTicket;

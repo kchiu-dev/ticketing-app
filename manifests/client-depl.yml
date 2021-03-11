@@ -16,31 +16,46 @@ spec:
         - name: client
           image: okteto/client:buildTag
           env:
+            - name: NEXTAUTH_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: client-config
+                  key: nextauth-url
+            - name: NEXTAUTH_URL_INTERVAL
+              valueFrom:
+                configMapKeyRef:
+                  name: client-config
+                  key: nextauth-url-internal
+            - name: NEXT_PUBLIC_GITHUB_CLIENT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: client-config
+                  key: github-client-id
+            - name: NEXT_PUBLIC_GITHUB_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: github-client-secret
+                  key: github-client-secret
+            - name: NEXT_PUBLIC_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: jwt-secret
+            - name: NEXT_PUBLIC_CLIENT_BASEURL
+              valueFrom:
+                configMapKeyRef:
+                  name: client-config
+                  key: nextauth-url-internal
             - name: NEXT_PUBLIC_PAYMENTS_RELATIVEURL
               valueFrom:
                 configMapKeyRef:
                   name: client-config
                   key: client-payments-relativeurl
-            - name: NEXT_PUBLIC_AUTH_RELATIVEURL
-              valueFrom:
-                configMapKeyRef:
-                  name: client-config
-                  key: client-auth-relativeurl
-            - name: NEXT_PUBLIC_TICKETS_BASEURL
-              valueFrom:
-                configMapKeyRef:
-                  name: client-config
-                  key: client-tickets-baseurl
             - name: NEXT_PUBLIC_TICKETS_RELATIVEURL
               valueFrom:
                 configMapKeyRef:
                   name: client-config
                   key: client-tickets-relativeurl
-            - name: NEXT_PUBLIC_ORDERS_BASEURL
-              valueFrom:
-                configMapKeyRef:
-                  name: client-config
-                  key: client-orders-baseurl
             - name: NEXT_PUBLIC_ORDERS_RELATIVEURL
               valueFrom:
                 configMapKeyRef:

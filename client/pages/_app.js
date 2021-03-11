@@ -1,10 +1,12 @@
 import "bootstrap/dist/css/bootstrap.css";
 
+import { Provider } from 'next-auth/client';
+
 const AppComponent = ({ Component, pageProps }) => {
   return (
-    <div>
+    <Provider session={pageProps.session}>
       <Component {...pageProps} />
-    </div>
+    </Provider>
   );
 };
 
