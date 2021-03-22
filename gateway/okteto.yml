@@ -1,0 +1,10 @@
+name: gateway-depl
+image: okteto/node:12
+command: bash
+sync:
+- .:/usr/src/app
+forward:
+- 4000:4000
+- 9300:9300
+persistentVolume:
+  size: 1Gi

@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - client-depl.yml
+  - gateway-depl.yml
   - expiration-depl.yml
   - expiration-redis-depl.yml
   - nats-depl.yml
