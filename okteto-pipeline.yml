@@ -2,8 +2,6 @@ deploy:
   - envsubst < manifests/kustomization.template.yml > manifests/kustomization.yml
   - okteto build -t okteto.dev/client:$OKTETO_GIT_COMMIT client
   - cd manifests; kustomize edit set image okteto/client:buildTag=okteto.dev/client:$OKTETO_GIT_COMMIT
-  - okteto build -t okteto.dev/gateway:$OKTETO_GIT_COMMIT gateway
-  - cd manifests; kustomize edit set image okteto/gateway:buildTag=okteto.dev/gateway:$OKTETO_GIT_COMMIT
   - envsubst < expiration/.template.npmrc > expiration/.npmrc
   - okteto build -t okteto.dev/expiration:$OKTETO_GIT_COMMIT expiration
   - cd manifests; kustomize edit set image okteto/expiration:buildTag=okteto.dev/expiration:$OKTETO_GIT_COMMIT
@@ -16,4 +14,6 @@ deploy:
   - envsubst < payments/.template.npmrc > payments/.npmrc
   - okteto build -t okteto.dev/payments:$OKTETO_GIT_COMMIT payments
   - cd manifests; kustomize edit set image okteto/payments:buildTag=okteto.dev/payments:$OKTETO_GIT_COMMIT
+  - okteto build -t okteto.dev/gateway:$OKTETO_GIT_COMMIT gateway
+  - cd manifests; kustomize edit set image okteto/gateway:buildTag=okteto.dev/gateway:$OKTETO_GIT_COMMIT
   - kustomize build manifests | kubectl apply -f -

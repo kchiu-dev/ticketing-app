@@ -1,17 +1,17 @@
-import express from 'express';
-import { json } from "body-parser";
-import { ApolloServer } from 'apollo-server-express';
-import { ApolloGateway } from '@apollo/gateway';
+import express from "express";
+import { ApolloServer } from "apollo-server-express";
+import { ApolloGateway } from "@apollo/gateway";
+
+const app = express();
 
 const gateway = new ApolloGateway({
-  serviceList: []
+  serviceList: [{ name: "tickets", url: "http://tickets-srv:3000" }],
 });
 
 const server = new ApolloServer({ gateway, subscriptions: false });
 
-const app = express();
-app.use(json());
+server.applyMiddleware({ app });
 
-server.applyMiddleware({ app, path: '/api/gateway:4000' });
-
-console.log('Gateway listening on /gateway:4000');
+app.listen(4000, () => {
+  console.log("Listening on port 4000!");
+});
