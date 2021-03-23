@@ -45,11 +45,6 @@ spec:
                 configMapKeyRef:
                   name: mongo-config
                   key: mongo-tickets-uri
-            - name: JWT_KEY
-              valueFrom: 
-                secretKeyRef:
-                  name: jwt-secret
-                  key: jwt-secret
           resources:
             requests:
               memory: '250Mi'
