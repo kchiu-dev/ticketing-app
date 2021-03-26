@@ -21,7 +21,7 @@ class MongoDBWrapper {
   }
 
   async connect(dbName: string, url: string): Promise<Db> {
-    this._client = await MongoClient.connect(url);
+    this._client = await MongoClient.connect(url, { useUnifiedTopology: true });
     this._database = this.client.db(dbName);
 
     return this.database;
