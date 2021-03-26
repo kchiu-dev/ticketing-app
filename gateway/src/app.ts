@@ -6,9 +6,7 @@ import { errorHandler, NotFoundError } from "@kch-chiu/common";
 
 const app = express();
 
-const gateway = new ApolloGateway({
-  serviceList: [{ name: "tickets", url: "http://localhost:4001" }],
-});
+const gateway = new ApolloGateway();
 
 const server = new ApolloServer({ gateway, subscriptions: false });
 
