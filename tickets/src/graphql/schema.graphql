@@ -1,0 +1,20 @@
+type Query {
+  allTickets: [Ticket]!
+  getTicket(ticketId: ID!): Ticket
+}
+
+type Ticket @key(fields: "ticketId") {
+  ticketId: ID!
+  title: String!
+  price: Float!
+}
+
+input TicketInput {
+  title: String!
+  price: Float!
+}
+
+type Mutation {
+  createTicket(data: TicketInput!): Ticket!
+  updateTicket(ticketId: ID!, data: TicketInput!): Ticket
+}
