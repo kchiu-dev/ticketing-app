@@ -1,0 +1,18 @@
+overwrite: true
+hooks:
+  afterAllFileWrite:
+    - prettier --write
+generates:
+  ./src/datasources/mongodb/types.ts:
+    schema: ./src/datasources/mongodb/schema.graphql
+    plugins:
+      - typescript
+      - typescript-mongodb
+  ./src/graphql/types.ts:
+    schema: ./src/graphql/schema.graphql
+    plugins:
+      - typescript
+      - typescript-resolvers
+    config:
+      federation: true
+      useIndexSignature: true

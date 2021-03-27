@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      containers:
+        - name: gateway
+          image: okteto/gateway:buildTag
+          env:
+            - name: APOLLO_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: apollo-secret
+                  key: apollo-secret
+          resources:
+            requests:
+              memory: '250Mi'
+              cpu: '125m'
+            limits:
+              memory: '500Mi'
+              cpu: '250m'
+  strategy:
+    type: Recreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway-srv
+spec:
+  selector:
+    app: gateway
+  ports:
+    - name: gateway
+      protocol: TCP
+      port: 4000
+      targetPort: 4000
+    

@@ -1,27 +1,16 @@
 import express from "express";
-import "express-async-errors";
-import { json } from "body-parser";
-
-import { errorHandler, NotFoundError, currentUser } from "@kch-chiu/common";
-
-import { createTicketRouter } from "./routes/new";
-import { showTicketRouter } from "./routes/show";
-import { indexTicketRouter } from "./routes/index";
-import { updateTicketRouter } from "./routes/update";
+import { ApolloServer } from "apollo-server-express";
+import { buildFederatedSchema } from "@apollo/federation";
+import "graphql-import-node";
+import typeDefs from "../src/graphql/schema.graphql";
+import resolvers from "../src/graphql/resolvers";
 
 const app = express();
-app.use(json());
-app.use(currentUser);
 
-app.use(createTicketRouter);
-app.use(showTicketRouter);
-app.use(indexTicketRouter);
-app.use(updateTicketRouter);
+const schema = buildFederatedSchema([{ typeDefs, resolvers }]);
 
-app.all("*", async (req, res) => {
-  throw new NotFoundError();
-});
+const server = new ApolloServer({ schema });
 
-app.use(errorHandler);
+server.applyMiddleware({ app });
 
 export { app };

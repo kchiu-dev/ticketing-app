@@ -2,17 +2,10 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - client-depl.yml
-  - expiration-depl.yml
-  - expiration-redis-depl.yml
-  - nats-depl.yml
-  - orders-depl.yml
-  - orders-mongo-depl.yml
-  - payments-depl.yml
-  - payments-mongo-depl.yml
   - tickets-depl.yml
   - tickets-mongo-depl.yml
   - ingress-srv.yml
+  - gateway-depl.yml
 
 configMapGenerator:
   - name: client-config
@@ -47,6 +40,9 @@ secretGenerator:
   - name: stripe-secret
     literals:
       - stripe-secret=$STRIPE_SECRET
+  - name: apollo-secret
+    literals:
+      - apollo-secret=$APOLLO_SECRET
 
 generatorOptions:
   disableNameSuffixHash: true
