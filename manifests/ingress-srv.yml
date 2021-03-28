@@ -10,7 +10,7 @@ spec:
   rules:
     - http:
         paths:
-          - path: /api/gateway/.*
+          - path: /api/gateway(/|$)(.*)
             backend:
               serviceName: gateway-srv
               servicePort: 4000
