@@ -9,7 +9,7 @@ spec:
   rules:
     - http:
         paths:
-          - path: /api/gateway/graphql
+          - path: /api/gateway
             backend:
               serviceName: gateway-srv
               servicePort: 4000
