@@ -1,12 +1,12 @@
-type Query {
-  allTickets: [Ticket]!
-  getTicket(ticketId: ID!): Ticket
-}
-
 type Ticket @key(fields: "ticketId") {
   ticketId: ID!
   title: String!
   price: Float!
+}
+
+extend type Query {
+  allTickets: [Ticket]!
+  getTicket(ticketId: ID!): Ticket
 }
 
 input TicketInput {
@@ -14,7 +14,7 @@ input TicketInput {
   price: Float!
 }
 
-type Mutation {
+extend type Mutation {
   createTicket(data: TicketInput!): Ticket!
   updateTicket(ticketId: ID!, data: TicketInput!): Ticket
 }
