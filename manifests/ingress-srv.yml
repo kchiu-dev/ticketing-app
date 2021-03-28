@@ -5,12 +5,11 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: "nginx"
     dev.okteto.com/generate-host: "true"
-    nginx.ingress.kubernetes.io/rewrite-target: "/gateway/$2"
 spec:
   rules:
     - http:
         paths:
-          - path: /api/gateway(/|$)(.*)
+          - path: /api/gateway/graphql
             backend:
               serviceName: gateway-srv
               servicePort: 4000
