@@ -16,7 +16,7 @@ const server = new ApolloServer({
 
 app.use(cors());
 
-server.applyMiddleware({ app });
+server.applyMiddleware({ app, path: '/api/gateway/graphql' });
 
 app.all("*", (_: any, __: any) => {
   throw new NotFoundError();
