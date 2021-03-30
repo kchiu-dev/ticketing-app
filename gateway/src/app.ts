@@ -12,8 +12,6 @@ const gateway = new ApolloGateway();
 const server = new ApolloServer({
   gateway,
   subscriptions: false,
-  introspection: true,
-  playground: true
 });
 
 app.use(cors());

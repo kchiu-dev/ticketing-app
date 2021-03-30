@@ -5,11 +5,12 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: "nginx"
     dev.okteto.com/generate-host: "true"
+    nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   rules:
     - http:
         paths:
-          - path: /api/gateway
+          - path: /api/gateway(/|$)(.*)
             backend:
               serviceName: gateway-srv
               servicePort: 4000
