@@ -16,12 +16,12 @@ const server = new ApolloServer({
 
 app.use(cors());
 
+server.applyMiddleware({ app });
+
 app.all("*", (_:any, __: any) => {
   throw new NotFoundError();
 });
 
 app.use(errorHandler);
-
-server.applyMiddleware({ app });
 
 export { app };
