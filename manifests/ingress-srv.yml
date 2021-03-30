@@ -9,6 +9,10 @@ spec:
   rules:
     - http:
         paths:
+          - path: /api/tickets
+            backend:
+              serviceName: tickets-srv
+              servicePort: 3000
           - path: /api/gateway
             backend:
               serviceName: gateway-srv
