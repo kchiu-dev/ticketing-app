@@ -17,6 +17,9 @@ configMapGenerator:
       - client-tickets-relativeurl=/api/tickets
       - client-orders-relativeurl=/api/orders
       - client-stripe-pub=pk_test_51FTiiHFzQH4GYdNSelC82u5p5X10AOC8sglP6ePVWcCy4v376diHYPDPvay5Y5M6m7qCqXOHRKwsjTpaL1baKbhB00VwJrOImM
+  - name: gateway-config
+    literals:
+      - node-env=production
   - name: nats-config
     literals:
       - nats-url=http://nats-srv:4222
