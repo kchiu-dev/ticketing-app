@@ -6,8 +6,6 @@ import "graphql-import-node";
 import typeDefs from "../src/graphql/schema.graphql";
 import resolvers from "../src/graphql/resolvers";
 
-import { errorHandler, NotFoundError } from "@kch-chiu/common";
-
 const app = express();
 
 const schema = buildFederatedSchema([{ typeDefs, resolvers }]);
@@ -17,11 +15,5 @@ const server = new ApolloServer({ schema });
 app.use(cors());
 
 server.applyMiddleware({ app });
-
-app.all("*", (_:any, __:any) => {
-  throw new NotFoundError();
-})
-
-app.use(errorHandler);
 
 export { app };
