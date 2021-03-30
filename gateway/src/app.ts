@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import { ApolloServer } from "apollo-server-express";
 import { ApolloGateway } from "@apollo/gateway";
 
@@ -13,12 +14,14 @@ const server = new ApolloServer({
   subscriptions: false
 });
 
-server.applyMiddleware({ app });
+app.use(cors());
 
 app.all("*", (_:any, __: any) => {
   throw new NotFoundError();
 });
 
 app.use(errorHandler);
+
+server.applyMiddleware({ app });
 
 export { app };
