@@ -6,20 +6,30 @@ jobs:
   preview:
     runs-on: ubuntu-latest
     steps:
-    - name: checkout
-      uses: actions/checkout@master
+      - name: checkout
+        uses: actions/checkout@master
 
-    - name: Login
-      uses: okteto/login@master
-      with:
-        token: ${{ secrets.OKTETO_TOKEN }}
+      - name: Login
+        uses: okteto/login@master
+        with:
+          token: ${{ secrets.OKTETO_TOKEN }}
 
-    - name: Activate Namespace
-      uses: okteto/namespace@master
-      with:
-        name: kch-chiu
+      - name: Activate Namespace
+        uses: okteto/namespace@master
+        with:
+          name: kch-chiu
 
-    - name: Trigger the pipeline
-      uses: okteto/pipeline@master
-      with: 
-        timeout: 10m
+      - name: Trigger the pipeline
+        uses: okteto/pipeline@master
+        with:
+          timeout: 10m
+
+      - name: Register schemas
+        env:
+          APOLLO_KEY: ${{ secrets.APOLLO_KEY }}
+        run: |
+          npx apollo service:push \
+            --graph=gateway-ticketing-graph \
+            --serviceName=tickets \
+            --serviceURL=http://tickets-srv:4001/graphql \
+            --localSchemaFile=tickets/src/graphql/schema.graphql
