@@ -65,5 +65,5 @@ spec:
   ports:
     - name: tickets
       protocol: TCP
-      port: 3000
-      targetPort: 3000
+      port: 4001
+      targetPort: 4001
