@@ -21,6 +21,11 @@ spec:
                 secretKeyRef:
                   name: apollo-secret
                   key: apollo-secret
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: gateway-config
+                  key: node-env
           resources:
             requests:
               memory: '250Mi'
