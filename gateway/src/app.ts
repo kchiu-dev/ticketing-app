@@ -13,7 +13,10 @@ const server = new ApolloServer({
   subscriptions: false,
 });
 
-server.applyMiddleware({ app, path: '/api/gateway/graphql' });
+server.applyMiddleware({
+  app,
+  path: "/api/gateway/graphql",
+});
 
 app.all("*", (_: any, __: any) => {
   throw new NotFoundError();
