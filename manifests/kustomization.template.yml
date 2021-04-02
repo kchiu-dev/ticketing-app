@@ -20,10 +20,6 @@ configMapGenerator:
   - name: gateway-config
     literals:
       - node-env=production
-  - name: nats-config
-    literals:
-      - nats-url=http://nats-srv:4222
-      - nats-cluster-id=ticketing
   - name: mongo-config
     literals:
       - mongo-orders-uri=mongodb://orders-mongo-srv:27017/orders
