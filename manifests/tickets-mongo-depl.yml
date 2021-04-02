@@ -33,7 +33,7 @@ spec:
     type: Recreate
 ---
 apiVersion: v1
-kind: PersistenVolumeClaim
+kind: PersistentVolumeClaim
 metadata:
   name: tickets-mongo-storage-claim
 spec:
