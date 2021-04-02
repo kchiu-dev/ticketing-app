@@ -25,9 +25,6 @@ configMapGenerator:
       - mongo-orders-uri=mongodb://orders-mongo-srv:27017/orders
       - mongo-payments-uri=mongodb://payments-mongo-srv:27017/payments
       - mongo-tickets-uri=mongodb://tickets-mongo-srv:27017/tickets
-  - name: redis-config
-    literals:
-      - redis-expiration-host=expiration-redis-srv
 
 secretGenerator:
   - name: github-client-secret
