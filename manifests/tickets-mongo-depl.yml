@@ -12,9 +12,16 @@ spec:
       labels:
         app: tickets-mongo
     spec:
+      volumes:
+        - name: tickets-mongo-storage
+          persistentVolumeClaim:
+            claimName: tickets-mongo-storage-claim
       containers:
         - name: tickets-mongo
           image: mongo
+          volumeMounts:
+            - mountPath: '/data/db'
+              name: tickets-mongo-storage
           resources:
             requests:
               memory: '200Mi'
@@ -24,6 +31,17 @@ spec:
               cpu: '150m'
   strategy:
     type: Recreate
+---
+apiVersion: v1
+kind: PersistenVolumeClaim
+metadata:
+  name: tickets-mongo-storage-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
 ---
 apiVersion: v1
 kind: Service

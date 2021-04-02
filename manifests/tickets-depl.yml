@@ -12,9 +12,16 @@ spec:
       labels:
         app: tickets
     spec:
+      volumes:
+        - name: tickets-storage
+          persistentVolumeClaim:
+            claimName: tickets-storage-claim
       containers:
         - name: tickets
           image: okteto/tickets:buildTag
+          volumeMounts:
+            - mountPath: '/data/binaries'
+              name: tickets-storage
           env:
             - name: MONGO_URI
               valueFrom:
@@ -30,6 +37,17 @@ spec:
               cpu: '250m'
   strategy:
     type: Recreate
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tickets-storage-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
 ---
 apiVersion: v1
 kind: Service
