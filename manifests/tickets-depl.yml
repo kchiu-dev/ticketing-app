@@ -13,15 +13,15 @@ spec:
         app: tickets
     spec:
       volumes:
-        - name: tickets-storage
+        - name: tickets-volume
           persistentVolumeClaim:
-            claimName: tickets-storage-claim
+            claimName: tickets-volume-claim
       containers:
         - name: tickets
           image: okteto/tickets:buildTag
           volumeMounts:
             - mountPath: '/data/binaries'
-              name: tickets-storage
+              name: tickets-volume
           env:
             - name: MONGO_URI
               valueFrom:
@@ -41,7 +41,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: tickets-storage-claim
+  name: tickets-volume-claim
 spec:
   accessModes:
     - ReadWriteOnce
