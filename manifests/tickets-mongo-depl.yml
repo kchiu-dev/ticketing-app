@@ -13,15 +13,15 @@ spec:
         app: tickets-mongo
     spec:
       volumes:
-        - name: tickets-mongo-storage
+        - name: tickets-mongo-volume
           persistentVolumeClaim:
-            claimName: tickets-mongo-storage-claim
+            claimName: tickets-mongo-volume-claim
       containers:
         - name: tickets-mongo
           image: mongo
           volumeMounts:
             - mountPath: '/data/db'
-              name: tickets-mongo-storage
+              name: tickets-mongo-volume
           resources:
             requests:
               memory: '200Mi'
@@ -35,7 +35,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: tickets-mongo-storage-claim
+  name: tickets-mongo-volume-claim
 spec:
   accessModes:
     - ReadWriteOnce
