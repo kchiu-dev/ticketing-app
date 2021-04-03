@@ -12,9 +12,16 @@ spec:
       labels:
         app: payments-mongo
     spec:
+      volumes:
+        - name: payments-mongo-volume
+          persistentVolumeClaim:
+            claimName: payments-mongo-volume-claim
       containers:
         - name: payments-mongo
           image: mongo
+          volumeMounts:
+            - mountPath: '/data/db'
+              name: payments-mongo-volume
           resources:
             requests:
               memory: '250Mi'
@@ -24,6 +31,17 @@ spec:
               cpu: '250m'
   strategy:
     type: Recreate
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: payments-mongo-volume-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
 ---
 apiVersion: v1
 kind: Service

@@ -12,9 +12,16 @@ spec:
       labels:
         app: orders
     spec:
+      volumes:
+        - name: orders-volume
+          persistentVolumeClaim:
+            claimName: orders-volume-claim
       containers:
         - name: orders
           image: okteto/orders:buildTag
+          volumeMounts:
+            - mountPath: '/data/binaries'
+              name: orders-volume
           env:
             - name: MONGO_URI
               valueFrom:
@@ -32,6 +39,17 @@ spec:
     type: Recreate
 ---
 apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: orders-volume-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
 kind: Service
 metadata:
   name: orders-srv
@@ -41,5 +59,5 @@ spec:
   ports:
     - name: orders
       protocol: TCP
-      port: 3000
-      targetPort: 3000
+      port: 4002
+      targetPort: 4002
