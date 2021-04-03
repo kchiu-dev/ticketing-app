@@ -12,9 +12,16 @@ spec:
       labels:
         app: orders-mongo
     spec:
+      volumes:
+        - name: orders-mongo-volume
+          persistentVolumeClaim:
+            claimName: orders-mongo-volume-claim
       containers:
         - name: orders-mongo
           image: mongo
+          volumeMounts:
+            - mountPath: '/data/db'
+              name: orders-mongo-volume
           resources:
             requests:
               memory: '250Mi'
@@ -24,6 +31,17 @@ spec:
               cpu: '250m'
   strategy:
     type: Recreate
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: orders-mongo-volume-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
 ---
 apiVersion: v1
 kind: Service

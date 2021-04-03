@@ -12,9 +12,16 @@ spec:
       labels:
         app: payments
     spec:
+      volumes:
+        - name: payments-volume
+          persistentVolumeClaim:
+            claimName: payments-volume-claim
       containers:
         - name: payments
           image: okteto/payments:buildTag
+          volumeMounts:
+            - mountPath: '/data/binaries'
+              name: payments-volume
           env:
             - name: MONGO_URI
               valueFrom:
@@ -37,6 +44,17 @@ spec:
     type: Recreate
 ---
 apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: payments-volume-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi    
+---
+apiVersion: v1
 kind: Service
 metadata:
   name: payments-srv
@@ -46,5 +64,5 @@ spec:
   ports:
     - name: payments
       protocol: TCP
-      port: 3000
-      targetPort: 3000
+      port: 4003
+      targetPort: 4003
