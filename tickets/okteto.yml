@@ -4,7 +4,5 @@ command: bash
 sync:
 - .:/usr/src/app
 forward:
-- 3004:3004
-- 9233:9233
-persistentVolume:
-  size: 1Gi
+- 4001:4001
+- 9301:9301
