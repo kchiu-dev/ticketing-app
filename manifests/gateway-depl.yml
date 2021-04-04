@@ -20,7 +20,7 @@ spec:
         - name: gateway
           image: okteto/gateway:buildTag
           volumeMounts:
-            - mountPath: '/data/binaries'
+            - mountPath: '/data/node_modules'
               name: gateway-volume
           env:
             - name: APOLLO_KEY

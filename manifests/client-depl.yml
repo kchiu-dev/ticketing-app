@@ -20,7 +20,7 @@ spec:
         - name: client
           image: okteto/client:buildTag
           volumeMounts:
-            - mountPath: '/data/binaries'
+            - mountPath: '/data/node_modules'
               name: client-volume
           env:
             - name: NEXTAUTH_URL
