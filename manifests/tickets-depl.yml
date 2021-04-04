@@ -20,7 +20,7 @@ spec:
         - name: tickets
           image: okteto/tickets:buildTag
           volumeMounts:
-            - mountPath: '/data/node_modules'
+            - mountPath: '/data/binaries'
               name: tickets-volume
           env:
             - name: MONGO_URI

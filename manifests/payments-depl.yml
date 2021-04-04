@@ -20,7 +20,7 @@ spec:
         - name: payments
           image: okteto/payments:buildTag
           volumeMounts:
-            - mountPath: '/data/node_modules'
+            - mountPath: '/data/binaries'
               name: payments-volume
           env:
             - name: MONGO_URI
