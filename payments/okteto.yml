@@ -6,3 +6,5 @@ sync:
 forward:
 - 4003:4003
 - 9303:9303
+persistentVolume:
+  size: 1Gi
