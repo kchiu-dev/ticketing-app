@@ -12,16 +12,9 @@ spec:
       labels:
         app: payments
     spec:
-      volumes:
-        - name: payments-volume
-          persistentVolumeClaim:
-            claimName: payments-volume-claim
       containers:
         - name: payments
           image: okteto/payments:buildTag
-          volumeMounts:
-            - mountPath: '/data/binaries'
-              name: payments-volume
           env:
             - name: MONGO_URI
               valueFrom:
@@ -42,17 +35,6 @@ spec:
               cpu: '250m'
   strategy:
     type: Recreate
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: payments-volume-claim
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi    
 ---
 apiVersion: v1
 kind: Service

@@ -12,16 +12,9 @@ spec:
       labels:
         app: client
     spec:
-      volumes:
-        - name: client-volume
-          persistentVolumeClaim:
-            claimName: client-volume-claim
       containers:
         - name: client
           image: okteto/client:buildTag
-          volumeMounts:
-            - mountPath: '/data/binaries'
-              name: client-volume
           env:
             - name: NEXTAUTH_URL
               valueFrom:
@@ -82,17 +75,6 @@ spec:
               cpu: '250m'
   strategy:
     type: Recreate
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: client-volume-claim
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resoruces:
-    requests:
-      storage: 1Gi
 ---
 apiVersion: v1
 kind: Service
