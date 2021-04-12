@@ -14,18 +14,18 @@ const fromDbObject = (dbOjbect: TicketDbObject): Ticket => ({
 });
 
 const resolvers: Resolvers = {
-  Query: {
-    allTickets: async () =>
-      await getCollection().find().map(fromDbObject).toArray(),
-    getTicket: async (_: any, { ticketId }) => {
+  Ticket: {
+    __resolveReference: async ({ ticketId }) => {
       const dbObject = (await getCollection().findOne({
         _id: ObjectID.createFromHexString(ticketId),
       })) as TicketDbObject;
       return fromDbObject(dbObject);
     },
   },
-  Ticket: {
-    __resolveReference: async ({ ticketId }) => {
+  Query: {
+    allTickets: async () =>
+      await getCollection().find().map(fromDbObject).toArray(),
+    getTicket: async (_: any, { ticketId }) => {
       const dbObject = (await getCollection().findOne({
         _id: ObjectID.createFromHexString(ticketId),
       })) as TicketDbObject;

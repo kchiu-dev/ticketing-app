@@ -14,6 +14,12 @@ const fromDbObject = (dbObject: OrderDbObject): Order => ({
 
 const resolvers: Resolvers = {
   Order: {
+    __resolveReference: async ({ orderId }) => {
+      const dbObject = (await getCollection().findOne({
+        _id: ObjectID.createFromHexString(orderId)
+      })) as OrderDbObject;
+      return fromDbObject(dbObject);
+    },
     //@ts-ignore
     ticket: ({ ticket }: any) => {
       return { __typename: "Ticket", ticketId: ticket };
