@@ -28,4 +28,5 @@ input OrderInput {
 extend type Mutation {
   createOrder(data: OrderInput!): Order!
   cancelOrder(orderId: ID!): Order!
+  completeOrder(orderId: ID!): Order!
 }

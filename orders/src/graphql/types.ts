@@ -25,6 +25,7 @@ export type Mutation = {
   __typename?: "Mutation";
   createOrder: Order;
   cancelOrder: Order;
+  completeOrder: Order;
 };
 
 export type MutationCreateOrderArgs = {
@@ -32,6 +33,10 @@ export type MutationCreateOrderArgs = {
 };
 
 export type MutationCancelOrderArgs = {
+  orderId: Scalars["ID"];
+};
+
+export type MutationCompleteOrderArgs = {
   orderId: Scalars["ID"];
 };
 
@@ -243,6 +248,12 @@ export type MutationResolvers<
     ParentType,
     ContextType,
     RequireFields<MutationCancelOrderArgs, "orderId">
+  >;
+  completeOrder?: Resolver<
+    ResolversTypes["Order"],
+    ParentType,
+    ContextType,
+    RequireFields<MutationCompleteOrderArgs, "orderId">
   >;
 }>;
 

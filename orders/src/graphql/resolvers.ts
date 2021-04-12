@@ -50,7 +50,24 @@ const resolvers: Resolvers = {
         {
           _id: ObjectID.createFromHexString(orderId),
         },
-        { $set: { status: "CANCELLED" } },
+        {
+          $set: { status: "CANCELLED" },
+        },
+        {
+          returnOriginal: false,
+        }
+      );
+
+      return fromDbObject(result.value as OrderDbObject);
+    },
+    completeOrder: async (_: any, { orderId }) => {
+      const result = await getCollection().findOneAndUpdate(
+        {
+          _id: ObjectID.createFromHexString(orderId),
+        },
+        {
+          $set: { status: "COMPLETE" },
+        },
         {
           returnOriginal: false,
         }
