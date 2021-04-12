@@ -4,6 +4,8 @@ kind: Kustomization
 resources:
   - tickets-depl.yml
   - tickets-mongo-depl.yml
+  - orders-depl.yml
+  - orders-mongo-depl.yml
   - ingress-srv.yml
   - gateway-depl.yml
 
