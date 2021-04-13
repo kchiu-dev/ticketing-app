@@ -1,7 +1,6 @@
 enum OrderStatus {
   CREATED
   CANCELLED
-  AWAIT_PAYMENT
   COMPLETE
 }
 

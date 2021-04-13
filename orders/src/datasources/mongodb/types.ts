@@ -25,7 +25,6 @@ export type Order = {
 export enum OrderStatus {
   Created = "CREATED",
   Cancelled = "CANCELLED",
-  AwaitPayment = "AWAIT_PAYMENT",
   Complete = "COMPLETE",
 }
 
