@@ -21,7 +21,7 @@ extend type Query {
 
 input OrderInput {
   status: OrderStatus!
-  ticket: Ticket!
+  ticket: ID!
 }
 
 extend type Mutation {

@@ -49,7 +49,7 @@ export type Order = {
 
 export type OrderInput = {
   status: OrderStatus;
-  ticket: Ticket;
+  ticket: Scalars["ID"];
 };
 
 export enum OrderStatus {
