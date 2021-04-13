@@ -16,14 +16,13 @@ const fromDbObject = (dbOjbect: TicketDbObject): Ticket => ({
 const resolvers: Resolvers = {
   Ticket: {
     __resolveReference: async ({ ticketId }) => {
-      try {
-        const dbObject = (await getCollection().findOne({
-          _id: ObjectID.createFromHexString(ticketId),
-        })) as TicketDbObject;
-        return fromDbObject(dbObject);
-      }
-      catch {
+      const dbObject = (await getCollection().findOne({
+        _id: ObjectID.createFromHexString(ticketId),
+      })) as TicketDbObject;
+      if (!dbObject) {
         throw new UserInputError("Invalid ticketId");
+      } else {
+        return fromDbObject(dbObject);
       }
     },
   },
@@ -40,7 +39,7 @@ const resolvers: Resolvers = {
   Mutation: {
     createTicket: async (_: any, { data }) => {
       const { title, price } = data;
-      
+
       if (price <= 0) {
         throw new UserInputError("Price must be greater than 0");
       }

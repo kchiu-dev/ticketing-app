@@ -20,7 +20,7 @@ extend type Query {
 }
 
 input OrderInput {
-  ticket: ID!
+  ticketId: ID!
 }
 
 extend type Mutation {
