@@ -16,10 +16,15 @@ const fromDbObject = (dbOjbect: TicketDbObject): Ticket => ({
 const resolvers: Resolvers = {
   Ticket: {
     __resolveReference: async ({ ticketId }) => {
-      const dbObject = (await getCollection().findOne({
-        _id: ObjectID.createFromHexString(ticketId),
-      })) as TicketDbObject;
-      return fromDbObject(dbObject);
+      try {
+        const dbObject = (await getCollection().findOne({
+          _id: ObjectID.createFromHexString(ticketId),
+        })) as TicketDbObject;
+        return fromDbObject(dbObject);
+      }
+      catch {
+        throw new UserInputError("Invalid ticketId");
+      }
     },
   },
   Query: {
