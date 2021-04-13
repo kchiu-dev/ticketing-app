@@ -37,18 +37,18 @@ const resolvers: Resolvers = {
   },
   Mutation: {
     createOrder: async (_: any, { data }) => {
-      const { ticket }: any = data;
+      const { ticketId } = data;
 
       const dataEntry: Omit<OrderDbObject, "_id"> = {
         status: "CREATED",
-        ticket,
+        ticketId,
       };
 
       const document = await getCollection().insertOne(dataEntry);
       return fromDbObject({
         _id: document.insertedId,
         status: "CREATED",
-        ticket,
+        ticketId,
       });
     },
     cancelOrder: async (_: any, { orderId }) => {

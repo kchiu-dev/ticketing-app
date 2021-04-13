@@ -7,5 +7,5 @@ enum OrderStatus {
 type Order @entity {
   orderId: ID! @id
   status: OrderStatus! @column
-  ticket: ID! @column
+  ticketId: ID! @column
 }

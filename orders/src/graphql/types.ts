@@ -48,7 +48,7 @@ export type Order = {
 };
 
 export type OrderInput = {
-  ticket: Scalars["ID"];
+  ticketId: Scalars["ID"];
 };
 
 export enum OrderStatus {
