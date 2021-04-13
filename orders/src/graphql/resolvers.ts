@@ -9,7 +9,7 @@ const getCollection = () =>
 const fromDbObject = (dbObject: OrderDbObject): Order => ({
   orderId: dbObject._id.toHexString(),
   status: dbObject.status as OrderStatus,
-  ticket: dbObject.ticket as any,
+  ticket: dbObject.ticketId as any,
 });
 
 const resolvers: Resolvers = {
