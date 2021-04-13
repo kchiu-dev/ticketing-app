@@ -48,7 +48,6 @@ export type Order = {
 };
 
 export type OrderInput = {
-  status: OrderStatus;
   ticket: Scalars["ID"];
 };
 

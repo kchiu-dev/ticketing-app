@@ -20,7 +20,6 @@ extend type Query {
 }
 
 input OrderInput {
-  status: OrderStatus!
   ticket: ID!
 }
 
