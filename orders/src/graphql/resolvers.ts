@@ -2,9 +2,14 @@ import { Resolvers, OrderStatus, Order } from "./types";
 import { OrderDbObject } from "../datasources/mongodb/types";
 import { ObjectID } from "mongodb";
 import { mongodbWrapper } from "../mongodbWrapper";
+import { UserInputError } from "apollo-server-express";
 
 const getCollection = () =>
   mongodbWrapper.database.collection<OrderDbObject>("orders");
+
+const fromInput = (input: string): Omit<Order, "orderId" | "status"> => ({
+  ticket: input as any,
+});
 
 const fromDbObject = (dbObject: OrderDbObject): Order => ({
   orderId: dbObject._id.toHexString(),
@@ -16,7 +21,7 @@ const resolvers: Resolvers = {
   Order: {
     __resolveReference: async ({ orderId }) => {
       const dbObject = (await getCollection().findOne({
-        _id: ObjectID.createFromHexString(orderId)
+        _id: ObjectID.createFromHexString(orderId),
       })) as OrderDbObject;
       return fromDbObject(dbObject);
     },
@@ -38,6 +43,12 @@ const resolvers: Resolvers = {
   Mutation: {
     createOrder: async (_: any, { data }) => {
       const { ticketId } = data;
+
+      const ticket = fromInput(ticketId);
+
+      if (!ticket) {
+        throw new UserInputError("Invalid ticketId");
+      }
 
       const dataEntry: Omit<OrderDbObject, "_id"> = {
         status: "CREATED",

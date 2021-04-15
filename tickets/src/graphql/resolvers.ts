@@ -19,11 +19,7 @@ const resolvers: Resolvers = {
       const dbObject = (await getCollection().findOne({
         _id: ObjectID.createFromHexString(ticketId),
       })) as TicketDbObject;
-      if (!dbObject) {
-        throw new UserInputError("Invalid ticketId");
-      } else {
-        return fromDbObject(dbObject);
-      }
+      return fromDbObject(dbObject);
     },
   },
   Query: {

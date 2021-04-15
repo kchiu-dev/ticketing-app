@@ -11,7 +11,7 @@ extend type Ticket @key(fields: "ticketId") {
 type Order @key(fields: "orderId") {
   orderId: ID!
   status: OrderStatus!
-  ticket: Ticket!
+  ticket: Ticket
 }
 
 extend type Query {
