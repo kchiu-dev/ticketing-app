@@ -3,6 +3,9 @@ deploy:
   - envsubst < tickets/.template.npmrc > tickets/.npmrc
   - okteto build -t okteto.dev/tickets:$OKTETO_GIT_COMMIT tickets
   - cd manifests; kustomize edit set image okteto/tickets:buildTag=okteto.dev/tickets:$OKTETO_GIT_COMMIT
+  - envsubst < orders/.template.npmrc > orders/.npmrc
+  - okteto build -t okteto.dev/orders:$OKTETO_GIT_COMMIT orders
+  - cd manifests; kustomize edit set image okteto/orders:buildTag=okteto.dev/orders:$OKTETO_GIT_COMMIT
   - envsubst < gateway/.template.npmrc > gateway/.npmrc
   - okteto build -t okteto.dev/gateway:$OKTETO_GIT_COMMIT gateway
   - cd manifests; kustomize edit set image okteto/gateway:buildTag=okteto.dev/gateway:$OKTETO_GIT_COMMIT

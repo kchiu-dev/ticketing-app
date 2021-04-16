@@ -33,3 +33,8 @@ jobs:
             --serviceName=tickets \
             --serviceURL=http://tickets-srv:4001/graphql \
             --localSchemaFile=tickets/src/graphql/schema.graphql
+          npx apollo service:push \
+            --graph=gateway-ticketing-graph \
+            --serviceName=orders \
+            --serviceURL=http://orders-srv:4002/graphql \
+            --localSchemaFile=orders/src/graphql/schema.graphql

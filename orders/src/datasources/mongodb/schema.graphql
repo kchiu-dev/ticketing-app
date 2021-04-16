@@ -1,0 +1,11 @@
+enum OrderStatus {
+  CREATED
+  CANCELLED
+  COMPLETE
+}
+
+type Order @entity {
+  orderId: ID! @id
+  status: OrderStatus! @column
+  ticketId: ID! @column
+}

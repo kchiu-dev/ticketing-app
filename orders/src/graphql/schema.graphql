@@ -1,0 +1,31 @@
+enum OrderStatus {
+  CREATED
+  CANCELLED
+  COMPLETE
+}
+
+extend type Ticket @key(fields: "ticketId") {
+  ticketId: ID! @external
+}
+
+type Order @key(fields: "orderId") {
+  orderId: ID!
+  status: OrderStatus!
+  ticket: Ticket
+}
+
+extend type Query {
+  allOrders: [Order!]!
+  getOrder(orderId: ID!): Order
+}
+
+input OrderInput {
+  existingTicketIds: [ID]!
+  ticketId: ID!
+}
+
+extend type Mutation {
+  createOrder(data: OrderInput!): Order!
+  cancelOrder(orderId: ID!): Order!
+  completeOrder(orderId: ID!): Order!
+}
