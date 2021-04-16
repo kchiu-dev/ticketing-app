@@ -40,7 +40,7 @@ const resolvers: Resolvers = {
     createOrder: async (_: any, { data }) => {
       const { existingTicketIds, ticketId } = data;
 
-      if (!existingTicketIds.indexOf(ticketId)) {
+      if (existingTicketIds.indexOf(ticketId) === -1) {
         throw new UserInputError("Invalid ticketId");
       }
 
