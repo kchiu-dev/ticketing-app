@@ -46,7 +46,7 @@ const resolvers: Resolvers = {
 
       const { ticket } = fromInput(ticketId);
 
-      if (ticket) {
+      if (!ticket) {
         throw new UserInputError("Invalid ticketId");
       }
 
