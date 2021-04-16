@@ -7,10 +7,6 @@ import { UserInputError } from "apollo-server-express";
 const getCollection = () =>
   mongodbWrapper.database.collection<OrderDbObject>("orders");
 
-const fromInput = (input: string): Omit<Order, "orderId" | "status"> => ({
-  ticket: input as any,
-});
-
 const fromDbObject = (dbObject: OrderDbObject): Order => ({
   orderId: dbObject._id.toHexString(),
   status: dbObject.status as OrderStatus,
@@ -42,13 +38,9 @@ const resolvers: Resolvers = {
   },
   Mutation: {
     createOrder: async (_: any, { data }) => {
-      const { ticketId } = data;
+      const { existingTicketIds, ticketId } = data;
 
-      const { ticket } = fromInput(ticketId);
-
-      console.log(`The translated ticket is: ${ticket}`);
-
-      if (!ticket) {
+      if (!existingTicketIds.indexOf(ticketId)) {
         throw new UserInputError("Invalid ticketId");
       }
 

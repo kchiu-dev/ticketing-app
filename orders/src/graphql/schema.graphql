@@ -20,6 +20,7 @@ extend type Query {
 }
 
 input OrderInput {
+  existingTicketIds: [ID]!
   ticketId: ID!
 }
 

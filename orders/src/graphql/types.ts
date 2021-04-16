@@ -48,6 +48,7 @@ export type Order = {
 };
 
 export type OrderInput = {
+  existingTicketIds: Array<Maybe<Scalars["ID"]>>;
   ticketId: Scalars["ID"];
 };
 
