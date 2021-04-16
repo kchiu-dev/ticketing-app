@@ -44,9 +44,9 @@ const resolvers: Resolvers = {
     createOrder: async (_: any, { data }) => {
       const { ticketId } = data;
 
-      const ticket = fromInput(ticketId);
+      const { ticket } = fromInput(ticketId);
 
-      if (ticket === null) {
+      if (ticket) {
         throw new UserInputError("Invalid ticketId");
       }
 
