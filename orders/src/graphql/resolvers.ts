@@ -46,6 +46,8 @@ const resolvers: Resolvers = {
 
       const { ticket } = fromInput(ticketId);
 
+      console.log(`The translated ticket is: ${ticket}`);
+
       if (!ticket) {
         throw new UserInputError("Invalid ticketId");
       }
