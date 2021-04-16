@@ -69,6 +69,10 @@ const resolvers: Resolvers = {
         }
       );
 
+      if (!result) {
+        throw new UserInputError("Invalid orderId");
+      }
+
       return fromDbObject(result.value as OrderDbObject);
     },
     completeOrder: async (_: any, { orderId }) => {
@@ -83,6 +87,10 @@ const resolvers: Resolvers = {
           returnOriginal: false,
         }
       );
+
+      if (!result) {
+        throw new UserInputError("Invalid orderId");
+      }
 
       return fromDbObject(result.value as OrderDbObject);
     },

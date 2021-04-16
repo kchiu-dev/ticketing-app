@@ -62,6 +62,10 @@ const resolvers: Resolvers = {
         }
       );
 
+      if (!result) {
+        throw new UserInputError("Invalid ticketId");
+      }
+
       return fromDbObject(result.value as TicketDbObject);
     },
   },
