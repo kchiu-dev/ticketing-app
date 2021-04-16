@@ -57,6 +57,14 @@ const resolvers: Resolvers = {
       });
     },
     cancelOrder: async (_: any, { orderId }) => {
+      const findResult = await getCollection().findOne({
+        _id: ObjectID.createFromHexString(orderId),
+      });
+
+      if (!findResult) {
+        throw new UserInputError("Invalid orderId");
+      }
+
       const result = await getCollection().findOneAndUpdate(
         {
           _id: ObjectID.createFromHexString(orderId),
@@ -69,13 +77,17 @@ const resolvers: Resolvers = {
         }
       );
 
-      if (!result) {
-        throw new UserInputError("Invalid orderId");
-      }
-
       return fromDbObject(result.value as OrderDbObject);
     },
     completeOrder: async (_: any, { orderId }) => {
+      const findResult = await getCollection().findOne({
+        _id: ObjectID.createFromHexString(orderId),
+      });
+
+      if (!findResult) {
+        throw new UserInputError("Invalid orderId");
+      }
+
       const result = await getCollection().findOneAndUpdate(
         {
           _id: ObjectID.createFromHexString(orderId),
@@ -87,10 +99,6 @@ const resolvers: Resolvers = {
           returnOriginal: false,
         }
       );
-
-      if (!result) {
-        throw new UserInputError("Invalid orderId");
-      }
 
       return fromDbObject(result.value as OrderDbObject);
     },

@@ -52,6 +52,14 @@ const resolvers: Resolvers = {
       });
     },
     updateTicket: async (_: any, { ticketId, data }) => {
+      const findResult = await getCollection().findOne({
+        _id: ObjectID.createFromHexString(ticketId),
+      });
+
+      if (!findResult) {
+        throw new UserInputError("Invalid ticketId");
+      }
+
       const result = await getCollection().findOneAndUpdate(
         {
           _id: ObjectID.createFromHexString(ticketId),
@@ -61,10 +69,6 @@ const resolvers: Resolvers = {
           returnOriginal: false,
         }
       );
-
-      if (!result) {
-        throw new UserInputError("Invalid ticketId");
-      }
 
       return fromDbObject(result.value as TicketDbObject);
     },
