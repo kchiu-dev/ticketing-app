@@ -44,11 +44,10 @@ export type Order = {
   __typename?: "Order";
   orderId: Scalars["ID"];
   status: OrderStatus;
-  ticket?: Maybe<Ticket>;
+  ticket: Ticket;
 };
 
 export type OrderInput = {
-  existingTicketIds: Array<Maybe<Scalars["ID"]>>;
   ticketId: Scalars["ID"];
 };
 
@@ -270,7 +269,7 @@ export type OrderResolvers<
   >;
   orderId?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
   status?: Resolver<ResolversTypes["OrderStatus"], ParentType, ContextType>;
-  ticket?: Resolver<Maybe<ResolversTypes["Ticket"]>, ParentType, ContextType>;
+  ticket?: Resolver<ResolversTypes["Ticket"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
