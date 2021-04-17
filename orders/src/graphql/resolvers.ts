@@ -1,11 +1,17 @@
 import { Resolvers, OrderStatus, Order } from "./types";
 import { OrderDbObject } from "../datasources/mongodb/types";
 import { ObjectID } from "mongodb";
-import { mongodbWrapper } from "../mongodbWrapper";
+import {
+  ordersMongoClientWrapper,
+  ticketsMongoClientWrapper,
+} from "../MongoClientWrapper";
 import { UserInputError } from "apollo-server-express";
 
-const getCollection = () =>
-  mongodbWrapper.database.collection<OrderDbObject>("orders");
+const getOrdersCollection = () =>
+  ordersMongoClientWrapper.database.collection<OrderDbObject>("orders");
+
+const getTicketsCollection = () =>
+  ticketsMongoClientWrapper.database.collection("tickets");
 
 const fromDbObject = (dbObject: OrderDbObject): Order => ({
   orderId: dbObject._id.toHexString(),
@@ -16,7 +22,7 @@ const fromDbObject = (dbObject: OrderDbObject): Order => ({
 const resolvers: Resolvers = {
   Order: {
     __resolveReference: async ({ orderId }) => {
-      const dbObject = (await getCollection().findOne({
+      const dbObject = (await getOrdersCollection().findOne({
         _id: ObjectID.createFromHexString(orderId),
       })) as OrderDbObject;
       return fromDbObject(dbObject);
@@ -28,9 +34,9 @@ const resolvers: Resolvers = {
   },
   Query: {
     allOrders: async () =>
-      await getCollection().find().map(fromDbObject).toArray(),
+      await getOrdersCollection().find().map(fromDbObject).toArray(),
     getOrder: async (_: any, { orderId }) => {
-      const dbObject = (await getCollection().findOne({
+      const dbObject = (await getOrdersCollection().findOne({
         _id: ObjectID.createFromHexString(orderId),
       })) as OrderDbObject;
       return fromDbObject(dbObject);
@@ -38,9 +44,13 @@ const resolvers: Resolvers = {
   },
   Mutation: {
     createOrder: async (_: any, { data }) => {
-      const { existingTicketIds, ticketId } = data;
+      const { ticketId } = data;
 
-      if (existingTicketIds.indexOf(ticketId) === -1) {
+      try {
+        await getTicketsCollection().findOne({
+          _id: ObjectID.createFromHexString(ticketId),
+        });
+      } catch {
         throw new UserInputError("Invalid ticketId");
       }
 
@@ -49,7 +59,7 @@ const resolvers: Resolvers = {
         ticketId,
       };
 
-      const document = await getCollection().insertOne(dataEntry);
+      const document = await getOrdersCollection().insertOne(dataEntry);
       return fromDbObject({
         _id: document.insertedId,
         status: "CREATED",
@@ -57,34 +67,42 @@ const resolvers: Resolvers = {
       });
     },
     cancelOrder: async (_: any, { orderId }) => {
-      const result = await getCollection().findOneAndUpdate(
-        {
-          _id: ObjectID.createFromHexString(orderId),
-        },
-        {
-          $set: { status: "CANCELLED" },
-        },
-        {
-          returnOriginal: false,
-        }
-      );
+      try {
+        const result = await getOrdersCollection().findOneAndUpdate(
+          {
+            _id: ObjectID.createFromHexString(orderId),
+          },
+          {
+            $set: { status: "CANCELLED" },
+          },
+          {
+            returnOriginal: false,
+          }
+        );
 
-      return fromDbObject(result.value as OrderDbObject);
+        return fromDbObject(result.value as OrderDbObject);
+      } catch {
+        throw new UserInputError("Invalid orderId");
+      }
     },
     completeOrder: async (_: any, { orderId }) => {
-      const result = await getCollection().findOneAndUpdate(
-        {
-          _id: ObjectID.createFromHexString(orderId),
-        },
-        {
-          $set: { status: "COMPLETE" },
-        },
-        {
-          returnOriginal: false,
-        }
-      );
+      try {
+        const result = await getOrdersCollection().findOneAndUpdate(
+          {
+            _id: ObjectID.createFromHexString(orderId),
+          },
+          {
+            $set: { status: "COMPLETE" },
+          },
+          {
+            returnOriginal: false,
+          }
+        );
 
-      return fromDbObject(result.value as OrderDbObject);
+        return fromDbObject(result.value as OrderDbObject);
+      } catch {
+        throw new UserInputError("Invalid orderId");
+      }
     },
   },
 };

@@ -16,11 +16,16 @@ spec:
         - name: orders
           image: okteto/orders:buildTag
           env:
-            - name: MONGO_URI
+            - name: MONGO_ORDERS_URI
               valueFrom:
                 configMapKeyRef:
                   name: mongo-config
                   key: mongo-orders-uri
+            - name: MONGO_TICKETS_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: mongo-config
+                  key: mongo-tickets-uri
           resources:
             requests:
               memory: '250Mi'

@@ -1,6 +1,6 @@
 import { MongoClient, Db } from "mongodb";
 
-class MongoDBWrapper {
+class MongoClientWrapper {
   private _client?: MongoClient;
   private _database?: Db;
 
@@ -28,4 +28,4 @@ class MongoDBWrapper {
   }
 }
 
-export const mongodbWrapper = new MongoDBWrapper();
+export const ticketsMongoClientWrapper = new MongoClientWrapper();

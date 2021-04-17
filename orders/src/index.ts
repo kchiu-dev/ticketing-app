@@ -1,16 +1,32 @@
 import { app } from "./app";
-import { mongodbWrapper } from "./mongodbWrapper";
+import {
+  ordersMongoClientWrapper,
+  ticketsMongoClientWrapper,
+} from "./MongoClientWrapper";
 
 const start = async () => {
   console.log("Starting.............");
 
-  if (!process.env.MONGO_URI) {
-    throw new Error("MONGO_URI must be defined");
+  if (!process.env.MONGO_ORDERS_URI) {
+    throw new Error("MONGO_ORDERS_URI must be defined");
+  }
+
+  if (!process.env.MONGO_TICKETS_URI) {
+    throw new Error("MONGO_TICKETS_URI must be defined");
   }
 
   try {
-    await mongodbWrapper.connect("orders", process.env.MONGO_URI);
-    console.log("Connected to MongoDb");
+    await ordersMongoClientWrapper.connect(
+      "orders",
+      process.env.MONGO_ORDERS_URI
+    );
+    console.log("Connected to orders MongoDB");
+
+    await ticketsMongoClientWrapper.connect(
+      "tickets",
+      process.env.MONGO_TICKETS_URI
+    );
+    console.log("Connected to tickets MongoDB");
   } catch (err) {
     console.error(err);
   }

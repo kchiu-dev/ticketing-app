@@ -16,7 +16,7 @@ spec:
         - name: tickets
           image: okteto/tickets:buildTag
           env:
-            - name: MONGO_URI
+            - name: MONGO_TICKETS_URI
               valueFrom:
                 configMapKeyRef:
                   name: mongo-config

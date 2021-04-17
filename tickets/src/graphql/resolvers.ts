@@ -1,11 +1,11 @@
 import { Resolvers, Ticket } from "./types";
 import { TicketDbObject } from "../datasources/mongodb/types";
 import { ObjectID } from "mongodb";
-import { mongodbWrapper } from "../mongodbWrapper";
+import { ticketsMongoClientWrapper } from "../MongoClientWrapper";
 import { UserInputError } from "apollo-server-express";
 
-const getCollection = () =>
-  mongodbWrapper.database.collection<TicketDbObject>("tickets");
+const getTicketsCollection = () =>
+  ticketsMongoClientWrapper.database.collection<TicketDbObject>("tickets");
 
 const fromDbObject = (dbOjbect: TicketDbObject): Ticket => ({
   ticketId: dbOjbect._id.toHexString(),
@@ -16,7 +16,7 @@ const fromDbObject = (dbOjbect: TicketDbObject): Ticket => ({
 const resolvers: Resolvers = {
   Ticket: {
     __resolveReference: async ({ ticketId }) => {
-      const dbObject = (await getCollection().findOne({
+      const dbObject = (await getTicketsCollection().findOne({
         _id: ObjectID.createFromHexString(ticketId),
       })) as TicketDbObject;
       return fromDbObject(dbObject);
@@ -24,9 +24,9 @@ const resolvers: Resolvers = {
   },
   Query: {
     allTickets: async () =>
-      await getCollection().find().map(fromDbObject).toArray(),
+      await getTicketsCollection().find().map(fromDbObject).toArray(),
     getTicket: async (_: any, { ticketId }) => {
-      const dbObject = (await getCollection().findOne({
+      const dbObject = (await getTicketsCollection().findOne({
         _id: ObjectID.createFromHexString(ticketId),
       })) as TicketDbObject;
       return fromDbObject(dbObject);
@@ -45,24 +45,28 @@ const resolvers: Resolvers = {
         price,
       };
 
-      const document = await getCollection().insertOne(dataEntry);
+      const document = await getTicketsCollection().insertOne(dataEntry);
       return fromDbObject({
         _id: document.insertedId,
         ...data,
       });
     },
     updateTicket: async (_: any, { ticketId, data }) => {
-      const result = await getCollection().findOneAndUpdate(
-        {
-          _id: ObjectID.createFromHexString(ticketId),
-        },
-        { $set: data },
-        {
-          returnOriginal: false,
-        }
-      );
+      try {
+        const result = await getTicketsCollection().findOneAndUpdate(
+          {
+            _id: ObjectID.createFromHexString(ticketId),
+          },
+          { $set: data },
+          {
+            returnOriginal: false,
+          }
+        );
 
-      return fromDbObject(result.value as TicketDbObject);
+        return fromDbObject(result.value as TicketDbObject);
+      } catch {
+        throw new UserInputError("Invalid ticketId");
+      }
     },
   },
 };
