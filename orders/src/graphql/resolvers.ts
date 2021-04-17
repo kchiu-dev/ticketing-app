@@ -46,9 +46,15 @@ const resolvers: Resolvers = {
     createOrder: async (_: any, { data }) => {
       const { ticketId } = data;
 
+      const ticketObjectId = ObjectID.createFromHexString(ticketId);
+
+      if (!ticketObjectId) {
+        throw new UserInputError("Invalid ticketId");
+      }
+
       try {
         await getTicketsCollection().findOne({
-          _id: ObjectID.createFromHexString(ticketId),
+          _id: ticketObjectId,
         });
       } catch {
         throw new UserInputError("Invalid ticketId");
