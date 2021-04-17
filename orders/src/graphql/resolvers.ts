@@ -46,31 +46,27 @@ const resolvers: Resolvers = {
     createOrder: async (_: any, { data }) => {
       const { ticketId } = data;
 
-      console.log(`ticketObjectID is: ${ObjectID.createFromHexString(ticketId)}`);
-      
-      if (!ObjectID.createFromHexString(ticketId)) {
+      const ticket = await getTicketsCollection().findOne({
+        _id: ObjectID.createFromHexString(ticketId),
+      });
+
+      console.log(`ticket is: ${ticket}`);
+
+      if (!ticket) {
         throw new UserInputError("Invalid ticketId");
       }
 
-      try {
-        await getTicketsCollection().findOne({
-          _id: ObjectID.createFromHexString(ticketId),
-        });
+      const dataEntry: Omit<OrderDbObject, "_id"> = {
+        status: "CREATED",
+        ticketId,
+      };
 
-        const dataEntry: Omit<OrderDbObject, "_id"> = {
-          status: "CREATED",
-          ticketId,
-        };
-
-        const document = await getOrdersCollection().insertOne(dataEntry);
-        return fromDbObject({
-          _id: document.insertedId,
-          status: "CREATED",
-          ticketId,
-        });
-      } catch {
-        throw new UserInputError("Invalid ticketId");
-      }
+      const document = await getOrdersCollection().insertOne(dataEntry);
+      return fromDbObject({
+        _id: document.insertedId,
+        status: "CREATED",
+        ticketId,
+      });
     },
     cancelOrder: async (_: any, { orderId }) => {
       try {
