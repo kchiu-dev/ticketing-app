@@ -50,8 +50,6 @@ const resolvers: Resolvers = {
         _id: ObjectID.createFromHexString(ticketId),
       });
 
-      console.log(`ticket is: ${ticket}`);
-
       if (!ticket) {
         throw new UserInputError("Invalid ticketId");
       }
