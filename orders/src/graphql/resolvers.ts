@@ -52,8 +52,8 @@ const resolvers: Resolvers = {
 
       const ticketv2 = { __typename: "Ticket", ticketId } as Ticket;
 
-      console.log(`Ticket is: ${ticket}`);
-      console.log(`Ticketv2 is: ${ticketv2}`);
+      console.log(`Ticket tilte is: ${ticket.title}`);
+      console.log(`Ticketv2 tilte is: ${ticketv2.title}`);
 
       if (!ticket) {
         throw new UserInputError("Invalid ticketId");
