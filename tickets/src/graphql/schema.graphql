@@ -6,7 +6,7 @@ type Ticket @key(fields: "ticketId") {
 
 extend type Query {
   allTickets: [Ticket]!
-  getTicket(ticketId: ID!): Ticket
+  getTicket(ticketId: ID!): Ticket!
 }
 
 input TicketInput {
@@ -16,5 +16,5 @@ input TicketInput {
 
 extend type Mutation {
   createTicket(data: TicketInput!): Ticket!
-  updateTicket(ticketId: ID!, data: TicketInput!): Ticket
+  updateTicket(ticketId: ID!, data: TicketInput!): Ticket!
 }

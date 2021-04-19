@@ -26,10 +26,14 @@ const resolvers: Resolvers = {
     allTickets: async () =>
       await getTicketsCollection().find().map(fromDbObject).toArray(),
     getTicket: async (_: any, { ticketId }) => {
-      const dbObject = (await getTicketsCollection().findOne({
-        _id: ObjectID.createFromHexString(ticketId),
-      })) as TicketDbObject;
-      return fromDbObject(dbObject);
+      try {
+        const dbObject = (await getTicketsCollection().findOne({
+          _id: ObjectID.createFromHexString(ticketId),
+        })) as TicketDbObject;
+        return fromDbObject(dbObject);
+      } catch {
+        throw new UserInputError("Invalid ticketId");
+      }
     },
   },
   Mutation: {

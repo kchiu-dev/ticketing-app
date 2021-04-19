@@ -1,22 +1,16 @@
 import { Resolvers, OrderStatus, Order } from "./types";
 import { OrderDbObject } from "../datasources/mongodb/types";
 import { ObjectID } from "mongodb";
-import {
-  ordersMongoClientWrapper,
-  ticketsMongoClientWrapper,
-} from "../MongoClientWrapper";
+import { ordersMongoClientWrapper } from "../MongoClientWrapper";
 import { UserInputError } from "apollo-server-express";
 
 const getOrdersCollection = () =>
   ordersMongoClientWrapper.database.collection<OrderDbObject>("orders");
 
-const getTicketsCollection = () =>
-  ticketsMongoClientWrapper.database.collection("tickets");
-
 const fromDbObject = (dbObject: OrderDbObject): Order => ({
   orderId: dbObject._id.toHexString(),
   status: dbObject.status as OrderStatus,
-  ticket: dbObject.ticketId as any,
+  ticket: dbObject.ticket as any,
 });
 
 const resolvers: Resolvers = {
@@ -36,34 +30,30 @@ const resolvers: Resolvers = {
     allOrders: async () =>
       await getOrdersCollection().find().map(fromDbObject).toArray(),
     getOrder: async (_: any, { orderId }) => {
-      const dbObject = (await getOrdersCollection().findOne({
-        _id: ObjectID.createFromHexString(orderId),
-      })) as OrderDbObject;
-      return fromDbObject(dbObject);
+      try {
+        const dbObject = (await getOrdersCollection().findOne({
+          _id: ObjectID.createFromHexString(orderId),
+        })) as OrderDbObject;
+        return fromDbObject(dbObject);
+      } catch {
+        throw new UserInputError("Invalid orderId");
+      }
     },
   },
   Mutation: {
     createOrder: async (_: any, { data }) => {
       const { ticketId } = data;
 
-      const ticket = await getTicketsCollection().findOne({
-        _id: ObjectID.createFromHexString(ticketId),
-      });
-
-      if (!ticket) {
-        throw new UserInputError("Invalid ticketId");
-      }
-
       const dataEntry: Omit<OrderDbObject, "_id"> = {
         status: "CREATED",
-        ticketId,
+        ticket: ticketId as any,
       };
 
       const document = await getOrdersCollection().insertOne(dataEntry);
       return fromDbObject({
         _id: document.insertedId,
         status: "CREATED",
-        ticketId,
+        ticket: ticketId as any,
       });
     },
     cancelOrder: async (_: any, { orderId }) => {

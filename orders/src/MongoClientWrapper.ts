@@ -28,5 +28,4 @@ class MongoClientWrapper {
   }
 }
 
-export const ordersMongoClientWrapper = new MongoClientWrapper(),
-  ticketsMongoClientWrapper = new MongoClientWrapper();
+export const ordersMongoClientWrapper = new MongoClientWrapper()

@@ -31,7 +31,7 @@ export type Ticket = {
 export type Query = {
   __typename?: "Query";
   allTickets: Array<Maybe<Ticket>>;
-  getTicket?: Maybe<Ticket>;
+  getTicket: Ticket;
 };
 
 export type QueryGetTicketArgs = {
@@ -46,7 +46,7 @@ export type TicketInput = {
 export type Mutation = {
   __typename?: "Mutation";
   createTicket: Ticket;
-  updateTicket?: Maybe<Ticket>;
+  updateTicket: Ticket;
 };
 
 export type MutationCreateTicketArgs = {
@@ -244,7 +244,7 @@ export type QueryResolvers<
     ContextType
   >;
   getTicket?: Resolver<
-    Maybe<ResolversTypes["Ticket"]>,
+    ResolversTypes["Ticket"],
     ParentType,
     ContextType,
     RequireFields<QueryGetTicketArgs, "ticketId">
@@ -262,7 +262,7 @@ export type MutationResolvers<
     RequireFields<MutationCreateTicketArgs, "data">
   >;
   updateTicket?: Resolver<
-    Maybe<ResolversTypes["Ticket"]>,
+    ResolversTypes["Ticket"],
     ParentType,
     ContextType,
     RequireFields<MutationUpdateTicketArgs, "ticketId" | "data">

@@ -19,7 +19,7 @@ export type Order = {
   __typename?: "Order";
   orderId: Scalars["ID"];
   status: OrderStatus;
-  ticketId: Scalars["ID"];
+  ticket: Scalars["ID"];
 };
 
 export enum OrderStatus {
@@ -37,5 +37,5 @@ import { ObjectID } from "mongodb";
 export type OrderDbObject = {
   _id: ObjectID;
   status: string;
-  ticketId: string;
+  ticket: string;
 };

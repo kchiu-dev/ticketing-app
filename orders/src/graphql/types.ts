@@ -44,7 +44,7 @@ export type Order = {
   __typename?: "Order";
   orderId: Scalars["ID"];
   status: OrderStatus;
-  ticket: Ticket;
+  ticket?: Maybe<Ticket>;
 };
 
 export type OrderInput = {
@@ -60,7 +60,7 @@ export enum OrderStatus {
 export type Query = {
   __typename?: "Query";
   allOrders: Array<Order>;
-  getOrder?: Maybe<Order>;
+  getOrder: Order;
 };
 
 export type QueryGetOrderArgs = {
@@ -269,7 +269,7 @@ export type OrderResolvers<
   >;
   orderId?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
   status?: Resolver<ResolversTypes["OrderStatus"], ParentType, ContextType>;
-  ticket?: Resolver<ResolversTypes["Ticket"], ParentType, ContextType>;
+  ticket?: Resolver<Maybe<ResolversTypes["Ticket"]>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -279,7 +279,7 @@ export type QueryResolvers<
 > = ResolversObject<{
   allOrders?: Resolver<Array<ResolversTypes["Order"]>, ParentType, ContextType>;
   getOrder?: Resolver<
-    Maybe<ResolversTypes["Order"]>,
+    ResolversTypes["Order"],
     ParentType,
     ContextType,
     RequireFields<QueryGetOrderArgs, "orderId">
