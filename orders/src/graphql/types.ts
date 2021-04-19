@@ -60,7 +60,7 @@ export enum OrderStatus {
 export type Query = {
   __typename?: "Query";
   allOrders: Array<Order>;
-  getOrder?: Maybe<Order>;
+  getOrder: Order;
 };
 
 export type QueryGetOrderArgs = {
@@ -279,7 +279,7 @@ export type QueryResolvers<
 > = ResolversObject<{
   allOrders?: Resolver<Array<ResolversTypes["Order"]>, ParentType, ContextType>;
   getOrder?: Resolver<
-    Maybe<ResolversTypes["Order"]>,
+    ResolversTypes["Order"],
     ParentType,
     ContextType,
     RequireFields<QueryGetOrderArgs, "orderId">

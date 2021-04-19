@@ -30,27 +30,37 @@ const resolvers: Resolvers = {
     allOrders: async () =>
       await getOrdersCollection().find().map(fromDbObject).toArray(),
     getOrder: async (_: any, { orderId }) => {
-      const dbObject = (await getOrdersCollection().findOne({
-        _id: ObjectID.createFromHexString(orderId),
-      })) as OrderDbObject;
-      return fromDbObject(dbObject);
+      try {
+        const dbObject = (await getOrdersCollection().findOne({
+          _id: ObjectID.createFromHexString(orderId),
+        })) as OrderDbObject;
+        return fromDbObject(dbObject);
+      } catch {
+        throw new UserInputError("Invalid orderId");
+      }
     },
   },
   Mutation: {
     createOrder: async (_: any, { data }) => {
       const { ticketId } = data;
+      try {
+        const dataEntry: Omit<OrderDbObject, "_id"> = {
+          status: "CREATED",
+          ticket: ticketId as any,
+        };
 
-      const dataEntry: Omit<OrderDbObject, "_id"> = {
-        status: "CREATED",
-        ticket: ticketId as any,
-      };
-
-      const document = await getOrdersCollection().insertOne(dataEntry);
-      return fromDbObject({
-        _id: document.insertedId,
-        status: "CREATED",
-        ticket: ticketId as any,
-      });
+        const document = await getOrdersCollection().insertOne(dataEntry);
+        return fromDbObject({
+          _id: document.insertedId,
+          status: "CREATED",
+          ticket: ticketId as any,
+        });
+      } catch {
+        await getOrdersCollection().findOneAndDelete({
+          _id: ObjectID.createFromHexString(ticketId),
+        });
+        throw new UserInputError("Invalid orderId");
+      }
     },
     cancelOrder: async (_: any, { orderId }) => {
       try {
