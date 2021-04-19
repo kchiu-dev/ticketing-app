@@ -16,7 +16,7 @@ const getTicketsCollection = () =>
 const fromDbObject = (dbObject: OrderDbObject): Order => ({
   orderId: dbObject._id.toHexString(),
   status: dbObject.status as OrderStatus,
-  ticket: dbObject.ticketId as any,
+  ticket: dbObject.ticket as any,
 });
 
 const resolvers: Resolvers = {
@@ -56,14 +56,14 @@ const resolvers: Resolvers = {
 
       const dataEntry: Omit<OrderDbObject, "_id"> = {
         status: "CREATED",
-        ticketId,
+        ticket,
       };
 
       const document = await getOrdersCollection().insertOne(dataEntry);
       return fromDbObject({
         _id: document.insertedId,
         status: "CREATED",
-        ticketId,
+        ticket: ticketId as any,
       });
     },
     cancelOrder: async (_: any, { orderId }) => {

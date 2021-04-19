@@ -1,3 +1,9 @@
+extend type Ticket @entity {
+  ticketId: ID! @id
+  title: String! @column
+  price: Float! @column
+}
+
 enum OrderStatus {
   CREATED
   CANCELLED
@@ -7,5 +13,5 @@ enum OrderStatus {
 type Order @entity {
   orderId: ID! @id
   status: OrderStatus! @column
-  ticketId: ID! @column
+  ticket: Ticket! @link
 }
