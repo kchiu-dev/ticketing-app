@@ -19,7 +19,7 @@ const resolvers: Resolvers = {
       const dbObject = (await getOrdersCollection().findOne({
         _id: ObjectID.createFromHexString(orderId),
       })) as OrderDbObject;
-      return fromDbObject(dbObject);
+      return dbObject ? fromDbObject(dbObject) : null;
     },
     //@ts-ignore
     ticket: ({ ticket }: any) => {
