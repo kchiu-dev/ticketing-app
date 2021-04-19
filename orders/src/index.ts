@@ -8,10 +8,6 @@ const start = async () => {
     throw new Error("MONGO_ORDERS_URI must be defined");
   }
 
-  if (!process.env.MONGO_TICKETS_URI) {
-    throw new Error("MONGO_TICKETS_URI must be defined");
-  }
-
   try {
     await ordersMongoClientWrapper.connect(
       "orders",
