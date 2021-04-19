@@ -19,7 +19,7 @@ export type Order = {
   __typename?: "Order";
   orderId: Scalars["ID"];
   status: OrderStatus;
-  ticket: Ticket;
+  ticket: Scalars["ID"];
 };
 
 export enum OrderStatus {
@@ -27,13 +27,6 @@ export enum OrderStatus {
   Cancelled = "CANCELLED",
   Complete = "COMPLETE",
 }
-
-export type Ticket = {
-  __typename?: "Ticket";
-  ticketId: Scalars["ID"];
-  title: Scalars["String"];
-  price: Scalars["Float"];
-};
 
 export type AdditionalEntityFields = {
   path?: Maybe<Scalars["String"]>;
@@ -44,11 +37,5 @@ import { ObjectID } from "mongodb";
 export type OrderDbObject = {
   _id: ObjectID;
   status: string;
-  ticket: TicketDbObject["_id"];
-};
-
-export type TicketDbObject = {
-  _id: ObjectID;
-  title: string;
-  price: number;
+  ticket: string;
 };

@@ -1,5 +1,5 @@
 import { Resolvers, OrderStatus, Order } from "./types";
-import { OrderDbObject, TicketDbObject } from "../datasources/mongodb/types";
+import { OrderDbObject } from "../datasources/mongodb/types";
 import { ObjectID } from "mongodb";
 import {
   ordersMongoClientWrapper,
@@ -11,7 +11,7 @@ const getOrdersCollection = () =>
   ordersMongoClientWrapper.database.collection<OrderDbObject>("orders");
 
 const getTicketsCollection = () =>
-  ticketsMongoClientWrapper.database.collection<TicketDbObject>("tickets");
+  ticketsMongoClientWrapper.database.collection("tickets");
 
 const fromDbObject = (dbObject: OrderDbObject): Order => ({
   orderId: dbObject._id.toHexString(),
@@ -56,7 +56,7 @@ const resolvers: Resolvers = {
 
       const dataEntry: Omit<OrderDbObject, "_id"> = {
         status: "CREATED",
-        ticket: ticket as any,
+        ticket: ticketId as any,
       };
 
       const document = await getOrdersCollection().insertOne(dataEntry);

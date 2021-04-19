@@ -1,9 +1,3 @@
-type Ticket @entity {
-  ticketId: ID! @id
-  title: String! @column
-  price: Float! @column
-}
-
 enum OrderStatus {
   CREATED
   CANCELLED
@@ -13,5 +7,5 @@ enum OrderStatus {
 type Order @entity {
   orderId: ID! @id
   status: OrderStatus! @column
-  ticket: Ticket! @link
+  ticket: ID! @column
 }
