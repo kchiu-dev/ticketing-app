@@ -43,24 +43,18 @@ const resolvers: Resolvers = {
   Mutation: {
     createOrder: async (_: any, { data }) => {
       const { ticketId } = data;
-      try {
-        const dataEntry: Omit<OrderDbObject, "_id"> = {
-          status: "CREATED",
-          ticket: ticketId as any,
-        };
 
-        const document = await getOrdersCollection().insertOne(dataEntry);
-        return fromDbObject({
-          _id: document.insertedId,
-          status: "CREATED",
-          ticket: ticketId as any,
-        });
-      } catch {
-        await getOrdersCollection().findOneAndDelete({
-          _id: ObjectID.createFromHexString(ticketId),
-        });
-        throw new UserInputError("Invalid orderId");
-      }
+      const dataEntry: Omit<OrderDbObject, "_id"> = {
+        status: "CREATED",
+        ticket: ticketId as any,
+      };
+
+      const document = await getOrdersCollection().insertOne(dataEntry);
+      return fromDbObject({
+        _id: document.insertedId,
+        status: "CREATED",
+        ticket: ticketId as any,
+      });
     },
     cancelOrder: async (_: any, { orderId }) => {
       try {
