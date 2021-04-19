@@ -21,11 +21,6 @@ spec:
                 configMapKeyRef:
                   name: mongo-config
                   key: mongo-orders-uri
-            - name: MONGO_TICKETS_URI
-              valueFrom:
-                configMapKeyRef:
-                  name: mongo-config
-                  key: mongo-tickets-uri
           resources:
             requests:
               memory: '250Mi'

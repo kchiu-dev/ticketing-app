@@ -1,8 +1,5 @@
 import { app } from "./app";
-import {
-  ordersMongoClientWrapper,
-  ticketsMongoClientWrapper,
-} from "./MongoClientWrapper";
+import { ordersMongoClientWrapper } from "./MongoClientWrapper";
 
 const start = async () => {
   console.log("Starting.............");
@@ -21,12 +18,6 @@ const start = async () => {
       process.env.MONGO_ORDERS_URI
     );
     console.log("Connected to orders MongoDB");
-
-    await ticketsMongoClientWrapper.connect(
-      "tickets",
-      process.env.MONGO_TICKETS_URI
-    );
-    console.log("Connected to tickets MongoDB");
   } catch (err) {
     console.error(err);
   }
