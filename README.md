@@ -8,7 +8,7 @@ This is a rough draft of the application but many changes and improvements are o
 
 # Tech Stack
 
-Front end service is built with NextJS (ReactJS) and backend services are built with NodeJS and Typescript. Basic tests are written in Jest.
+Client is built with NextJS (ReactJS) and APIs are built with Express and GraphQL. All data in the application is defined using a managed GraphQL Federated Schema (https://studio.apollographql.com/graph/gateway-ticketing-graph/?variant=current).
 
 The application is deployed to Okteto Cloud using kustomize and kubectl. It's ready to run on Okteto Cloud by clicking on the big green button below:
 
