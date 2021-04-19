@@ -19,7 +19,7 @@ const resolvers: Resolvers = {
       const dbObject = (await getTicketsCollection().findOne({
         _id: ObjectID.createFromHexString(ticketId),
       })) as TicketDbObject;
-      return fromDbObject(dbObject);
+      return dbObject ? fromDbObject(dbObject) : null;
     },
   },
   Query: {
