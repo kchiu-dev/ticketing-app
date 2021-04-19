@@ -6,8 +6,6 @@ enum OrderStatus {
 
 extend type Ticket @key(fields: "ticketId") {
   ticketId: ID! @external
-  title: String! @external
-  price: Float! @external
 }
 
 type Order @key(fields: "orderId") {

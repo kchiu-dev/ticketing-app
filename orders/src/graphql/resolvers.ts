@@ -1,4 +1,4 @@
-import { Resolvers, OrderStatus, Order, Ticket } from "./types";
+import { Resolvers, OrderStatus, Order } from "./types";
 import { OrderDbObject } from "../datasources/mongodb/types";
 import { ObjectID } from "mongodb";
 import {
@@ -49,11 +49,6 @@ const resolvers: Resolvers = {
       const ticket = await getTicketsCollection().findOne({
         _id: ObjectID.createFromHexString(ticketId),
       });
-
-      const ticketv2 = { __typename: "Ticket", ticketId } as Ticket;
-
-      console.log(`Ticket tilte is: ${ticket.title}`);
-      console.log(`Ticketv2 tilte is: ${ticketv2.title}`);
 
       if (!ticket) {
         throw new UserInputError("Invalid ticketId");

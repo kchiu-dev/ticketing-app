@@ -70,8 +70,6 @@ export type QueryGetOrderArgs = {
 export type Ticket = {
   __typename?: "Ticket";
   ticketId: Scalars["ID"];
-  title: Scalars["String"];
-  price: Scalars["Float"];
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -217,9 +215,8 @@ export type ResolversTypes = ResolversObject<{
   OrderStatus: OrderStatus;
   Query: ResolverTypeWrapper<{}>;
   Ticket: ResolverTypeWrapper<Ticket>;
-  String: ResolverTypeWrapper<Scalars["String"]>;
-  Float: ResolverTypeWrapper<Scalars["Float"]>;
   Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
+  String: ResolverTypeWrapper<Scalars["String"]>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -230,9 +227,8 @@ export type ResolversParentTypes = ResolversObject<{
   OrderInput: OrderInput;
   Query: {};
   Ticket: Ticket;
-  String: Scalars["String"];
-  Float: Scalars["Float"];
   Boolean: Scalars["Boolean"];
+  String: Scalars["String"];
 }>;
 
 export type MutationResolvers<
