@@ -16,11 +16,11 @@ spec:
         - name: orders
           image: okteto/orders:buildTag
           env:
-            - name: MONGO_ORDERS_URI
+            - name: DGRAPH_URI
               valueFrom:
                 configMapKeyRef:
-                  name: mongo-config
-                  key: mongo-orders-uri
+                  name: dgraph-config
+                  key: dgraph-uri
           resources:
             requests:
               memory: '250Mi'

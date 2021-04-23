@@ -19,8 +19,8 @@ spec:
             - name: APOLLO_KEY
               valueFrom:
                 secretKeyRef:
-                  name: apollo-secret
-                  key: apollo-secret
+                  name: apollo-key
+                  key: apollo-key
             - name: NODE_ENV
               valueFrom:
                 configMapKeyRef:
