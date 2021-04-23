@@ -1,19 +1,20 @@
-import { app } from "./app";
-import { ordersMongoClientWrapper } from "./MongoClientWrapper";
+import { app, schemaString } from "./app";
+import { dgraphClientWrapper } from "./DgraphClientWrapper";
 
 const start = async () => {
   console.log("Starting.............");
 
-  if (!process.env.MONGO_ORDERS_URI) {
+  if (!process.env.DGRAPH_URI) {
     throw new Error("MONGO_ORDERS_URI must be defined");
   }
 
   try {
-    await ordersMongoClientWrapper.connect(
-      "orders",
-      process.env.MONGO_ORDERS_URI
+    const clientWrapper = dgraphClientWrapper.connect(
+      process.env.DGRAPH_URI
     );
-    console.log("Connected to orders MongoDB");
+    console.log("Connected to Dgraph");
+    await dgraphClientWrapper.setSchema(clientWrapper, schemaString);
+    console.log("Orders Schema Loaded to Dgraph");
   } catch (err) {
     console.error(err);
   }
