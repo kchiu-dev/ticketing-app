@@ -2,12 +2,9 @@ overwrite: true
 hooks:
   afterAllFileWrite:
     - prettier --write
+schema:
+  - ./src/graphql/schema.graphql
 generates:
-  ./src/datasources/mongodb/types.ts:
-    schema: ./src/datasources/mongodb/schema.graphql
-    plugins:
-      - typescript
-      - typescript-mongodb
   ./src/graphql/types.ts:
     schema: ./src/graphql/schema.graphql
     plugins:

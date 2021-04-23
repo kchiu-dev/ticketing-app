@@ -1,5 +1,0 @@
-type Ticket @entity {
-  ticketId: ID! @id
-  title: String! @column
-  price: Float! @column
-}

@@ -1,19 +1,20 @@
-import { app } from "./app";
-import { ticketsMongoClientWrapper } from "./MongoClientWrapper";
+import { app, schemaString } from "./app";
+import { dgraphClientWrapper } from "./DgraphClientWrapper";
 
 const start = async () => {
   console.log("Starting.............");
 
-  if (!process.env.MONGO_TICKETS_URI) {
-    throw new Error("MONGO_TICKETS_URI must be defined");
+  if (!process.env.DGRAPH_URI) {
+    throw new Error("DGRAPH_URI must be defined");
   }
 
   try {
-    await ticketsMongoClientWrapper.connect(
-      "tickets",
-      process.env.MONGO_TICKETS_URI
+    const clientWrapper = dgraphClientWrapper.connect(
+      process.env.DGRAPH_URI
     );
-    console.log("Connected to tickets MongoDB");
+    console.log("Connected to Dgraph");
+    await dgraphClientWrapper.setSchema(clientWrapper, schemaString);
+    console.log("Tickets Schema Loaded to Dgraph");
   } catch (err) {
     console.error(err);
   }

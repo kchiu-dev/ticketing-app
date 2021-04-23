@@ -1,76 +1,213 @@
 import { Resolvers, Ticket } from "./types";
-import { TicketDbObject } from "../datasources/mongodb/types";
-import { ObjectID } from "mongodb";
-import { ticketsMongoClientWrapper } from "../MongoClientWrapper";
+import { dgraphClientWrapper } from "../DgraphClientWrapper";
 import { UserInputError } from "apollo-server-express";
+import { Txn } from "dgraph-js-http";
 
-const getTicketsCollection = () =>
-  ticketsMongoClientWrapper.database.collection<TicketDbObject>("tickets");
+interface TicketDbObject {
+  uid: string;
+  title: string;
+  price: number;
+}
 
-const fromDbObject = (dbOjbect: TicketDbObject): Ticket => ({
-  ticketId: dbOjbect._id.toHexString(),
-  title: dbOjbect.title,
-  price: dbOjbect.price,
+const getTransaction = (forRead: boolean): Txn =>
+  forRead
+    ? dgraphClientWrapper.client.newTxn({ readOnly: true, bestEffort: true })
+    : dgraphClientWrapper.client.newTxn();
+
+const fromDbObject = (dbObject: TicketDbObject): Ticket => ({
+  ticketId: dbObject.uid,
+  title: dbObject.title,
+  price: dbObject.price,
 });
 
 const resolvers: Resolvers = {
   Ticket: {
     __resolveReference: async ({ ticketId }) => {
-      const dbObject = (await getTicketsCollection().findOne({
-        _id: ObjectID.createFromHexString(ticketId),
-      })) as TicketDbObject;
-      return dbObject ? fromDbObject(dbObject) : null;
+      // Create a new transaction.
+      const forRead = true;
+      const txn = getTransaction(forRead);
+
+      let ticket;
+
+      try {
+        // Create a query.
+        const query = `
+        {
+          getTicket(ticketId: ${ticketId}) {
+            ticketId
+            title
+            price
+          }
+        }
+        `;
+
+        // Run query and get ticket.
+        const res = await txn.query(query);
+        ticket = <TicketDbObject>res.data;
+
+        // Commit transaction.
+        await txn.commit();
+      } finally {
+        // Clean up transaction.
+        await txn.discard();
+      }
+
+      return fromDbObject({
+        ...ticket,
+      });
     },
   },
   Query: {
-    allTickets: async () =>
-      await getTicketsCollection().find().map(fromDbObject).toArray(),
-    getTicket: async (_: any, { ticketId }) => {
+    allTickets: async () => {
+      // Create a new transaction.
+      const forRead = true;
+      const txn = getTransaction(forRead);
+
+      let allTickets;
+
       try {
-        const dbObject = (await getTicketsCollection().findOne({
-          _id: ObjectID.createFromHexString(ticketId),
-        })) as TicketDbObject;
-        return fromDbObject(dbObject);
-      } catch {
-        throw new UserInputError("Invalid ticketId");
+        // Create a query.
+        const query = `
+        {
+          dbAllTickets(func: has(uid)) {
+            uid
+            title
+            price
+          }
+        }
+        `;
+
+        // Run query and get all tickets.
+        const res = await txn.query(query);
+        allTickets = <TicketDbObject[]>res.data;
+
+        // Commit transaction.
+        await txn.commit();
+      } finally {
+        // Clean up.
+        await txn.discard();
       }
+      return allTickets.map(fromDbObject);
+    },
+    getTicket: async (_: any, { ticketId }) => {
+      // Create a new transaction.
+      const forRead = true;
+      const txn = getTransaction(forRead);
+
+      let ticket;
+
+      try {
+        // Create a query.
+        const query = `
+        {
+          dbTicket(func: eq(uid, ${ticketId})) {
+            uid
+            title
+            price
+          }
+        }
+        `;
+
+        // Run query and get ticket.
+        const res = await txn.query(query);
+        ticket = <TicketDbObject>res.data;
+
+        if (!ticket) {
+          throw new UserInputError("Invalid ticketId");
+        }
+
+        // Commit transaction.
+        await txn.commit();
+      } finally {
+        // Clean up.
+        await txn.discard();
+      }
+
+      return fromDbObject(ticket);
     },
   },
   Mutation: {
     createTicket: async (_: any, { data }) => {
-      const { title, price } = data;
+      // Create a new transaction.
+      const forRead = false;
+      const txn = getTransaction(forRead);
+
+      let ticketId;
+
+      const { price } = data;
 
       if (price <= 0) {
         throw new UserInputError("Price must be greater than 0");
       }
 
-      const dataEntry: Omit<TicketDbObject, "_id"> = {
-        title,
-        price,
-      };
+      try {
+        // Run mutation and get ticketId.
+        const assigned = await txn.mutate({
+          setJson: data,
+        });
+        ticketId = assigned.data.uids["blank-0"];
 
-      const document = await getTicketsCollection().insertOne(dataEntry);
+        console.log("All created nodes (map from blank node names to uids):");
+        Object.keys(assigned.data.uids).forEach((key) =>
+          console.log(`${key} => ${assigned.data.uids[key]}`)
+        );
+        console.log();
+
+        // Commit transaction.
+        await txn.commit();
+      } finally {
+        // Clean up.
+        await txn.discard();
+      }
+
       return fromDbObject({
-        _id: document.insertedId,
+        uid: ticketId,
         ...data,
       });
     },
     updateTicket: async (_: any, { ticketId, data }) => {
-      try {
-        const result = await getTicketsCollection().findOneAndUpdate(
-          {
-            _id: ObjectID.createFromHexString(ticketId),
-          },
-          { $set: data },
-          {
-            returnOriginal: false,
-          }
-        );
+      // Create a new transaction.
+      const forRead = false;
+      const txn = getTransaction(forRead);
 
-        return fromDbObject(result.value as TicketDbObject);
-      } catch {
-        throw new UserInputError("Invalid ticketId");
+      const { price } = data;
+
+      if (price <= 0) {
+        throw new UserInputError("Price must be greater than zero");
       }
+
+      try {
+        // Create a query.
+        const query = `
+        {
+          getTicket(ticketId: ${ticketId}) {
+            ticketId
+          }
+        }
+        `;
+
+        // Run query.
+        await txn.query(query);
+
+        // Run mutation.
+        await txn.mutate({
+          setJson: {
+            uid: ticketId,
+            ...data,
+          },
+        });
+
+        // Commit transaction.
+        await txn.commit();
+      } finally {
+        // Clean up.
+        await txn.discard();
+      }
+
+      return fromDbObject({
+        uid: ticketId,
+        ...data,
+      });
     },
   },
 };
