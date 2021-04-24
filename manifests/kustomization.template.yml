@@ -23,7 +23,7 @@ configMapGenerator:
       - node-env=production
   - name: dgraph-config
     literals:
-      - dgraph-uri=http-alpha://dgraph-public:8080
+      - dgraph-uri=http://dgraph-public:8080
 
 secretGenerator:
   - name: github-client-secret
