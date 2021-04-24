@@ -9,11 +9,9 @@ const start = async () => {
   }
 
   try {
-    const clientWrapper = dgraphClientWrapper.connect(
-      process.env.DGRAPH_URI
-    );
+    dgraphClientWrapper.connect(process.env.DGRAPH_URI);
     console.log("Connected to Dgraph");
-    await dgraphClientWrapper.setSchema(clientWrapper, schemaString);
+    await dgraphClientWrapper.setSchema(schemaString);
     console.log("Orders Schema Loaded to Dgraph");
   } catch (err) {
     console.error(err);

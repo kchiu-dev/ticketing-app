@@ -27,11 +27,8 @@ class DgraphClientWrapper {
     return this.client;
   }
 
-  async setSchema(
-    dgraphClient: DgraphClient,
-    schema: string
-  ): Promise<dgraph.Payload> {
-    return await dgraphClient.alter({ schema });
+  async setSchema(schema: string): Promise<dgraph.Payload> {
+    return await this.client.alter({ schema });
   }
 }
 
