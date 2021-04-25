@@ -23,7 +23,6 @@ configMapGenerator:
       - node-env=production
   - name: dgraph-config
     literals:
-      - dgraph-alpha-security="whitelist=10.8.0.0:10.10.0.0"
       - dgraph-uri=http://dgraph-public:8080
 
 secretGenerator:
