@@ -78,8 +78,8 @@ spec:
           - "-c"
           - |
             set -ex
-            dgraph alpha --my=$(hostname -f):7080 --zero dgraph-0.dgraph.${POD_NAMESPACE}.svc.cluster.local:5080 \
-              --security "whitelist=10.8.0.0:10.10.0.0"
+            dgraph alpha --my=$(hostname -f):7080 --zero dgraph-0.dgraph.${POD_NAMESPACE}.svc.cluster.local:5080
+            dgraph alpha --security "whitelist=10.0.0.0/8"
       terminationGracePeriodSeconds: 60
       volumes:
       - name: datadir
