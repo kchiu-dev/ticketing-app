@@ -4,7 +4,7 @@ kind: Kustomization
 resources:
   - tickets-depl.yml
   - orders-depl.yml
-  - https://raw.githubusercontent.com/dgraph-io/dgraph/master/contrib/config/kubernetes/dgraph-single/dgraph-single.yaml
+  - dgraph-single.yml
   - ingress-srv.yml
   - gateway-depl.yml
 
@@ -23,7 +23,8 @@ configMapGenerator:
       - node-env=production
   - name: dgraph-config
     literals:
-      - dgraph-uri=http://dgraph-public:8080
+      - dgraph-alpha-security=whitelist=0.0.0.0/0
+      - dgraph-uri=http-alpha://dgraph-public:8080
 
 secretGenerator:
   - name: github-client-secret
