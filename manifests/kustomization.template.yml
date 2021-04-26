@@ -24,7 +24,7 @@ configMapGenerator:
   - name: dgraph-config
     literals:
       - dgraph-uri=http://dgraph-public:8080
-      - dgraph-alpha-security="whitelist=10.1.0.0:10.255.0.0"
+      - dgraph-alpha-security="whitelist=0.0.0.0/0"
 
 secretGenerator:
   - name: github-client-secret
