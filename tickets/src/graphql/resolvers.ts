@@ -21,8 +21,8 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          dgraphGetTicket(func: allofterms(ticketId, ${ticketId})) {
-            ticketId
+          dgraphGetTicket(func: has(title)) @filter(uid_in(~title, ${ticketId})) {
+            ticketId: uid
             title
             price
           }
@@ -56,7 +56,7 @@ const resolvers: Resolvers = {
         const query = `
         {
           dgraphAllTickets(func: has(title)) {
-            ticketId
+            ticketId: uid
             title
             price
           }
@@ -86,8 +86,8 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          dgraphGetTicket(func: allofterms(ticketId, ${ticketId})) {
-            ticketId
+          dgraphGetTicket(func: has(title)) @filter(uid_in(~title, ${ticketId})) {
+            ticketId: uid
             title
             price
           }
@@ -166,14 +166,21 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          dgraphGetTicket(func: allofterms(ticketId, ${ticketId})) {
-            ticketId
+          dgraphGetTicket(func: has(title)) @filter(uid_in(~title, ${ticketId})) {
+            ticketId: uid
+            title
+            price
           }
         }
         `;
 
         // Run query.
-        await txn.query(query);
+        const res = await txn.query(query);
+        const ticket = <Ticket>res.data;
+
+        if (!ticket) {
+          throw new UserInputError("Invalid ticketId")
+        }
 
         // Run mutation.
         await txn.mutate({

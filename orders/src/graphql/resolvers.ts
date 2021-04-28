@@ -21,8 +21,8 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          dgraphGetOrder(func: allofterms(orderId, ${orderId})) {
-            orderId
+          dgraphGetOrder(func: has(status)) @filter(uid_in(~status, ${orderId})) {
+            orderId: uid
             status
             ticket
           }
@@ -60,7 +60,7 @@ const resolvers: Resolvers = {
         const query = `
         {
           dgraphAllOrders(func: has(status)) {
-            orderId
+            orderId: uid
             status
             ticket
           }
@@ -90,8 +90,8 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          dgraphGetOrder(func: allofterms(orderId, ${orderId})) {
-            orderId
+          dgraphGetOrder(func: has(status)) @filter(uid_in(~status, ${orderId})) {
+            orderId: uid
             status
             ticket
           }
@@ -130,8 +130,8 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          dgraphGetTicket(func: allofterms(ticketId, ${ticketId})) {
-            ticketId
+          dgraphGetTicket(func: has(title)) @filter(uid_in(~title, ${ticketId})) {
+            ticketId: uid
           }
         }
         `;
@@ -183,8 +183,8 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          dgraphGetOrder(func: allofterms(orderId, ${orderId})) {
-            orderId
+          dgraphGetOrder(func: has(status)) @filter(uid_in(~status, ${orderId})) {
+            orderId: uid
             status
             ticket
           }
@@ -232,8 +232,8 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          dgraphGetOrder(func: allofterms(orderId, ${orderId})) {
-            orderId
+          dgraphGetOrder(func: has(status)) @filter(uid_in(~status, ${orderId})) {
+            orderId: uid
             status
             ticket
           }
