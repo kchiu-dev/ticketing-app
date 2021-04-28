@@ -1,10 +1,7 @@
-enum OrderStatus {
-  CREATED
-  CANCELLED
-  COMPLETE
-}
+status: string @index(term) @upsert .
+ticket: uid .
 
 type Order {
-  status: OrderStatus!
-  ticket: Ticket!
+  status
+  ticket
 }
