@@ -16,16 +16,16 @@ spec:
         - name: payments
           image: okteto/payments:buildTag
           env:
-            - name: MONGO_URI
+            - name: DGRAPH_URI
               valueFrom:
                 configMapKeyRef:
-                  name: mongo-config
-                  key: mongo-payments-uri
+                  name: dgraph-config
+                  key: dgraph-uri
             - name: STRIPE_KEY
               valueFrom:
                 secretKeyRef:
-                  name: stripe-secret
-                  key: stripe-secret
+                  name: stripe-key
+                  key: stripe-key
           resources:
             requests:
               memory: '250Mi'

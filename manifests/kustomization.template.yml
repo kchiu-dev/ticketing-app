@@ -3,9 +3,8 @@ kind: Kustomization
 
 resources:
   - tickets-depl.yml
-  - tickets-mongo-depl.yml
   - orders-depl.yml
-  - orders-mongo-depl.yml
+  - dgraph-single.yml
   - ingress-srv.yml
   - gateway-depl.yml
 
@@ -22,25 +21,24 @@ configMapGenerator:
   - name: gateway-config
     literals:
       - node-env=production
-  - name: mongo-config
+  - name: dgraph-config
     literals:
-      - mongo-orders-uri=mongodb://orders-mongo-srv:27017/orders
-      - mongo-payments-uri=mongodb://payments-mongo-srv:27017/payments
-      - mongo-tickets-uri=mongodb://tickets-mongo-srv:27017/tickets
+      - dgraph-uri=http://dgraph-public:8080
+      - dgraph-alpha-security="whitelist=0.0.0.0/0"
 
 secretGenerator:
   - name: github-client-secret
     literals:
       - github-client-secret=$GITHUB_CLIENT_SECRET
-  - name: jwt-secret
+  - name: jwt-key
     literals:
-      - jwt-secret=$JWT_SECRET
-  - name: stripe-secret
+      - jwt-key=$JWT_KEY
+  - name: stripe-key
     literals:
-      - stripe-secret=$STRIPE_SECRET
-  - name: apollo-secret
+      - stripe-key=$STRIPE_KEY
+  - name: apollo-key
     literals:
-      - apollo-secret=$APOLLO_SECRET
+      - apollo-key=$APOLLO_KEY
 
 generatorOptions:
   disableNameSuffixHash: true

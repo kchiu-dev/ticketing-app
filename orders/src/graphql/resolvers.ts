@@ -1,25 +1,46 @@
 import { Resolvers, OrderStatus, Order } from "./types";
-import { OrderDbObject } from "../datasources/mongodb/types";
-import { ObjectID } from "mongodb";
-import { ordersMongoClientWrapper } from "../MongoClientWrapper";
+import { dgraphClientWrapper } from "../DgraphClientWrapper";
 import { UserInputError } from "apollo-server-express";
+import { Txn } from "dgraph-js-http";
 
-const getOrdersCollection = () =>
-  ordersMongoClientWrapper.database.collection<OrderDbObject>("orders");
-
-const fromDbObject = (dbObject: OrderDbObject): Order => ({
-  orderId: dbObject._id.toHexString(),
-  status: dbObject.status as OrderStatus,
-  ticket: dbObject.ticket as any,
-});
+const getTransaction = (forRead: boolean): Txn =>
+  forRead
+    ? dgraphClientWrapper.client.newTxn({ readOnly: true, bestEffort: true })
+    : dgraphClientWrapper.client.newTxn();
 
 const resolvers: Resolvers = {
   Order: {
     __resolveReference: async ({ orderId }) => {
-      const dbObject = (await getOrdersCollection().findOne({
-        _id: ObjectID.createFromHexString(orderId),
-      })) as OrderDbObject;
-      return dbObject ? fromDbObject(dbObject) : null;
+      // Create a new transaction
+      const forRead = true;
+      const txn = getTransaction(forRead);
+
+      let order;
+
+      try {
+        // Create a query.
+        const query = `
+        {
+          dgraphGetOrder(func: has(status)) @filter(uid_in(~status, ${orderId})) {
+            orderId: uid
+            status
+            ticket
+          }
+        }
+        `;
+
+        // Run query and get order.
+        const res = await txn.query(query);
+        order = <Order>res.data;
+
+        // Commit transaction.
+        await txn.commit();
+      } finally {
+        // Clean up transaction.
+        await txn.discard();
+      }
+
+      return order;
     },
     //@ts-ignore
     ticket: ({ ticket }: any) => {
@@ -27,72 +48,223 @@ const resolvers: Resolvers = {
     },
   },
   Query: {
-    allOrders: async () =>
-      await getOrdersCollection().find().map(fromDbObject).toArray(),
-    getOrder: async (_: any, { orderId }) => {
+    allOrders: async () => {
+      // Create a new transaction.
+      const forRead = true;
+      const txn = getTransaction(forRead);
+
+      let allOrders;
+
       try {
-        const dbObject = (await getOrdersCollection().findOne({
-          _id: ObjectID.createFromHexString(orderId),
-        })) as OrderDbObject;
-        return fromDbObject(dbObject);
-      } catch {
-        throw new UserInputError("Invalid orderId");
+        // Create a query.
+        const query = `
+        {
+          dgraphAllOrders(func: has(status)) {
+            orderId: uid
+            status
+            ticket
+          }
+        }
+        `;
+
+        // Run query and get all orders.
+        const res = await txn.query(query);
+        allOrders = <Order[]>res.data;
+
+        // Commit transaction.
+        await txn.commit();
+      } finally {
+        // Clean up.
+        await txn.discard();
       }
+      return allOrders;
+    },
+    getOrder: async (_: any, { orderId }) => {
+      // Create a new transaction.
+      const forRead = true;
+      const txn = getTransaction(forRead);
+
+      let order;
+
+      try {
+        // Create a query.
+        const query = `
+        {
+          dgraphGetOrder(func: has(status)) @filter(uid_in(~status, ${orderId})) {
+            orderId: uid
+            status
+            ticket
+          }
+        }
+        `;
+
+        // Run query and get order.
+        const res = await txn.query(query);
+        order = <Order>res.data;
+
+        if (!order) {
+          throw new UserInputError("Invalid orderId");
+        }
+
+        // Commit transaction.
+        await txn.commit();
+      } finally {
+        // Clean up.
+        await txn.discard();
+      }
+
+      return order;
     },
   },
   Mutation: {
     createOrder: async (_: any, { data }) => {
+      // Create a new transaction.
+      const forRead = false;
+      const txn = getTransaction(forRead);
+
+      let orderId;
+
       const { ticketId } = data;
 
-      const dataEntry: Omit<OrderDbObject, "_id"> = {
-        status: "CREATED",
+      try {
+        // Create a query.
+        const query = `
+        {
+          dgraphGetTicket(func: has(title)) @filter(uid_in(~title, ${ticketId})) {
+            ticketId: uid
+          }
+        }
+        `;
+
+        // Run query.
+        const res = await txn.query(query);
+        const ticket = res.data;
+
+        if (!ticket) {
+          throw new UserInputError("Invalid ticketId");
+        }
+
+        // Run mutation and get orderId.
+        const assigned = await txn.mutate({
+          setJson: {
+            status: OrderStatus.Created,
+            ticket: ticketId,
+          },
+        });
+        orderId = assigned.data.uids["blank-0"];
+
+        console.log("All created nodes (map from blank node names to uids):");
+        Object.keys(assigned.data.uids).forEach((key) =>
+          console.log(`${key} => ${assigned.data.uids[key]}`)
+        );
+        console.log();
+
+        // Commit transaction.
+        await txn.commit();
+      } finally {
+        // Clean up.
+        await txn.discard();
+      }
+
+      return {
+        orderId,
+        status: OrderStatus.Created,
         ticket: ticketId as any,
       };
-
-      const document = await getOrdersCollection().insertOne(dataEntry);
-      return fromDbObject({
-        _id: document.insertedId,
-        status: "CREATED",
-        ticket: ticketId as any,
-      });
     },
     cancelOrder: async (_: any, { orderId }) => {
-      try {
-        const result = await getOrdersCollection().findOneAndUpdate(
-          {
-            _id: ObjectID.createFromHexString(orderId),
-          },
-          {
-            $set: { status: "CANCELLED" },
-          },
-          {
-            returnOriginal: false,
-          }
-        );
+      // Create a new transaction.
+      const forRead = false;
+      const txn = getTransaction(forRead);
 
-        return fromDbObject(result.value as OrderDbObject);
-      } catch {
-        throw new UserInputError("Invalid orderId");
+      let order;
+
+      try {
+        // Create a query.
+        const query = `
+        {
+          dgraphGetOrder(func: has(status)) @filter(uid_in(~status, ${orderId})) {
+            orderId: uid
+            status
+            ticket
+          }
+        }
+        `;
+
+        // Run query and get order.
+        const res = await txn.query(query);
+        order = <Order>res.data;
+
+        if (!order) {
+          throw new UserInputError("Invalid orderId");
+        }
+
+        // Run mutation.
+        await txn.mutate({
+          setJson: {
+            orderId,
+            status: OrderStatus.Cancelled,
+            ticket: order.ticket,
+          },
+        });
+
+        // Commit transaction.
+        await txn.commit();
+      } finally {
+        // Clean up.
+        await txn.discard();
       }
+
+      return {
+        orderId,
+        status: OrderStatus.Cancelled,
+        ticket: order.ticket as any,
+      };
     },
     completeOrder: async (_: any, { orderId }) => {
-      try {
-        const result = await getOrdersCollection().findOneAndUpdate(
-          {
-            _id: ObjectID.createFromHexString(orderId),
-          },
-          {
-            $set: { status: "COMPLETE" },
-          },
-          {
-            returnOriginal: false,
-          }
-        );
+      // Create a new transaction.
+      const forRead = false;
+      const txn = getTransaction(forRead);
 
-        return fromDbObject(result.value as OrderDbObject);
-      } catch {
-        throw new UserInputError("Invalid orderId");
+      let order;
+
+      try {
+        // Create a query.
+        const query = `
+        {
+          dgraphGetOrder(func: has(status)) @filter(uid_in(~status, ${orderId})) {
+            orderId: uid
+            status
+            ticket
+          }
+        }
+        `;
+
+        // Run query and get order.
+        const res = await txn.query(query);
+        order = <Order>res.data;
+
+        // Run mutation.
+        await txn.mutate({
+          setJson: {
+            orderId,
+            status: OrderStatus.Complete,
+            ticket: order.ticket,
+          },
+        });
+
+        // Commit transaction.
+        await txn.commit();
+      } finally {
+        // Clean up.
+        await txn.discard();
       }
+
+      return {
+        orderId,
+        status: OrderStatus.Complete,
+        ticket: order.ticket as any,
+      };
     },
   },
 };

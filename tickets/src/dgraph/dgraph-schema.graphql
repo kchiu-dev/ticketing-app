@@ -1,0 +1,4 @@
+type Ticket {
+  title: String!
+  price: Float!
+}
