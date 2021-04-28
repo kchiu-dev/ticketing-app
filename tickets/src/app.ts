@@ -5,18 +5,13 @@ import "graphql-import-node";
 import * as typeDefs from "../src/graphql/schema.graphql";
 import resolvers from "../src/graphql/resolvers";
 import * as dgraphSchema from "../src/dgraph/dgraph-schema.graphql";
-import { print } from "graphql";
+import { print } from "graphql/language/printer";
 
 const app = express();
 
 const schema = buildFederatedSchema([{ typeDefs, resolvers }]);
 
-const dgraphSchemaString = `
-type Ticket {
-  title: String!
-  price: Float!
-}
-`;
+const dgraphSchemaString = print(dgraphSchema);
 
 const server = new ApolloServer({ schema });
 

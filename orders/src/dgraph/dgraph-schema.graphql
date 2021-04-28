@@ -1,7 +1,4 @@
-status: string @index(term) @upsert .
-ticket: uid .
-
 type Order {
-  status
-  ticket
+  status: String!
+  ticket: Ticket!
 }
