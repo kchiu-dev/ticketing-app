@@ -12,14 +12,8 @@ const app = express();
 const schema = buildFederatedSchema([{ typeDefs, resolvers }]);
 
 const dgraphSchemaString = `
-enum OrderStatus {
-  CREATED
-  CANCELLED
-  COMPLETE
-}
-
 type Order {
-  status: OrderStatus!
+  status: String!
   ticket: Ticket
 }
 `;

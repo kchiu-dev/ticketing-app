@@ -12,12 +12,9 @@ const app = express();
 const schema = buildFederatedSchema([{ typeDefs, resolvers }]);
 
 const dgraphSchemaString = `
-title: string @index(term) @upsert .
-price: float @index(float) @upsert .
-
 type Ticket {
-  title: String
-  price: Float
+  title: String!
+  price: Float!
 }
 `;
 
