@@ -1,3 +1,8 @@
+ticketId: string @index(exact) @external .
+orderId: string @index(exact) .
+status: string @index(term) @upsert .
+ticket: uid .
+
 extend type Ticket @key(fields: "ticketId") {
   ticketId
 }
@@ -7,8 +12,3 @@ type Order @key(fields: "orderId") {
   status
   ticket
 }
-
-ticketId: string @index(exact) @external .
-orderId: string @index(exact) .
-status: string @index(term) @upsert .
-ticket: uid .
