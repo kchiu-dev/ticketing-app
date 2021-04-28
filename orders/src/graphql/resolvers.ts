@@ -3,22 +3,10 @@ import { dgraphClientWrapper } from "../DgraphClientWrapper";
 import { UserInputError } from "apollo-server-express";
 import { Txn } from "dgraph-js-http";
 
-interface OrderDbObject {
-  uid: string;
-  status: OrderStatus,
-  ticket: string
-}
-
 const getTransaction = (forRead: boolean): Txn =>
   forRead
-    ? dgraphClientWrapper.client.newTxn({ readOnly: true, bestEffort: true})
+    ? dgraphClientWrapper.client.newTxn({ readOnly: true, bestEffort: true })
     : dgraphClientWrapper.client.newTxn();
-
-const fromDbObject = (dbObject: OrderDbObject): Order => ({
-  orderId: dbObject.uid,
-  status: dbObject.status,
-  ticket: dbObject.ticket as any,
-});
 
 const resolvers: Resolvers = {
   Order: {
@@ -33,7 +21,7 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          getOrder(orderId: ${orderId}) {
+          dgraphGetOrder(func: allofterms(orderId, ${orderId})) {
             orderId
             status
             ticket
@@ -43,7 +31,7 @@ const resolvers: Resolvers = {
 
         // Run query and get order.
         const res = await txn.query(query);
-        order = <OrderDbObject>res.data;
+        order = <Order>res.data;
 
         // Commit transaction.
         await txn.commit();
@@ -52,9 +40,7 @@ const resolvers: Resolvers = {
         await txn.discard();
       }
 
-      return fromDbObject({
-        ...order,
-      });
+      return order;
     },
     //@ts-ignore
     ticket: ({ ticket }: any) => {
@@ -73,8 +59,8 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          dbAllOrders(func: has(uid)) {
-            uid
+          dgraphAllOrders(func: has(status)) {
+            orderId
             status
             ticket
           }
@@ -83,7 +69,7 @@ const resolvers: Resolvers = {
 
         // Run query and get all orders.
         const res = await txn.query(query);
-        allOrders = <OrderDbObject[]>res.data;
+        allOrders = <Order[]>res.data;
 
         // Commit transaction.
         await txn.commit();
@@ -91,7 +77,7 @@ const resolvers: Resolvers = {
         // Clean up.
         await txn.discard();
       }
-      return allOrders.map(fromDbObject);
+      return allOrders;
     },
     getOrder: async (_: any, { orderId }) => {
       // Create a new transaction.
@@ -104,8 +90,8 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          dbOrder(func: eq(uid, ${orderId})) {
-            uid
+          dgraphGetOrder(func: allofterms(orderId, ${orderId})) {
+            orderId
             status
             ticket
           }
@@ -114,7 +100,7 @@ const resolvers: Resolvers = {
 
         // Run query and get order.
         const res = await txn.query(query);
-        order = <OrderDbObject>res.data;
+        order = <Order>res.data;
 
         if (!order) {
           throw new UserInputError("Invalid orderId");
@@ -127,7 +113,7 @@ const resolvers: Resolvers = {
         await txn.discard();
       }
 
-      return fromDbObject(order);
+      return order;
     },
   },
   Mutation: {
@@ -144,21 +130,26 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          getTicket(ticketId: ${ticketId}) {
+          dgraphGetTicket(func: allofterms(ticketId, ${ticketId})) {
             ticketId
           }
         }
         `;
 
         // Run query.
-        await txn.query(query);
+        const res = await txn.query(query);
+        const ticket = res.data;
+
+        if (!ticket) {
+          throw new UserInputError("Invalid ticketId");
+        }
 
         // Run mutation and get orderId.
         const assigned = await txn.mutate({
           setJson: {
             status: OrderStatus.Created,
             ticket: ticketId,
-          }
+          },
         });
         orderId = assigned.data.uids["blank-0"];
 
@@ -175,11 +166,11 @@ const resolvers: Resolvers = {
         await txn.discard();
       }
 
-      return fromDbObject({
-        uid: orderId,
+      return {
+        orderId,
         status: OrderStatus.Created,
-        ticket: ticketId
-      });
+        ticket: ticketId as any,
+      };
     },
     cancelOrder: async (_: any, { orderId }) => {
       // Create a new transaction.
@@ -192,7 +183,7 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          getOrder(orderId: ${orderId}) {
+          dgraphGetOrder(func: allofterms(orderId, ${orderId})) {
             orderId
             status
             ticket
@@ -202,15 +193,19 @@ const resolvers: Resolvers = {
 
         // Run query and get order.
         const res = await txn.query(query);
-        order = <OrderDbObject>res.data;
+        order = <Order>res.data;
+
+        if (!order) {
+          throw new UserInputError("Invalid orderId");
+        }
 
         // Run mutation.
         await txn.mutate({
           setJson: {
-            uid: orderId,
+            orderId,
             status: OrderStatus.Cancelled,
-            ticket: order.ticket
-          }
+            ticket: order.ticket,
+          },
         });
 
         // Commit transaction.
@@ -220,11 +215,11 @@ const resolvers: Resolvers = {
         await txn.discard();
       }
 
-      return fromDbObject({
-        uid: orderId,
+      return {
+        orderId,
         status: OrderStatus.Cancelled,
-        ticket: order.ticket
-      });
+        ticket: order.ticket as any,
+      };
     },
     completeOrder: async (_: any, { orderId }) => {
       // Create a new transaction.
@@ -237,7 +232,7 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          getOrder(orderId: ${orderId}) {
+          dgraphGetOrder(func: allofterms(orderId, ${orderId})) {
             orderId
             status
             ticket
@@ -247,12 +242,12 @@ const resolvers: Resolvers = {
 
         // Run query and get order.
         const res = await txn.query(query);
-        order = <OrderDbObject>res.data;
+        order = <Order>res.data;
 
         // Run mutation.
         await txn.mutate({
           setJson: {
-            uid: orderId,
+            orderId,
             status: OrderStatus.Complete,
             ticket: order.ticket,
           },
@@ -265,11 +260,11 @@ const resolvers: Resolvers = {
         await txn.discard();
       }
 
-      return fromDbObject({
-        uid: orderId,
+      return {
+        orderId,
         status: OrderStatus.Complete,
-        ticket: order.ticket,
-      });
+        ticket: order.ticket as any,
+      };
     },
   },
 };

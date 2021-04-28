@@ -1,0 +1,9 @@
+type Ticket @key(fields: "ticketId") {
+  ticketId
+  title
+  price
+}
+
+ticketId: string @index(exact) .
+title: string @index(term) @upsert .
+price: float @index(float) @upsert .

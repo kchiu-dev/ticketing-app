@@ -3,22 +3,10 @@ import { dgraphClientWrapper } from "../DgraphClientWrapper";
 import { UserInputError } from "apollo-server-express";
 import { Txn } from "dgraph-js-http";
 
-interface TicketDbObject {
-  uid: string;
-  title: string;
-  price: number;
-}
-
 const getTransaction = (forRead: boolean): Txn =>
   forRead
     ? dgraphClientWrapper.client.newTxn({ readOnly: true, bestEffort: true })
     : dgraphClientWrapper.client.newTxn();
-
-const fromDbObject = (dbObject: TicketDbObject): Ticket => ({
-  ticketId: dbObject.uid,
-  title: dbObject.title,
-  price: dbObject.price,
-});
 
 const resolvers: Resolvers = {
   Ticket: {
@@ -33,7 +21,7 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          getTicket(ticketId: ${ticketId}) {
+          dgraphGetTicket(func: allofterms(ticketId, ${ticketId})) {
             ticketId
             title
             price
@@ -43,7 +31,7 @@ const resolvers: Resolvers = {
 
         // Run query and get ticket.
         const res = await txn.query(query);
-        ticket = <TicketDbObject>res.data;
+        ticket = <Ticket>res.data;
 
         // Commit transaction.
         await txn.commit();
@@ -52,9 +40,7 @@ const resolvers: Resolvers = {
         await txn.discard();
       }
 
-      return fromDbObject({
-        ...ticket,
-      });
+      return ticket;
     },
   },
   Query: {
@@ -69,8 +55,8 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          dbAllTickets(func: has(uid)) {
-            uid
+          dgraphAllTickets(func: has(title)) {
+            ticketId
             title
             price
           }
@@ -79,7 +65,7 @@ const resolvers: Resolvers = {
 
         // Run query and get all tickets.
         const res = await txn.query(query);
-        allTickets = <TicketDbObject[]>res.data;
+        allTickets = <Ticket[]>res.data;
 
         // Commit transaction.
         await txn.commit();
@@ -87,7 +73,7 @@ const resolvers: Resolvers = {
         // Clean up.
         await txn.discard();
       }
-      return allTickets.map(fromDbObject);
+      return allTickets;
     },
     getTicket: async (_: any, { ticketId }) => {
       // Create a new transaction.
@@ -100,8 +86,8 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          dbTicket(func: eq(uid, ${ticketId})) {
-            uid
+          dgraphGetTicket(func: allofterms(ticketId, ${ticketId})) {
+            ticketId
             title
             price
           }
@@ -110,7 +96,7 @@ const resolvers: Resolvers = {
 
         // Run query and get ticket.
         const res = await txn.query(query);
-        ticket = <TicketDbObject>res.data;
+        ticket = <Ticket>res.data;
 
         if (!ticket) {
           throw new UserInputError("Invalid ticketId");
@@ -123,7 +109,7 @@ const resolvers: Resolvers = {
         await txn.discard();
       }
 
-      return fromDbObject(ticket);
+      return ticket;
     },
   },
   Mutation: {
@@ -160,10 +146,10 @@ const resolvers: Resolvers = {
         await txn.discard();
       }
 
-      return fromDbObject({
-        uid: ticketId,
+      return {
+        ticketId,
         ...data,
-      });
+      };
     },
     updateTicket: async (_: any, { ticketId, data }) => {
       // Create a new transaction.
@@ -180,7 +166,7 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          getTicket(ticketId: ${ticketId}) {
+          dgraphGetTicket(func: allofterms(ticketId, ${ticketId})) {
             ticketId
           }
         }
@@ -192,7 +178,7 @@ const resolvers: Resolvers = {
         // Run mutation.
         await txn.mutate({
           setJson: {
-            uid: ticketId,
+            ticketId,
             ...data,
           },
         });
@@ -204,10 +190,10 @@ const resolvers: Resolvers = {
         await txn.discard();
       }
 
-      return fromDbObject({
-        uid: ticketId,
+      return {
+        ticketId,
         ...data,
-      });
+      };
     },
   },
 };
