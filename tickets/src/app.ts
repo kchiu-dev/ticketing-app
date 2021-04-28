@@ -16,8 +16,8 @@ title: string @index(term) @upsert .
 price: float @index(float) @upsert .
 
 type Ticket {
-  title
-  price
+  title: String
+  price: Float
 }
 `;
 
