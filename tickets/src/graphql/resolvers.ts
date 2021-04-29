@@ -1,7 +1,13 @@
 import { Resolvers, Ticket } from "./types";
 import { dgraphClientWrapper } from "../DgraphClientWrapper";
 import { UserInputError } from "apollo-server-express";
-import { Txn } from "dgraph-js-http";
+import { Txn, Response } from "dgraph-js-http";
+
+interface QueryResponse extends Omit<Response, "data"> {
+  data: {
+    queryResponse: any;
+  };
+}
 
 const getTransaction = (forRead: boolean): Txn =>
   forRead
@@ -21,7 +27,7 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          dgraphGetTicket(func: has(title)) @filter(uid_in(~title, ${ticketId})) {
+          queryResponse(func: has(title)) @filter(uid_in(~title, ${ticketId})) {
             ticketId: uid
             title
             price
@@ -30,8 +36,8 @@ const resolvers: Resolvers = {
         `;
 
         // Run query and get ticket.
-        const res = await txn.query(query);
-        ticket = <Ticket>res.data;
+        const { data } = <QueryResponse>await txn.query(query);
+        ticket = <Ticket>data.queryResponse;
 
         // Commit transaction.
         await txn.commit();
@@ -55,7 +61,7 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          dgraphAllTickets(func: has(title)) {
+          queryResponse(func: has(title)) {
             ticketId: uid
             title
             price
@@ -64,8 +70,8 @@ const resolvers: Resolvers = {
         `;
 
         // Run query and get all tickets.
-        const res = await txn.query(query);
-        allTickets = <Ticket[]>res.data;
+        const { data } = <QueryResponse>await txn.query(query);
+        allTickets = <Ticket[]>data.queryResponse;
 
         // Commit transaction.
         await txn.commit();
@@ -86,7 +92,7 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          dgraphGetTicket(func: has(title)) @filter(uid_in(~title, ${ticketId})) {
+          queryResponse(func: has(title)) @filter(uid_in(~title, ${ticketId})) {
             ticketId: uid
             title
             price
@@ -95,8 +101,8 @@ const resolvers: Resolvers = {
         `;
 
         // Run query and get ticket.
-        const res = await txn.query(query);
-        ticket = <Ticket>res.data;
+        const { data } = <QueryResponse>await txn.query(query);
+        ticket = <Ticket>data.queryResponse;
 
         if (!ticket) {
           throw new UserInputError("Invalid ticketId");
@@ -166,7 +172,7 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          dgraphGetTicket(func: has(title)) @filter(uid_in(~title, ${ticketId})) {
+          queryResponse(func: has(title)) @filter(uid_in(~title, ${ticketId})) {
             ticketId: uid
             title
             price
@@ -175,11 +181,11 @@ const resolvers: Resolvers = {
         `;
 
         // Run query.
-        const res = await txn.query(query);
-        const ticket = <Ticket>res.data;
+        const { data } = <QueryResponse>await txn.query(query);
+        const ticket = <Ticket>data.queryResponse;
 
         if (!ticket) {
-          throw new UserInputError("Invalid ticketId")
+          throw new UserInputError("Invalid ticketId");
         }
 
         // Run mutation.
