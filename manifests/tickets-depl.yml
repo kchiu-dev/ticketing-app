@@ -23,11 +23,29 @@ spec:
                   key: dgraph-uri
           resources:
             requests:
-              memory: '250Mi'
-              cpu: '125m'
+              memory: '125Mi'
+              cpu: '100m'
             limits:
-              memory: '500Mi'
-              cpu: '250m'
+              memory: '250Mi'
+              cpu: '200m'
+      initContainers:
+        - name: tickets-wait-for-dgraph
+          image: curlimages/curl:latest
+          command:
+            - /bin/sh
+            - -c
+          args:
+            - |
+              while [ $(curl -sw '%{http_code}' http://dgraph-public:8080 -o /dev/null) -ne 200 ] do
+                sleep 15;
+              done
+          resources:
+            requests:
+              memory: '125Mi'
+              cpu: '100m'
+            limits:
+              memory: '250Mi'
+              cpu: '200m'
   strategy:
     type: Recreate
 ---
