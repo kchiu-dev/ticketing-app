@@ -44,7 +44,7 @@ spec:
               memory: '125Mi'
               cpu: '100m'
             limits:
-              memroy: '250Mi'
+              memory: '250Mi'
               cpu: '200m'
   strategy:
     type: Recreate
