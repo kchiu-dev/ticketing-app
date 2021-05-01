@@ -38,7 +38,7 @@ spec:
             - |
               while [ $(curl -sw '%{http_code}' http://dgraph-public:8080 -o /dev/null) -ne 200 ]
               do 
-                sleep 15
+                sleep 5
                 echo 'Waiting for Dgraph to start...'
               done
           resources:
