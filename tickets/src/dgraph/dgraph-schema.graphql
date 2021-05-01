@@ -1,5 +1,5 @@
 type Ticket {
-  ticketId: ID!
+  ticketId: String!
   title: String!
   price: Float!
 }
