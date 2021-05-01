@@ -5,7 +5,9 @@ import { Txn, Response } from "dgraph-js-http";
 
 interface QueryResponse extends Omit<Response, "data"> {
   data: {
-    queryResponse: any;
+    getOrder: Order;
+    queryOrder: [Order];
+    getTicket: any;
   };
 }
 
@@ -27,8 +29,8 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          queryResponse(func: has(status)) @filter(uid_in(~status, ${orderId})) {
-            orderId: uid
+          getOrder(orderId: ${orderId}) {
+            orderId
             status
             ticket
           }
@@ -37,7 +39,11 @@ const resolvers: Resolvers = {
 
         // Run query and get order.
         const { data } = <QueryResponse>await txn.query(query);
-        order = <Order>data.queryResponse;
+        order = <Order>data.getOrder;
+
+        if (!order) {
+          throw new UserInputError("Invalid orderId");
+        }
 
         // Commit transaction.
         await txn.commit();
@@ -65,8 +71,8 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          queryResponse(func: has(status)) {
-            orderId: uid
+          queryOrder(filter: { has : orderId } ){
+            orderId
             status
             ticket
           }
@@ -75,7 +81,7 @@ const resolvers: Resolvers = {
 
         // Run query and get all orders.
         const { data } = <QueryResponse>await txn.query(query);
-        allOrders = <Order[]>data.queryResponse;
+        allOrders = <Order[]>data.queryOrder;
 
         // Commit transaction.
         await txn.commit();
@@ -96,8 +102,8 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          queryResponse(func: has(status)) @filter(uid_in(~status, ${orderId})) {
-            orderId: uid
+          getOrder(orderId: ${orderId}) {
+            orderId
             status
             ticket
           }
@@ -106,7 +112,7 @@ const resolvers: Resolvers = {
 
         // Run query and get order.
         const { data } = <QueryResponse>await txn.query(query);
-        order = <Order>data.queryResponse;
+        order = <Order>data.getOrder;
 
         if (!order) {
           throw new UserInputError("Invalid orderId");
@@ -136,15 +142,15 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          queryResponse(func: has(title)) @filter(uid_in(~title, ${ticketId})) {
-            ticketId: uid
+          getTicket(ticketId: ${ticketId}) {
+            ticketId
           }
         }
         `;
 
         // Run query.
         const { data } = <QueryResponse>await txn.query(query);
-        const ticket = data.queryResponse;
+        const ticket = data.getTicket;
 
         if (!ticket) {
           throw new UserInputError("Invalid ticketId");
@@ -189,8 +195,8 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          queryResponse(func: has(status)) @filter(uid_in(~status, ${orderId})) {
-            orderId: uid
+          getOrder(orderId: ${orderId}) {
+            orderId
             status
             ticket
           }
@@ -199,7 +205,7 @@ const resolvers: Resolvers = {
 
         // Run query and get order.
         const { data } = <QueryResponse>await txn.query(query);
-        order = <Order>data.queryResponse;
+        order = <Order>data.getOrder;
 
         if (!order) {
           throw new UserInputError("Invalid orderId");
@@ -238,8 +244,8 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          queryResponse(func: has(status)) @filter(uid_in(~status, ${orderId})) {
-            orderId: uid
+          getOrder(orderId: ${orderId}) {
+            orderId
             status
             ticket
           }
@@ -248,7 +254,11 @@ const resolvers: Resolvers = {
 
         // Run query and get order.
         const { data } = <QueryResponse>await txn.query(query);
-        order = <Order>data.queryResponse;
+        order = <Order>data.getOrder;
+
+        if (!order) {
+          throw new UserInputError("Invalid orderId");
+        }
 
         // Run mutation.
         await txn.mutate({

@@ -5,7 +5,8 @@ import { Txn, Response } from "dgraph-js-http";
 
 interface QueryResponse extends Omit<Response, "data"> {
   data: {
-    queryResponse: any;
+    getTicket: Ticket;
+    queryTicket: [Ticket];
   };
 }
 
@@ -27,8 +28,8 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          queryResponse(func: has(title)) @filter(uid_in(~title, ${ticketId})) {
-            ticketId: uid
+          getTicket(ticketId: ${ticketId}) {
+            ticketId
             title
             price
           }
@@ -37,7 +38,11 @@ const resolvers: Resolvers = {
 
         // Run query and get ticket.
         const { data } = <QueryResponse>await txn.query(query);
-        ticket = <Ticket>data.queryResponse;
+        ticket = <Ticket>data.getTicket;
+
+        if (!ticket) {
+          throw new UserInputError("Invalid ticketId");
+        }
 
         // Commit transaction.
         await txn.commit();
@@ -61,8 +66,8 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          queryResponse(func: has(title)) {
-            ticketId: uid
+          queryTicket(filter: { has : ticketId } ){
+            ticketId
             title
             price
           }
@@ -71,7 +76,7 @@ const resolvers: Resolvers = {
 
         // Run query and get all tickets.
         const { data } = <QueryResponse>await txn.query(query);
-        allTickets = <Ticket[]>data.queryResponse;
+        allTickets = <Ticket[]>data.queryTicket;
 
         // Commit transaction.
         await txn.commit();
@@ -92,8 +97,8 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          queryResponse(func: has(title)) @filter(uid_in(~title, ${ticketId})) {
-            ticketId: uid
+          getTicket(ticketId: ${ticketId}) {
+            ticketId
             title
             price
           }
@@ -102,7 +107,7 @@ const resolvers: Resolvers = {
 
         // Run query and get ticket.
         const { data } = <QueryResponse>await txn.query(query);
-        ticket = <Ticket>data.queryResponse;
+        ticket = <Ticket>data.getTicket;
 
         if (!ticket) {
           throw new UserInputError("Invalid ticketId");
@@ -172,8 +177,8 @@ const resolvers: Resolvers = {
         // Create a query.
         const query = `
         {
-          queryResponse(func: has(title)) @filter(uid_in(~title, ${ticketId})) {
-            ticketId: uid
+          getTicket(ticketId: ${ticketId}) {
+            ticketId
             title
             price
           }
@@ -182,7 +187,7 @@ const resolvers: Resolvers = {
 
         // Run query.
         const { data } = <QueryResponse>await txn.query(query);
-        const ticket = <Ticket>data.queryResponse;
+        const ticket = <Ticket>data.getTicket;
 
         if (!ticket) {
           throw new UserInputError("Invalid ticketId");
