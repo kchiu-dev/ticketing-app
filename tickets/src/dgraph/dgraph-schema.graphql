@@ -1,4 +1,3 @@
-id: string @index(term) .
 type Ticket {
   id: ID!
   title: String!

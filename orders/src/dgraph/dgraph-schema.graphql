@@ -1,4 +1,3 @@
-id: string @index(term) .
 type Order {
   id: ID!
   status: String!
