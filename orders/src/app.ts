@@ -11,7 +11,13 @@ const app = express();
 
 const schema = buildFederatedSchema([{ typeDefs, resolvers }]);
 
-const dgraphSchemaString = print(dgraphSchema);
+const dgraphSchemaString = `
+  type Order {
+    id: ID!
+    status: String!
+    ticket: Ticket!
+  }
+`;
 
 const server = new ApolloServer({ schema });
 
