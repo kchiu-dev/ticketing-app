@@ -11,13 +11,7 @@ const app = express();
 
 const schema = buildFederatedSchema([{ typeDefs, resolvers }]);
 
-const dgraphSchemaString = `
-  type Ticket {
-    id: ID!
-    title: String!
-    price: Float!
-  }
-`;
+const dgraphSchemaString = print(dgraphSchema);
 
 const server = new ApolloServer({ schema });
 

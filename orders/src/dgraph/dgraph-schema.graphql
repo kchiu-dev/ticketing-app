@@ -1,5 +1,6 @@
+id: string @index(term) .
 type Order {
-  abc: String!
+  id: ID!
   status: String!
   ticket: Ticket!
 }

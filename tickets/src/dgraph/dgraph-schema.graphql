@@ -1,5 +1,6 @@
+id: string @index(term) .
 type Ticket {
-  abc: String!
+  id: ID!
   title: String!
   price: Float!
 }
