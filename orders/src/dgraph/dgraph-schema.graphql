@@ -1,5 +1,4 @@
 type Order {
-  orderId: String!
   status: String!
   ticket: Ticket!
 }
