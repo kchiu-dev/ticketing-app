@@ -36,14 +36,16 @@ spec:
             - -c
           args:
             - |
-              echo 'Starting to wait for Dgraph to run'
-              while [ $(curl -w '%{response_code}' http://dgraph-public:8080 -o /dev/null) -ne 200 ]
+              echo Starting to wait for Dgraph to run
+              while [ $(curl -w %{response_code} http://dgraph-public:8080 -o /dev/null) -ne 200 ]
               do
-                echo 'Waiting for Dgraph to run...'
+                echo Waiting for Dgraph to run...
                 sleep 5
               done
-              echo 'Dgraph is running'
-              echo 'Upload schema to Dgraph'
+              echo Dgraph is running
+              echo Upload schema to Dgraph
+              echo The current path is $(pwd)
+              echo The current directory is $(ls)
               curl -X POST http://dgraph-public:8080/admin/schema --data-binary '@src/dgraph/dgraph-schema.graphql'
           resources:
             requests:
