@@ -1,4 +1,4 @@
-import { app, dgraphSchemaString } from "./app";
+import { app } from "./app";
 import { dgraphClientWrapper } from "./DgraphClientWrapper";
 
 const start = async () => {
@@ -11,8 +11,6 @@ const start = async () => {
   try {
     dgraphClientWrapper.connect(process.env.DGRAPH_URI);
     console.log("Connected to Dgraph");
-    await dgraphClientWrapper.setSchema(dgraphSchemaString);
-    console.log("Tickets Schema Loaded to Dgraph");
   } catch (err) {
     console.error(err);
   }
