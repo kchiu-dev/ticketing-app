@@ -15,6 +15,13 @@ spec:
       containers:
         - name: tickets
           image: okteto/tickets:buildTag
+          command:
+            - /bin/sh
+            - -c
+          args:
+            - |
+              echo Upload schema to Dgraph
+              curl -X POST http://dgraph-public:8080/admin/schema --data-binary '@src/dgraph/dgraph-schema.graphql'
           env:
             - name: DGRAPH_URI
               valueFrom:
@@ -43,10 +50,6 @@ spec:
                 sleep 5
               done
               echo Dgraph is running
-              echo Upload schema to Dgraph
-              echo The current path is $(pwd)
-              echo The current directory is $(ls)
-              curl -X POST http://dgraph-public:8080/admin/schema --data-binary '@src/dgraph/dgraph-schema.graphql'
           resources:
             requests:
               memory: '125Mi'
