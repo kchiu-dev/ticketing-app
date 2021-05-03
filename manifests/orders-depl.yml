@@ -44,7 +44,7 @@ spec:
           args:
             - |
               echo Starting to wait for Dgraph to run
-              while [ $(curl -w %{response_code} http://dgraph-public:8080 -o /dev/null) -ne 200 ]
+              while [ $(curl -sw %{response_code} http://dgraph-public:8080 -o /dev/null) -ne 200 ]
               do
                 echo Waiting for Dgraph to run...
                 sleep 5

@@ -1,5 +1,15 @@
-type Order {
-  id: ID!
-  status: String!
+enum OrderStatus {
+  CREATED
+  CANCELLED
+  COMPLETE
+}
+
+extend type Ticket @key(fields: "ticketId") {
+  ticketId: String! @id @external
+}
+
+type Order @key(fields: "orderId") {
+  orderId: ID!
+  status: OrderStatus!
   ticket: Ticket!
 }
