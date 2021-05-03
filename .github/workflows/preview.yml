@@ -27,11 +27,10 @@ jobs:
       - name: Wait for deployment to finish
         run: |
           sleep 5m
-          
+
       - name: Register Dgraph schemas
-        uses: okteto/namespace@master
-        with:
-          name: kch-chiu
+        env:
+          KUBECONFIG: ${{ secrets.KUBECONFIG }}
         run: |
           TICKETS_POD=$(kubectl get pod -l app=tickets -o jsonpath="{.items[0].metadata.name}")
           ORDERS_POD=$(kubectl get pod -l app=orders -o jsonpath="{.items[0].metadata.name}")
