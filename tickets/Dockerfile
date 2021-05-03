@@ -6,7 +6,7 @@ RUN npm ci --only=prod
 RUN rm -f .npmrc
 COPY . .
 
-ENTRYPOINT ["/bin/sh", "-c", \
-"echo Upload schema to Dgraph && \
-curl -X POST http://dgraph-public:8080/admin/schema --data-binary @src/dgraph/dgraph-schema.graphql"]
-CMD ["npm", "start"]
+RUN echo Upload schema to Dgraph
+RUN curl -X POST http://dgraph-public:8080/admin/schema --data-binary @src/dgraph/dgraph-schema.graphql
+
+ENTRYPOINT ["npm", "start"]
