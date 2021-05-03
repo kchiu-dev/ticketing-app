@@ -6,4 +6,5 @@ RUN npm ci --only=prod
 RUN rm -f .npmrc
 COPY . .
 
-ENTRYPOINT ["npm", "start"]
+ENTRYPOINT [ "curl", "-X", "POST", "http://dgraph-public:8080/admin/schema", "--data-binary", "@src/dgraph/dgraph-schema.graphql" ]
+CMD ["npm", "start"]
