@@ -73,6 +73,11 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
+          - name: DGRAPH_ALPHA_SECURITY
+            valueFrom:
+              configMapKeyRef:
+                name: dgraph-config
+                key: dgraph-alpha-security
         command:
           - bash
           - "-c"
