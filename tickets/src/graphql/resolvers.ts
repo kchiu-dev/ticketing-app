@@ -115,10 +115,12 @@ const resolvers: Resolvers = {
         throw new UserInputError("Price must be greater than 0");
       }
 
+      const addition = inputData;
+
       // Create a mutation.
       const mutation = `
         mutation {
-          addTicket(input: ${inputData}) {
+          addTicket(input: ${addition}) {
             ticket {
               ticketId
               title
@@ -128,7 +130,7 @@ const resolvers: Resolvers = {
         }
       `;
 
-      // Run mutation and get ticketId.
+      // Run mutation.
       const { data, errors } = <FetchResult<Ticket>>await client.mutate({
         mutation: gql`
           ${mutation}

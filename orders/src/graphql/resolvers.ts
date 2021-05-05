@@ -1,58 +1,52 @@
 import { Resolvers, OrderStatus, Order } from "./types";
-import { dgraphClientWrapper } from "../DgraphClientWrapper";
+import { apolloClientWrapper } from "../ApolloClientWrapper";
 import { UserInputError } from "apollo-server-express";
-import { Txn, Response } from "dgraph-js-http";
+import {
+  ApolloClient,
+  ApolloQueryResult,
+  FetchResult,
+  gql,
+} from "@apollo/client";
 
-interface QueryResponse extends Omit<Response, "data"> {
-  data: {
-    getOrder: Order;
-    queryOrder: [Order];
-    getTicket: any;
-  };
+interface OrderData {
+  getOrder: Order;
+  allOrders: [Order];
 }
 
-const getTransaction = (forRead: boolean): Txn =>
-  forRead
-    ? dgraphClientWrapper.client.newTxn({ readOnly: true, bestEffort: true })
-    : dgraphClientWrapper.client.newTxn();
+const getClient = (): ApolloClient<any> => apolloClientWrapper.client;
 
 const resolvers: Resolvers = {
   Order: {
     __resolveReference: async ({ orderId }) => {
-      // Create a new transaction
-      const forRead = true;
-      const txn = getTransaction(forRead);
+      // Get an instance of Apollo Client.
+      const client = getClient();
 
-      let order;
-
-      try {
+      
         // Create a query.
         const query = `
-        {
-          getOrder(orderId: ${orderId}) {
-            orderId
-            status
-            ticket
+          query {
+            getOrder(orderId: ${orderId}) {
+              orderId
+              status
+              ticket
+            }
           }
-        }
         `;
 
         // Run query and get order.
-        const { data } = <QueryResponse>await txn.query(query);
-        order = <Order>data.getOrder;
+        const { data, errors } = <ApolloQueryResult<OrderData>>(
+          await client.query({
+            query: gql`
+              ${query}
+            `,
+          })
+        );
 
-        if (!order) {
+        if (errors) {
           throw new UserInputError("Invalid orderId");
         }
 
-        // Commit transaction.
-        await txn.commit();
-      } finally {
-        // Clean up transaction.
-        await txn.discard();
-      }
-
-      return order;
+        return data.getOrder;
     },
     //@ts-ignore
     ticket: ({ ticket }: any) => {
@@ -61,226 +55,173 @@ const resolvers: Resolvers = {
   },
   Query: {
     allOrders: async () => {
-      // Create a new transaction.
-      const forRead = true;
-      const txn = getTransaction(forRead);
+      // Get an instance of Apollo Client.
+      const client = getClient();
 
-      let allOrders;
-
-      try {
         // Create a query.
         const query = `
-        {
-          queryOrder(filter: { has : orderId } ){
-            orderId
-            status
-            ticket
+          query {
+            queryOrder(filter: { has : orderId } ){
+              orderId
+              status
+              ticket
+            }
           }
-        }
         `;
 
         // Run query and get all orders.
-        const { data } = <QueryResponse>await txn.query(query);
-        allOrders = <Order[]>data.queryOrder;
+        const { data } = <ApolloQueryResult<OrderData>>await client.query({
+          query: gql`
+            ${query}
+          `,
+        });
 
-        // Commit transaction.
-        await txn.commit();
-      } finally {
-        // Clean up.
-        await txn.discard();
-      }
-      return allOrders;
+        return data.allOrders;
     },
     getOrder: async (_: any, { orderId }) => {
-      // Create a new transaction.
-      const forRead = true;
-      const txn = getTransaction(forRead);
+      // Get an instance of Apollo Client.
+      const client = getClient();
 
-      let order;
-
-      try {
         // Create a query.
         const query = `
-        {
-          getOrder(orderId: ${orderId}) {
-            orderId
-            status
-            ticket
+          query {
+            getOrder(orderId: ${orderId}) {
+              orderId
+              status
+              ticket
+            }
           }
-        }
         `;
 
         // Run query and get order.
-        const { data } = <QueryResponse>await txn.query(query);
-        order = <Order>data.getOrder;
+        const { data, errors } = <ApolloQueryResult<OrderData>>(
+          await client.query({
+            query: gql`
+              ${query}
+            `
+          })
+        );
 
-        if (!order) {
+        if (errors) {
           throw new UserInputError("Invalid orderId");
         }
 
-        // Commit transaction.
-        await txn.commit();
-      } finally {
-        // Clean up.
-        await txn.discard();
-      }
-
-      return order;
+        return data.getOrder;
     },
   },
   Mutation: {
-    createOrder: async (_: any, { data }) => {
-      // Create a new transaction.
-      const forRead = false;
-      const txn = getTransaction(forRead);
+    createOrder: async (_: any, { data: inputData }) => {
+      // Get an instance of Apollo Client.
+      const client = getClient();
 
-      let orderId;
-
-      const { ticketId } = data;
-
-      try {
-        // Create a query.
-        const query = `
-        {
-          getTicket(ticketId: ${ticketId}) {
-            ticketId
-          }
-        }
-        `;
-
-        // Run query.
-        const { data } = <QueryResponse>await txn.query(query);
-        const ticket = data.getTicket;
-
-        if (!ticket) {
-          throw new UserInputError("Invalid ticketId");
-        }
-
-        // Run mutation and get orderId.
-        const assigned = await txn.mutate({
-          setJson: {
-            status: OrderStatus.Created,
-            ticket: ticketId,
-          },
-        });
-        orderId = assigned.data.uids["blank-0"];
-
-        console.log("All created nodes (map from blank node names to uids):");
-        Object.keys(assigned.data.uids).forEach((key) =>
-          console.log(`${key} => ${assigned.data.uids[key]}`)
-        );
-        console.log();
-
-        // Commit transaction.
-        await txn.commit();
-      } finally {
-        // Clean up.
-        await txn.discard();
+      const addition = { 
+        ...inputData, 
+        status: OrderStatus.Created 
       }
 
-      return {
-        orderId,
-        status: OrderStatus.Created,
-        ticket: ticketId as any,
-      };
+      // Create a mutation.
+      const mutation = `
+        mutation {
+          addOrder(input: ${addition}) {
+            order {
+              orderId
+              status
+              ticket
+            }
+          }
+        }
+      `;
+
+      // Run mutation.
+      const { data, errors } = <FetchResult<Order>>await client.mutate({
+        mutation: gql`
+          ${mutation}
+        `,
+      });
+
+      if (errors) {
+        throw new UserInputError("Invalid ticketId");
+      }
+
+      return <Order>data;
     },
     cancelOrder: async (_: any, { orderId }) => {
-      // Create a new transaction.
-      const forRead = false;
-      const txn = getTransaction(forRead);
+      // Get an instance of Apollo Client.
+      const client = getClient();
 
-      let order;
+      const patch = {
+        filter: {
+          orderId,
+        },
+        set: {
+          status: OrderStatus.Cancelled
+        }
+      };
 
-      try {
-        // Create a query.
-        const query = `
-        {
-          getOrder(orderId: ${orderId}) {
-            orderId
-            status
-            ticket
+      // Create a mutation.
+      const mutation = `
+        mutation {
+          updateOrder(input: ${patch}) {
+            order {
+              orderId
+              status
+              ticket
+            }
           }
         }
-        `;
+      `;
 
-        // Run query and get order.
-        const { data } = <QueryResponse>await txn.query(query);
-        order = <Order>data.getOrder;
+      // Run mutation.
+      const { data, errors } = <FetchResult<Order>>await client.mutate({
+        mutation: gql`
+          ${mutation}
+        `,
+      });
 
-        if (!order) {
-          throw new UserInputError("Invalid orderId");
-        }
-
-        // Run mutation.
-        await txn.mutate({
-          setJson: {
-            orderId,
-            status: OrderStatus.Cancelled,
-            ticket: order.ticket,
-          },
-        });
-
-        // Commit transaction.
-        await txn.commit();
-      } finally {
-        // Clean up.
-        await txn.discard();
+      if (errors) {
+        throw new UserInputError("Invalid orderId");
       }
 
-      return {
-        orderId,
-        status: OrderStatus.Cancelled,
-        ticket: order.ticket as any,
-      };
+      return <Order>data;
     },
     completeOrder: async (_: any, { orderId }) => {
-      // Create a new transaction.
-      const forRead = false;
-      const txn = getTransaction(forRead);
+      // Get an instance of Apollo Client.
+      const client = getClient();
 
-      let order;
+      const patch = {
+        filter: {
+          orderId,
+        },
+        set: {
+          status: OrderStatus.Complete
+        },
+      };
 
-      try {
-        // Create a query.
-        const query = `
-        {
-          getOrder(orderId: ${orderId}) {
-            orderId
-            status
-            ticket
+      // Create a mutation.
+      const mutation = `
+        mutation {
+          updateOrder(input: ${patch}) {
+            order {
+              orderId
+              status
+              ticket
+            }
           }
         }
-        `;
+      `;
 
-        // Run query and get order.
-        const { data } = <QueryResponse>await txn.query(query);
-        order = <Order>data.getOrder;
+      // Run mutation.
+      const { data, errors } = <FetchResult<Order>>await client.mutate({
+        mutation: gql`
+          ${mutation}
+        `,
+      });
 
-        if (!order) {
-          throw new UserInputError("Invalid orderId");
-        }
-
-        // Run mutation.
-        await txn.mutate({
-          setJson: {
-            orderId,
-            status: OrderStatus.Complete,
-            ticket: order.ticket,
-          },
-        });
-
-        // Commit transaction.
-        await txn.commit();
-      } finally {
-        // Clean up.
-        await txn.discard();
+      if (errors) {
+        throw new UserInputError("Invalid orderId");
       }
 
-      return {
-        orderId,
-        status: OrderStatus.Complete,
-        ticket: order.ticket as any,
-      };
+      return <Order>data;
     },
   },
 };

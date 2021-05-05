@@ -21,10 +21,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@apollo/client": "^3.3.16",
     "@apollo/federation": "^0.23.0",
     "@kch-chiu/common": "^1.0.57",
     "apollo-server-express": "^2.22.2",
-    "dgraph-js-http": "^21.3.0",
     "express": "^4.17.1",
     "graphql": "^15.5.0",
     "graphql-import-node": "0.0.4",

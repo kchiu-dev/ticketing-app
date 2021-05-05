@@ -1,5 +1,5 @@
 import { app } from "./app";
-import { dgraphClientWrapper } from "./DgraphClientWrapper";
+import { apolloClientWrapper } from "./ApolloClientWrapper";
 
 const start = async () => {
   console.log("Starting.............");
@@ -9,7 +9,7 @@ const start = async () => {
   }
 
   try {
-    dgraphClientWrapper.connect(process.env.DGRAPH_URI);
+    apolloClientWrapper.connect(process.env.DGRAPH_URI);
     console.log("Connected to Dgraph");
   } catch (err) {
     console.error(err);
