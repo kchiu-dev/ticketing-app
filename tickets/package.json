@@ -21,6 +21,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@apollo/client": "^3.3.16",
     "@apollo/federation": "^0.22.0",
     "@kch-chiu/common": "^1.0.57",
     "apollo-server-express": "^2.21.2",

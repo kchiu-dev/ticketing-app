@@ -1,6 +1,8 @@
 import { app } from "./app";
 import { graphQLClientWrapper } from "./GraphQLClientWrapper";
 
+import { ApolloClient, InMemoryCache } from "@apollo/client";
+
 const start = async () => {
   console.log("Starting.............");
 
@@ -9,7 +11,11 @@ const start = async () => {
   }
 
   try {
-    graphQLClientWrapper.connect(process.env.DGRAPH_URI);
+    //graphQLClientWrapper.connect(process.env.DGRAPH_URI);
+    new ApolloClient({
+      uri: process.env.DGRAPH_URI,
+      cache: new InMemoryCache(),
+    });
     console.log("Connected to Dgraph");
   } catch (err) {
     console.error(err);
