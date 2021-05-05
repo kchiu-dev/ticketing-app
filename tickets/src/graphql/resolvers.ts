@@ -46,7 +46,7 @@ const resolvers: Resolvers = {
       // Create a query.
       const query = gql`
         query {
-          queryTicket(filter: { has: ticketId }) {
+          allTickets: queryTicket(filter: { has: ticketId }) {
             ticketId
             title
             price

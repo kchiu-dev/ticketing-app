@@ -50,7 +50,7 @@ const resolvers: Resolvers = {
       // Create a query.
       const query = gql`
         query {
-          queryOrder(filter: { has: orderId }) {
+          allOrders: queryOrder(filter: { has: orderId }) {
             orderId
             status
             ticket
