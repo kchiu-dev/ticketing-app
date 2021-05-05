@@ -1,19 +1,14 @@
 import { Resolvers, Ticket } from "./types";
-import { apolloClientWrapper } from "../ApolloClientWrapper";
+import { graphQLClientWrapper } from "../GraphQLClientWrapper";
 import { UserInputError } from "apollo-server-express";
-import {
-  ApolloClient,
-  ApolloQueryResult,
-  FetchResult,
-  gql,
-} from "@apollo/client";
+import { GraphQLClient, gql } from "graphql-request";
 
 interface TicketData {
   getTicket: Ticket;
   allTickets: [Ticket];
 }
 
-const getClient = (): ApolloClient<any> => apolloClientWrapper.client;
+const getClient = (): GraphQLClient => graphQLClientWrapper.client;
 
 const resolvers: Resolvers = {
   Ticket: {
@@ -22,7 +17,7 @@ const resolvers: Resolvers = {
       const client = getClient();
 
       // Create a query.
-      const query = `
+      const query = gql`
         query {
           getTicket(ticketId: ${ticketId}) {
             ticketId
@@ -33,15 +28,10 @@ const resolvers: Resolvers = {
       `;
 
       // Run query and get ticket.
-      const { data, errors } = <ApolloQueryResult<TicketData>>(
-        await client.query({
-          query: gql`
-            ${query}
-          `,
-        })
-      );
-
-      if (errors) {
+      let data;
+      try {
+        data = <TicketData>await client.request(query);
+      } catch (error) {
         throw new UserInputError("Invalid ticketId");
       }
 
@@ -54,9 +44,9 @@ const resolvers: Resolvers = {
       const client = getClient();
 
       // Create a query.
-      const query = `
+      const query = gql`
         query {
-          queryTicket(filter: { has : ticketId } ){
+          queryTicket(filter: { has: ticketId }) {
             ticketId
             title
             price
@@ -65,11 +55,12 @@ const resolvers: Resolvers = {
       `;
 
       // Run query and get all tickets.
-      const { data } = <ApolloQueryResult<TicketData>>await client.query({
-        query: gql`
-          ${query}
-        `,
-      });
+      let data;
+      try {
+        data = <TicketData>await client.request(query);
+      } catch (error) {
+        throw new UserInputError("Cannot fetch tickets");
+      }
 
       return data.allTickets;
     },
@@ -78,7 +69,7 @@ const resolvers: Resolvers = {
       const client = getClient();
 
       // Create a query.
-      const query = `
+      const query = gql`
         query {
           getTicket(ticketId: ${ticketId}) {
             ticketId
@@ -89,15 +80,10 @@ const resolvers: Resolvers = {
       `;
 
       // Run query and get ticket.
-      const { data, errors } = <ApolloQueryResult<TicketData>>(
-        await client.query({
-          query: gql`
-            ${query}
-          `,
-        })
-      );
-
-      if (errors) {
+      let data;
+      try {
+        data = <TicketData>await client.request(query);
+      } catch (error) {
         throw new UserInputError("Invalid ticketId");
       }
 
@@ -118,7 +104,7 @@ const resolvers: Resolvers = {
       const addition = inputData;
 
       // Create a mutation.
-      const mutation = `
+      const mutation = gql`
         mutation {
           addTicket(input: ${addition}) {
             ticket {
@@ -131,17 +117,14 @@ const resolvers: Resolvers = {
       `;
 
       // Run mutation.
-      const { data, errors } = <FetchResult<Ticket>>await client.mutate({
-        mutation: gql`
-          ${mutation}
-        `,
-      });
-
-      if (errors) {
+      let data;
+      try {
+        data = <Ticket>await client.request(mutation);
+      } catch (error) {
         throw new UserInputError("Title can't be empty");
       }
 
-      return <Ticket>data;
+      return data;
     },
     updateTicket: async (_: any, { ticketId, data: inputData }) => {
       // Get an instance of Apollo Client.
@@ -163,7 +146,7 @@ const resolvers: Resolvers = {
       };
 
       // Create a mutation.
-      const mutation = `
+      const mutation = gql`
         mutation {
           updateTicket(input: ${patch}) {
             ticket {
@@ -176,17 +159,14 @@ const resolvers: Resolvers = {
       `;
 
       // Run mutation.
-      const { data, errors } = <FetchResult<Ticket>>await client.mutate({
-        mutation: gql`
-          ${mutation}
-        `,
-      });
-
-      if (errors) {
+      let data;
+      try {
+        data = <Ticket>await client.request(mutation);
+      } catch (errors) {
         throw new UserInputError("Invalid ticketId");
       }
 
-      return <Ticket>data;
+      return data;
     },
   },
 };

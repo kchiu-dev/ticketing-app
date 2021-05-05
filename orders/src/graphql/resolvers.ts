@@ -1,19 +1,14 @@
 import { Resolvers, OrderStatus, Order } from "./types";
-import { apolloClientWrapper } from "../ApolloClientWrapper";
+import { graphQLClientWrapper } from "../GraphQLClientWrapper";
 import { UserInputError } from "apollo-server-express";
-import {
-  ApolloClient,
-  ApolloQueryResult,
-  FetchResult,
-  gql,
-} from "@apollo/client";
+import { GraphQLClient, gql } from "graphql-request";
 
 interface OrderData {
   getOrder: Order;
   allOrders: [Order];
 }
 
-const getClient = (): ApolloClient<any> => apolloClientWrapper.client;
+const getClient = (): GraphQLClient => graphQLClientWrapper.client;
 
 const resolvers: Resolvers = {
   Order: {
@@ -21,9 +16,8 @@ const resolvers: Resolvers = {
       // Get an instance of Apollo Client.
       const client = getClient();
 
-      
-        // Create a query.
-        const query = `
+      // Create a query.
+      const query = gql`
           query {
             getOrder(orderId: ${orderId}) {
               orderId
@@ -33,20 +27,15 @@ const resolvers: Resolvers = {
           }
         `;
 
-        // Run query and get order.
-        const { data, errors } = <ApolloQueryResult<OrderData>>(
-          await client.query({
-            query: gql`
-              ${query}
-            `,
-          })
-        );
+      // Run query and get order.
+      let data;
+      try {
+        data = <OrderData>await client.request(query);
+      } catch (error) {
+        throw new UserInputError("Invalid orderId");
+      }
 
-        if (errors) {
-          throw new UserInputError("Invalid orderId");
-        }
-
-        return data.getOrder;
+      return data.getOrder;
     },
     //@ts-ignore
     ticket: ({ ticket }: any) => {
@@ -58,32 +47,33 @@ const resolvers: Resolvers = {
       // Get an instance of Apollo Client.
       const client = getClient();
 
-        // Create a query.
-        const query = `
-          query {
-            queryOrder(filter: { has : orderId } ){
-              orderId
-              status
-              ticket
-            }
+      // Create a query.
+      const query = gql`
+        query {
+          queryOrder(filter: { has: orderId }) {
+            orderId
+            status
+            ticket
           }
-        `;
+        }
+      `;
 
-        // Run query and get all orders.
-        const { data } = <ApolloQueryResult<OrderData>>await client.query({
-          query: gql`
-            ${query}
-          `,
-        });
+      // Run query and get all orders.
+      let data;
+      try {
+        data = <OrderData>await client.request(query);
+      } catch (error) {
+        throw new UserInputError("Cannot fetch orders");
+      }
 
-        return data.allOrders;
+      return data.allOrders;
     },
     getOrder: async (_: any, { orderId }) => {
       // Get an instance of Apollo Client.
       const client = getClient();
 
-        // Create a query.
-        const query = `
+      // Create a query.
+      const query = gql`
           query {
             getOrder(orderId: ${orderId}) {
               orderId
@@ -93,20 +83,15 @@ const resolvers: Resolvers = {
           }
         `;
 
-        // Run query and get order.
-        const { data, errors } = <ApolloQueryResult<OrderData>>(
-          await client.query({
-            query: gql`
-              ${query}
-            `
-          })
-        );
+      // Run query and get order.
+      let data;
+      try {
+        data = <OrderData>await client.request(query);
+      } catch (error) {
+        throw new UserInputError("Invalid orderId");
+      }
 
-        if (errors) {
-          throw new UserInputError("Invalid orderId");
-        }
-
-        return data.getOrder;
+      return data.getOrder;
     },
   },
   Mutation: {
@@ -114,13 +99,13 @@ const resolvers: Resolvers = {
       // Get an instance of Apollo Client.
       const client = getClient();
 
-      const addition = { 
-        ...inputData, 
-        status: OrderStatus.Created 
-      }
+      const addition = {
+        ...inputData,
+        status: OrderStatus.Created,
+      };
 
       // Create a mutation.
-      const mutation = `
+      const mutation = gql`
         mutation {
           addOrder(input: ${addition}) {
             order {
@@ -133,17 +118,14 @@ const resolvers: Resolvers = {
       `;
 
       // Run mutation.
-      const { data, errors } = <FetchResult<Order>>await client.mutate({
-        mutation: gql`
-          ${mutation}
-        `,
-      });
-
-      if (errors) {
-        throw new UserInputError("Invalid ticketId");
+      let data;
+      try {
+        data = <Order>await client.request(mutation);
+      } catch (error) {
+        throw new UserInputError("Invalid tickedId");
       }
 
-      return <Order>data;
+      return data;
     },
     cancelOrder: async (_: any, { orderId }) => {
       // Get an instance of Apollo Client.
@@ -154,12 +136,12 @@ const resolvers: Resolvers = {
           orderId,
         },
         set: {
-          status: OrderStatus.Cancelled
-        }
+          status: OrderStatus.Cancelled,
+        },
       };
 
       // Create a mutation.
-      const mutation = `
+      const mutation = gql`
         mutation {
           updateOrder(input: ${patch}) {
             order {
@@ -172,17 +154,14 @@ const resolvers: Resolvers = {
       `;
 
       // Run mutation.
-      const { data, errors } = <FetchResult<Order>>await client.mutate({
-        mutation: gql`
-          ${mutation}
-        `,
-      });
-
-      if (errors) {
+      let data;
+      try {
+        data = <Order>await client.request(mutation);
+      } catch (errors) {
         throw new UserInputError("Invalid orderId");
       }
 
-      return <Order>data;
+      return data;
     },
     completeOrder: async (_: any, { orderId }) => {
       // Get an instance of Apollo Client.
@@ -193,12 +172,12 @@ const resolvers: Resolvers = {
           orderId,
         },
         set: {
-          status: OrderStatus.Complete
+          status: OrderStatus.Complete,
         },
       };
 
       // Create a mutation.
-      const mutation = `
+      const mutation = gql`
         mutation {
           updateOrder(input: ${patch}) {
             order {
@@ -211,17 +190,14 @@ const resolvers: Resolvers = {
       `;
 
       // Run mutation.
-      const { data, errors } = <FetchResult<Order>>await client.mutate({
-        mutation: gql`
-          ${mutation}
-        `,
-      });
-
-      if (errors) {
+      let data;
+      try {
+        data = <Order>await client.request(mutation);
+      } catch (errors) {
         throw new UserInputError("Invalid orderId");
       }
 
-      return <Order>data;
+      return data;
     },
   },
 };
