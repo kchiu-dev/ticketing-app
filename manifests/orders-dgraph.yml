@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: dgraph-public
+  name: orders-dgraph-srv
   labels:
-    app: dgraph
+    app: orders-dgraph
 spec:
   type: ClusterIP
   ports:
@@ -21,23 +21,23 @@ spec:
     targetPort: 9080
     name: grpc-alpha
   selector:
-    app: dgraph
+    app: orders-dgraph
 ---
 # This StatefulSet runs 1 pod with one Zero container and one Alpha container.
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: dgraph
+  name: orders-dgraph
 spec:
-  serviceName: "dgraph"
+  serviceName: "orders-dgraph"
   replicas: 1
   selector:
       matchLabels:
-        app: dgraph
+        app: orders-dgraph
   template:
     metadata:
       labels:
-        app: dgraph
+        app: orders-dgraph
     spec:
       containers:
       - name: zero
@@ -101,4 +101,4 @@ spec:
         - "ReadWriteOnce"
       resources:
         requests:
-          storage: 5Gi
+          storage: 1Gi
