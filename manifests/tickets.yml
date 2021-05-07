@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: orders-depl
+  name: tickets
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: orders
+      app: tickets
   template:
     metadata:
       labels:
-        app: orders
+        app: tickets
     spec:
       containers:
-        - name: orders
-          image: okteto/orders:buildTag
+        - name: tickets
+          image: okteto/tickets:buildTag
           env:
             - name: DGRAPH_URI
               valueFrom:
@@ -29,7 +29,7 @@ spec:
               memory: '250Mi'
               cpu: '200m'
       initContainers:
-        - name: orders-wait-for-dgraph
+        - name: tickets-wait-for-dgraph
           image: curlimages/curl:latest
           command:
             - /bin/sh
@@ -56,12 +56,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: orders-srv
+  name: tickets-srv
 spec:
   selector:
-    app: orders
+    app: tickets
   ports:
-    - name: orders
+    - name: tickets
       protocol: TCP
-      port: 4002
-      targetPort: 4002
+      port: 4001
+      targetPort: 4001

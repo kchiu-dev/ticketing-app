@@ -3,10 +3,10 @@ kind: Kustomization
 
 resources:
   - dgraph-single.yml
-  - tickets-depl.yml
-  - orders-depl.yml
-  - ingress-srv.yml
-  - gateway-depl.yml
+  - tickets.yml
+  - orders.yml
+  - ingress.yml
+  - gateway.yml
 
 configMapGenerator:
   - name: client-config
