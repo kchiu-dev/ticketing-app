@@ -7,6 +7,7 @@ resources:
   - orders.yml
   - ingress.yml
   - gateway.yml
+  - gateway-dgraph.yml
 
 configMapGenerator:
   - name: client-config
@@ -21,9 +22,12 @@ configMapGenerator:
   - name: gateway-config
     literals:
       - node-env=production
+  - name: gateway-dgraph-config
+    literals:
+      - node-env=production
+      - gateway-dgraph-url=http://gateway-dgraph-srv:5000/graphql
   - name: dgraph-config
     literals:
-      - dgraph-uri=http://dgraph-public:8080
       - dgraph-alpha-security="whitelist=0.0.0.0/0"
 
 secretGenerator:

@@ -16,11 +16,11 @@ spec:
         - name: tickets
           image: okteto/tickets:buildTag
           env:
-            - name: DGRAPH_URI
+            - name: GATEWAY_DGRAPH_URL
               valueFrom:
                 configMapKeyRef:
-                  name: dgraph-config
-                  key: dgraph-uri
+                  name: gateway-dgraph-config
+                  key: gateway-dgraph-url
           resources:
             requests:
               memory: '125Mi'
@@ -29,20 +29,20 @@ spec:
               memory: '250Mi'
               cpu: '200m'
       initContainers:
-        - name: tickets-wait-for-dgraph
+        - name: tickets-wait-for-gateway-dgraph
           image: curlimages/curl:latest
           command:
             - /bin/sh
             - -c
           args:
             - |
-              echo Starting to wait for Dgraph to run
-              while [ $(curl -sw %{response_code} http://dgraph-public:8080 -o /dev/null) -ne 200 ]
+              echo Starting to wait for gateway-dgraph to run
+              while [ $(curl -sw %{response_code} http://gateway-dgraph-srv:5000 -o /dev/null) -ne 200 ]
               do
-                echo Waiting for Dgraph to run...
+                echo Waiting for gateway-dgraph to run...
                 sleep 5
               done
-              echo Dgraph is running
+              echo gateway-dgraph is running
           resources:
             requests:
               memory: '125Mi'
