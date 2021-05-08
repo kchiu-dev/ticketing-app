@@ -37,7 +37,7 @@ spec:
           args:
             - |
               echo Starting to wait for gateway-dgraph to run
-              while [ $(curl -sw %{response_code} http://gateway-dgraph-srv:5000/graphql -o /dev/null) -ne 200 ]
+              while [ $(curl -sw %{response_code} http://gateway-dgraph-srv:5000/graphql -o /dev/null) -ne 400 ]
               do
                 echo Waiting for gateway-dgraph to run...
                 sleep 5
