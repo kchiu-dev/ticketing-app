@@ -9,7 +9,7 @@ deploy:
   - envsubst < gateway/.template.npmrc > gateway/.npmrc
   - okteto build -t okteto.dev/gateway:$OKTETO_GIT_COMMIT gateway
   - cd manifests; kustomize edit set image okteto/gateway:buildTag=okteto.dev/gateway:$OKTETO_GIT_COMMIT
-  - envsubst < gateway-dgraph/.template.npmrc > gateway-dgraph/.template.npmrc
+  - envsubst < gateway-dgraph/.template.npmrc > gateway-dgraph/.npmrc
   - okteto build -t okteto.dev/gateway-dgraph:$OKTETO_GIT_COMMIT gateway-dgraph
   - cd manifests; kustomize edit set image okteto/gateway-dgraph:buildTag=okteto.dev/gateway-dgraph:$OKTETO_GIT_COMMIT
   - kustomize build manifests | kubectl apply -f -
