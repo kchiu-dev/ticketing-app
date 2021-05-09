@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: dgraph-public
+  name: tickets-dgraph-srv
   labels:
-    app: dgraph
+    app: tickets-dgraph
 spec:
   type: ClusterIP
   ports:
@@ -21,7 +21,7 @@ spec:
     targetPort: 9080
     name: grpc-alpha
   selector:
-    app: dgraph
+    app: tickets-dgraph
 ---
 # This StatefulSet runs 1 pod with one Zero container and one Alpha container.
 apiVersion: apps/v1
@@ -29,7 +29,7 @@ kind: StatefulSet
 metadata:
   name: tickets-dgraph
 spec:
-  serviceName: "dgraph"
+  serviceName: "tickets-dgraph"
   replicas: 1
   selector:
       matchLabels:
