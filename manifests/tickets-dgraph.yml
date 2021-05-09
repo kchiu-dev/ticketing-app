@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: tickets-dgraph-srv
+  name: dgraph-public
   labels:
     app: dgraph
 spec:
