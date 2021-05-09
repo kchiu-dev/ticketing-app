@@ -38,7 +38,7 @@ spec:
             - |
               echo Starting to wait for gateway-dgraph to run
               response_code=0
-              while [ ${resposne_code} -ne 400 ]
+              while [ ${response_code} -ne 404 ]
               do
                 echo Waiting for gateway-dgraph to run...
                 sleep 5
