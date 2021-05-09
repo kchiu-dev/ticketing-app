@@ -27,17 +27,17 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: tickets-dgraph
+  name: dgraph
 spec:
   serviceName: "dgraph"
   replicas: 1
   selector:
       matchLabels:
-        app: tickets-dgraph
+        app: dgraph
   template:
     metadata:
       labels:
-        app: tickets-dgraph
+        app: dgraph
     spec:
       containers:
       - name: zero
