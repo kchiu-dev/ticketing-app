@@ -24,17 +24,27 @@ jobs:
         with:
           timeout: 10m
 
-      - name: Register GraphQL API schemas
+      - name: Register GraphQL Dgraph and API schemas
         env:
           APOLLO_KEY: ${{ secrets.APOLLO_KEY }}
         run: |
           npx apollo service:push \
-            --graph=gateway-ticketing-graph \
+            --graph=gateway-ticketing-dgraph \
+            --serviceName=tickets-dgraph \
+            --serviceURL=http://tickets-dgraph-srv:8080/graphql \
+            --localSchemaFile=tickets/src/dgraph/dgraph-schema.graphql
+          npx apollo service:push \
+            --graph=gateway-ticketing-dgraph \
+            --serviceName=orders-dgraph \
+            --serviceURL=http://orders-dgraph-srv:8080/graphql \
+            --localSchemaFile=orders/src/dgraph/dgraph-schema.graphql
+          npx apollo service:push \
+            --graph=gateway-ticketing \
             --serviceName=tickets \
             --serviceURL=http://tickets-srv:4001/graphql \
             --localSchemaFile=tickets/src/graphql/schema.graphql
           npx apollo service:push \
-            --graph=gateway-ticketing-graph \
+            --graph=gateway-ticketing \
             --serviceName=orders \
             --serviceURL=http://orders-srv:4002/graphql \
             --localSchemaFile=orders/src/graphql/schema.graphql
