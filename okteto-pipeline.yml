@@ -19,7 +19,7 @@ deploy:
     TICKETS_POD=$(kubectl get pod -l app=tickets -o jsonpath="{.items[0].metadata.name}")
     ORDERS_POD=$(kubectl get pod -l app=orders -o jsonpath="{.items[0].metadata.name}")
     kubectl exec $TICKETS_POD -- curl -sX POST http://tickets-dgraph-srv:8080/admin/schema \
-      --data-binary @src/dgraph/dgraph-schema.graphql
+      --data-binary @src/dgraph/input-schema.graphql
     echo
     kubectl exec $ORDERS_POD -- curl -sX POST http://orders-dgraph-srv:8080/admin/schema \
-      --data-binary @src/dgraph/dgraph-schema.graphql
+      --data-binary @src/dgraph/input-schema.graphql

@@ -24,27 +24,32 @@ jobs:
         with:
           timeout: 10m
 
-      - name: Register GraphQL Dgraph and API schemas
+      - name: Publish GraphQL Dgraph schemas
         env:
-          APOLLO_KEY: ${{ secrets.APOLLO_KEY }}
+          APOLLO_KEY: ${{ secrets.TICKETING_GATEWAY_DGRAPH_KEY }}
         run: |
-          npx apollo service:push \
-            --graph=gateway-ticketing-dgraph-y0c4 \
-            --serviceName=tickets-dgraph \
-            --serviceURL=http://tickets-dgraph-srv:8080/graphql \
-            --localSchemaFile=tickets/src/dgraph/dgraph-schema.graphql
-          npx apollo service:push \
-            --graph=gateway-ticketing-dgraph-y0c4 \
-            --serviceName=orders-dgraph \
-            --serviceURL=http://orders-dgraph-srv:8080/graphql \
-            --localSchemaFile=orders/src/dgraph/dgraph-schema.graphql
-          npx apollo service:push \
-            --graph=gateway-ticketing-client \
-            --serviceName=tickets \
-            --serviceURL=http://tickets-srv:4001/graphql \
-            --localSchemaFile=tickets/src/graphql/schema.graphql
-          npx apollo service:push \
-            --graph=gateway-ticketing-client \
-            --serviceName=orders \
-            --serviceURL=http://orders-srv:4002/graphql \
-            --localSchemaFile=orders/src/graphql/schema.graphql
+          npx rover subgraph publish ticketing-gateway \
+            --routing-url http://tickets-dgraph-srv:8080/graphql \
+            --schema tickets/src/dgraph/schema.graphql \
+            --name tickets-dgraph \
+            --convert
+          npx rover subgraph publish ticketing-gateway \
+            --routing-url http://orders-dgraph-srv:8080/graphql \
+            --schema orders/src/dgraph/schema.graphql \
+            --name orders-dgraph \
+            --convert
+
+      - name: Publish GraphQL schemas
+        env:
+          APOLLO_KEY: ${{ secrets.TICKETING_GATEWAY_KEY }}
+        run: |
+          npx rover subgraph publish ticketing-gateway-dgraph \
+            --routing-url http://tickets-srv:4001/graphql \
+            --schema tickets/src/graphql/schema.graphql \
+            --name tickets \
+            --convert
+          npx rover subgraph publish ticketing-gateway-dgraph \
+            --routing-url http://orders-srv:4002/graphql \
+            --schema orders/src/graphql/schema.graphql \
+            --name orders \
+            --convert

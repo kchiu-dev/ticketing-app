@@ -19,8 +19,13 @@ spec:
             - name: APOLLO_KEY
               valueFrom:
                 secretKeyRef:
-                  name: apollo-key
-                  key: apollo-key
+                  name: ticketing-gateway-key
+                  key: ticketing-gateway-key
+            - name: APOLLO_SCHEMA_CONFIG_DELIVERY_ENDPOINT
+              valueFrom:
+                configMapKeyRef:
+                  name: gateway-config
+                  key: apollo-uplink-url
             - name: NODE_ENV
               valueFrom:
                 configMapKeyRef:
