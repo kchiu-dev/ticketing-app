@@ -5,10 +5,10 @@ resources:
   - tickets.yml
   - orders.yml
   - ingress.yml
-  - gateway.yml
+  # - gateway.yml
   - tickets-dgraph.yml
   - orders-dgraph.yml
-  - gateway-dgraph.yml
+  # - gateway-dgraph.yml
 
 configMapGenerator:
   - name: client-config
