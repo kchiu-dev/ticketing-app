@@ -33,12 +33,12 @@ jobs:
         env:
           APOLLO_KEY: ${{ secrets.TICKETING_GATEWAY_DGRAPH_KEY }}
         run: |
-          rover subgraph publish ticketing-gateway \
+          rover subgraph publish ticketing-gateway-dgraph \
             --routing-url http://tickets-dgraph-srv:8080/graphql \
             --schema tickets/src/dgraph/schema.graphql \
             --name tickets-dgraph \
             --convert
-          rover subgraph publish ticketing-gateway \
+          rover subgraph publish ticketing-gateway-dgraph \
             --routing-url http://orders-dgraph-srv:8080/graphql \
             --schema orders/src/dgraph/schema.graphql \
             --name orders-dgraph \
@@ -48,12 +48,12 @@ jobs:
         env:
           APOLLO_KEY: ${{ secrets.TICKETING_GATEWAY_KEY }}
         run: |
-          rover subgraph publish ticketing-gateway-dgraph \
+          rover subgraph publish ticketing-gateway \
             --routing-url http://tickets-srv:4001/graphql \
             --schema tickets/src/graphql/schema.graphql \
             --name tickets \
             --convert
-          rover subgraph publish ticketing-gateway-dgraph \
+          rover subgraph publish ticketing-gateway \
             --routing-url http://orders-srv:4002/graphql \
             --schema orders/src/graphql/schema.graphql \
             --name orders \
