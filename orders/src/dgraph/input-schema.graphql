@@ -6,7 +6,7 @@ enum OrderStatus {
 
 extend type Ticket @key(fields: "ticketId") {
   ticketId: ID! @external
-  orders: [Order]
+  order: Order!
 }
 
 type Order @key(fields: "orderId") {
