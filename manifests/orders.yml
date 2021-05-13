@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orders
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orders
+  template:
+    metadata:
+      labels:
+        app: orders
+    spec:
+      containers:
+        - name: orders
+          image: okteto/orders:buildTag
+          env:
+            - name: GATEWAY_DGRAPH_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: gateway-dgraph-config
+                  key: gateway-dgraph-url
+          resources:
+            requests:
+              memory: '125Mi'
+              cpu: '100m'
+            limits:
+              memory: '250Mi'
+              cpu: '200m'
+      # initContainers:
+      #   - name: orders-wait-for-gateway-dgraph
+      #     image: curlimages/curl:latest
+      #     command:
+      #       - /bin/sh
+      #       - -c
+      #     args:
+      #       - |
+      #         echo Starting to wait for gateway-dgraph to run
+      #         response_code=0
+      #         while [ ${response_code} -ne 400 ]
+      #         do
+      #           echo Waiting for gateway-dgraph to run...
+      #           sleep 5
+      #           response_code=$(curl -sw %{response_code} http://gateway-dgraph-srv:5000/graphql -o /dev/null)
+      #         done
+      #         echo gateway-dgraph is running
+      #     resources:
+      #       requests:
+      #         memory: '125Mi'
+      #         cpu: '100m'
+      #       limits:
+      #         memory: '250Mi'
+      #         cpu: '200m'
+  strategy:
+    type: Recreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: orders-srv
+spec:
+  selector:
+    app: orders
+  ports:
+    - name: orders
+      protocol: TCP
+      port: 4002
+      targetPort: 4002

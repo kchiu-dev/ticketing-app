@@ -1,4 +1,0 @@
-type Order {
-  status: String!
-  ticket: Ticket!
-}

@@ -1,18 +1,16 @@
-import { app, dgraphSchemaString } from "./app";
-import { dgraphClientWrapper } from "./DgraphClientWrapper";
+import { app } from "./app";
+import { graphQLClientWrapper } from "./GraphQLClientWrapper";
 
 const start = async () => {
   console.log("Starting.............");
 
-  if (!process.env.DGRAPH_URI) {
-    throw new Error("MONGO_ORDERS_URI must be defined");
+  if (!process.env.GATEWAY_DGRAPH_URL) {
+    throw new Error("GATEWAY_DGRAPH_URL must be defined");
   }
 
   try {
-    dgraphClientWrapper.connect(process.env.DGRAPH_URI);
+    graphQLClientWrapper.connect(process.env.GATEWAY_DGRAPH_URL);
     console.log("Connected to Dgraph");
-    await dgraphClientWrapper.setSchema(dgraphSchemaString);
-    console.log("Orders Schema Loaded to Dgraph");
   } catch (err) {
     console.error(err);
   }

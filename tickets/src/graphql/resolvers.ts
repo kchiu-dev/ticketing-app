@@ -1,206 +1,172 @@
 import { Resolvers, Ticket } from "./types";
-import { dgraphClientWrapper } from "../DgraphClientWrapper";
+import { graphQLClientWrapper } from "../GraphQLClientWrapper";
 import { UserInputError } from "apollo-server-express";
-import { Txn } from "dgraph-js-http";
+import { GraphQLClient, gql } from "graphql-request";
 
-const getTransaction = (forRead: boolean): Txn =>
-  forRead
-    ? dgraphClientWrapper.client.newTxn({ readOnly: true, bestEffort: true })
-    : dgraphClientWrapper.client.newTxn();
+interface TicketData {
+  getTicket: Ticket;
+  allTickets: [Ticket];
+}
+
+const getClient = (): GraphQLClient => graphQLClientWrapper.client;
 
 const resolvers: Resolvers = {
   Ticket: {
     __resolveReference: async ({ ticketId }) => {
-      // Create a new transaction.
-      const forRead = true;
-      const txn = getTransaction(forRead);
+      // Get an instance of Apollo Client.
+      const client = getClient();
 
-      let ticket;
-
-      try {
-        // Create a query.
-        const query = `
-        {
-          dgraphGetTicket(func: has(title)) @filter(uid_in(~title, ${ticketId})) {
-            ticketId: uid
+      // Create a query.
+      const query = gql`
+        query {
+          getTicket(ticketId: ${ticketId}) {
+            ticketId
             title
             price
           }
         }
-        `;
+      `;
 
-        // Run query and get ticket.
-        const res = await txn.query(query);
-        ticket = <Ticket>res.data;
-
-        // Commit transaction.
-        await txn.commit();
-      } finally {
-        // Clean up transaction.
-        await txn.discard();
+      // Run query and get ticket.
+      let data;
+      try {
+        data = <TicketData>await client.request(query);
+      } catch (error) {
+        throw new UserInputError("Invalid ticketId");
       }
 
-      return ticket;
+      return data.getTicket;
     },
   },
   Query: {
     allTickets: async () => {
-      // Create a new transaction.
-      const forRead = true;
-      const txn = getTransaction(forRead);
+      // Get an instance of Apollo Client.
+      const client = getClient();
 
-      let allTickets;
-
-      try {
-        // Create a query.
-        const query = `
-        {
-          dgraphAllTickets(func: has(title)) {
-            ticketId: uid
+      // Create a query.
+      const query = gql`
+        query {
+          allTickets: queryTicket(filter: { has: ticketId }) {
+            ticketId
             title
             price
           }
         }
-        `;
+      `;
 
-        // Run query and get all tickets.
-        const res = await txn.query(query);
-        allTickets = <Ticket[]>res.data;
-
-        // Commit transaction.
-        await txn.commit();
-      } finally {
-        // Clean up.
-        await txn.discard();
+      // Run query and get all tickets.
+      let data;
+      try {
+        data = <TicketData>await client.request(query);
+      } catch (error) {
+        throw new UserInputError("Cannot fetch tickets");
       }
-      return allTickets;
+
+      return data.allTickets;
     },
     getTicket: async (_: any, { ticketId }) => {
-      // Create a new transaction.
-      const forRead = true;
-      const txn = getTransaction(forRead);
+      // Get an instance of Apollo Client.
+      const client = getClient();
 
-      let ticket;
-
-      try {
-        // Create a query.
-        const query = `
-        {
-          dgraphGetTicket(func: has(title)) @filter(uid_in(~title, ${ticketId})) {
-            ticketId: uid
+      // Create a query.
+      const query = gql`
+        query {
+          getTicket(ticketId: ${ticketId}) {
+            ticketId
             title
             price
           }
         }
-        `;
+      `;
 
-        // Run query and get ticket.
-        const res = await txn.query(query);
-        ticket = <Ticket>res.data;
-
-        if (!ticket) {
-          throw new UserInputError("Invalid ticketId");
-        }
-
-        // Commit transaction.
-        await txn.commit();
-      } finally {
-        // Clean up.
-        await txn.discard();
+      // Run query and get ticket.
+      let data;
+      try {
+        data = <TicketData>await client.request(query);
+      } catch (error) {
+        throw new UserInputError("Invalid ticketId");
       }
 
-      return ticket;
+      return data.getTicket;
     },
   },
   Mutation: {
-    createTicket: async (_: any, { data }) => {
-      // Create a new transaction.
-      const forRead = false;
-      const txn = getTransaction(forRead);
+    createTicket: async (_: any, { data: inputData }) => {
+      // Get an instance of Apollo Client.
+      const client = getClient();
 
-      let ticketId;
-
-      const { price } = data;
+      const { price } = inputData;
 
       if (price <= 0) {
         throw new UserInputError("Price must be greater than 0");
       }
 
+      const addition = inputData;
+
+      // Create a mutation.
+      const mutation = gql`
+        mutation {
+          addTicket(input: ${addition}) {
+            ticket {
+              ticketId
+              title
+              price
+            }
+          }
+        }
+      `;
+
+      // Run mutation.
+      let data;
       try {
-        // Run mutation and get ticketId.
-        const assigned = await txn.mutate({
-          setJson: data,
-        });
-        ticketId = assigned.data.uids["blank-0"];
-
-        console.log("All created nodes (map from blank node names to uids):");
-        Object.keys(assigned.data.uids).forEach((key) =>
-          console.log(`${key} => ${assigned.data.uids[key]}`)
-        );
-        console.log();
-
-        // Commit transaction.
-        await txn.commit();
-      } finally {
-        // Clean up.
-        await txn.discard();
+        data = <Ticket>await client.request(mutation);
+      } catch (error) {
+        throw new UserInputError("Title can't be empty");
       }
 
-      return {
-        ticketId,
-        ...data,
-      };
+      return data;
     },
-    updateTicket: async (_: any, { ticketId, data }) => {
-      // Create a new transaction.
-      const forRead = false;
-      const txn = getTransaction(forRead);
+    updateTicket: async (_: any, { ticketId, data: inputData }) => {
+      // Get an instance of Apollo Client.
+      const client = getClient();
 
-      const { price } = data;
+      const { price } = inputData;
 
       if (price <= 0) {
         throw new UserInputError("Price must be greater than zero");
       }
 
-      try {
-        // Create a query.
-        const query = `
-        {
-          dgraphGetTicket(func: has(title)) @filter(uid_in(~title, ${ticketId})) {
-            ticketId: uid
-            title
-            price
+      const patch = {
+        filter: {
+          ticketId,
+        },
+        set: {
+          ...inputData,
+        },
+      };
+
+      // Create a mutation.
+      const mutation = gql`
+        mutation {
+          updateTicket(input: ${patch}) {
+            ticket {
+              ticketId
+              title
+              price
+            }
           }
         }
-        `;
+      `;
 
-        // Run query.
-        const res = await txn.query(query);
-        const ticket = <Ticket>res.data;
-
-        if (!ticket) {
-          throw new UserInputError("Invalid ticketId")
-        }
-
-        // Run mutation.
-        await txn.mutate({
-          setJson: {
-            ticketId,
-            ...data,
-          },
-        });
-
-        // Commit transaction.
-        await txn.commit();
-      } finally {
-        // Clean up.
-        await txn.discard();
+      // Run mutation.
+      let data;
+      try {
+        data = <Ticket>await client.request(mutation);
+      } catch (errors) {
+        throw new UserInputError("Invalid ticketId");
       }
 
-      return {
-        ticketId,
-        ...data,
-      };
+      return data;
     },
   },
 };

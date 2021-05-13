@@ -2,11 +2,12 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - tickets-depl.yml
-  - orders-depl.yml
-  - dgraph-single.yml
-  - ingress-srv.yml
-  - gateway-depl.yml
+  - tickets.yml
+  - orders.yml
+  - ingress.yml
+  # - gateway.yml
+  - dgraph.yml
+  # - gateway-dgraph.yml
 
 configMapGenerator:
   - name: client-config
@@ -20,10 +21,16 @@ configMapGenerator:
       - client-stripe-pub=pk_test_51FTiiHFzQH4GYdNSelC82u5p5X10AOC8sglP6ePVWcCy4v376diHYPDPvay5Y5M6m7qCqXOHRKwsjTpaL1baKbhB00VwJrOImM
   - name: gateway-config
     literals:
+      - apollo-uplink-url=https://uplink.api.apollographql.com/
       - node-env=production
+      - gateway-dgraph-url=http://gateway-srv:4000/graphql
+  - name: gateway-dgraph-config
+    literals:
+      - apollo-uplink-url=https://uplink.api.apollographql.com/
+      - node-env=production
+      - gateway-dgraph-url=http://gateway-dgraph-srv:5000/graphql
   - name: dgraph-config
     literals:
-      - dgraph-uri=http://dgraph-public:8080
       - dgraph-alpha-security="whitelist=0.0.0.0/0"
 
 secretGenerator:
@@ -36,9 +43,12 @@ secretGenerator:
   - name: stripe-key
     literals:
       - stripe-key=$STRIPE_KEY
-  - name: apollo-key
+  - name: ticketing-gateway-dgraph-key
     literals:
-      - apollo-key=$APOLLO_KEY
+      - ticketing-gateway-dgraph-key=$TICKETING_GATEWAY_DGRAPH_KEY
+  - name: ticketing-gateway-key
+    literals:
+      - ticketing-gateway-key=$TICKETING_GATEWAY_KEY
 
 generatorOptions:
   disableNameSuffixHash: true

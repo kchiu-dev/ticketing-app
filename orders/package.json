@@ -24,10 +24,10 @@
     "@apollo/federation": "^0.23.0",
     "@kch-chiu/common": "^1.0.57",
     "apollo-server-express": "^2.22.2",
-    "dgraph-js-http": "^21.3.0",
     "express": "^4.17.1",
     "graphql": "^15.5.0",
     "graphql-import-node": "0.0.4",
+    "graphql-request": "^3.4.0",
     "ts-node-dev": "^1.1.6",
     "typescript": "^4.2.2"
   },

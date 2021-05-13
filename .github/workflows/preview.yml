@@ -24,17 +24,30 @@ jobs:
         with:
           timeout: 10m
 
-      - name: Register schemas
+      - name: Publish GraphQL Dgraph schema
         env:
-          APOLLO_KEY: ${{ secrets.APOLLO_KEY }}
+          APOLLO_KEY: ${{ secrets.TICKETING_GATEWAY_DGRAPH_KEY }}
         run: |
-          npx apollo service:push \
-            --graph=gateway-ticketing-graph \
-            --serviceName=tickets \
-            --serviceURL=http://tickets-srv:4001/graphql \
-            --localSchemaFile=tickets/src/graphql/schema.graphql
-          npx apollo service:push \
-            --graph=gateway-ticketing-graph \
-            --serviceName=orders \
-            --serviceURL=http://orders-srv:4002/graphql \
-            --localSchemaFile=orders/src/graphql/schema.graphql
+          npx -p @apollo/rover \
+            rover subgraph publish ticketing-gateway-dgraph-ex1l5e \
+            --routing-url http://dgraph-srv:8080/graphql \
+            --schema dgraph/schema.graphql \
+            --name dgraph \
+            --convert
+
+      - name: Publish GraphQL schemas
+        env:
+          APOLLO_KEY: ${{ secrets.TICKETING_GATEWAY_KEY }}
+        run: |
+          npx -p @apollo/rover \
+            rover subgraph publish ticketing-gateway \
+            --routing-url http://tickets-srv:4001/graphql \
+            --schema tickets/src/graphql/schema.graphql \
+            --name tickets \
+            --convert
+          npx -p @apollo/rover \
+            rover subgraph publish ticketing-gateway \
+            --routing-url http://orders-srv:4002/graphql \
+            --schema orders/src/graphql/schema.graphql \
+            --name orders \
+            --convert

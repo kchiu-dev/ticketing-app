@@ -1,46 +1,41 @@
 import { Resolvers, OrderStatus, Order } from "./types";
-import { dgraphClientWrapper } from "../DgraphClientWrapper";
+import { graphQLClientWrapper } from "../GraphQLClientWrapper";
 import { UserInputError } from "apollo-server-express";
-import { Txn } from "dgraph-js-http";
+import { GraphQLClient, gql } from "graphql-request";
 
-const getTransaction = (forRead: boolean): Txn =>
-  forRead
-    ? dgraphClientWrapper.client.newTxn({ readOnly: true, bestEffort: true })
-    : dgraphClientWrapper.client.newTxn();
+interface OrderData {
+  getOrder: Order;
+  allOrders: [Order];
+}
+
+const getClient = (): GraphQLClient => graphQLClientWrapper.client;
 
 const resolvers: Resolvers = {
   Order: {
     __resolveReference: async ({ orderId }) => {
-      // Create a new transaction
-      const forRead = true;
-      const txn = getTransaction(forRead);
+      // Get an instance of Apollo Client.
+      const client = getClient();
 
-      let order;
-
-      try {
-        // Create a query.
-        const query = `
-        {
-          dgraphGetOrder(func: has(status)) @filter(uid_in(~status, ${orderId})) {
-            orderId: uid
-            status
-            ticket
+      // Create a query.
+      const query = gql`
+          query {
+            getOrder(orderId: ${orderId}) {
+              orderId
+              status
+              ticket
+            }
           }
-        }
         `;
 
-        // Run query and get order.
-        const res = await txn.query(query);
-        order = <Order>res.data;
-
-        // Commit transaction.
-        await txn.commit();
-      } finally {
-        // Clean up transaction.
-        await txn.discard();
+      // Run query and get order.
+      let data;
+      try {
+        data = <OrderData>await client.request(query);
+      } catch (error) {
+        throw new UserInputError("Invalid orderId");
       }
 
-      return order;
+      return data.getOrder;
     },
     //@ts-ignore
     ticket: ({ ticket }: any) => {
@@ -49,222 +44,160 @@ const resolvers: Resolvers = {
   },
   Query: {
     allOrders: async () => {
-      // Create a new transaction.
-      const forRead = true;
-      const txn = getTransaction(forRead);
+      // Get an instance of Apollo Client.
+      const client = getClient();
 
-      let allOrders;
-
-      try {
-        // Create a query.
-        const query = `
-        {
-          dgraphAllOrders(func: has(status)) {
-            orderId: uid
+      // Create a query.
+      const query = gql`
+        query {
+          allOrders: queryOrder(filter: { has: orderId }) {
+            orderId
             status
             ticket
           }
         }
-        `;
+      `;
 
-        // Run query and get all orders.
-        const res = await txn.query(query);
-        allOrders = <Order[]>res.data;
-
-        // Commit transaction.
-        await txn.commit();
-      } finally {
-        // Clean up.
-        await txn.discard();
+      // Run query and get all orders.
+      let data;
+      try {
+        data = <OrderData>await client.request(query);
+      } catch (error) {
+        throw new UserInputError("Cannot fetch orders");
       }
-      return allOrders;
+
+      return data.allOrders;
     },
     getOrder: async (_: any, { orderId }) => {
-      // Create a new transaction.
-      const forRead = true;
-      const txn = getTransaction(forRead);
+      // Get an instance of Apollo Client.
+      const client = getClient();
 
-      let order;
-
-      try {
-        // Create a query.
-        const query = `
-        {
-          dgraphGetOrder(func: has(status)) @filter(uid_in(~status, ${orderId})) {
-            orderId: uid
-            status
-            ticket
+      // Create a query.
+      const query = gql`
+          query {
+            getOrder(orderId: ${orderId}) {
+              orderId
+              status
+              ticket
+            }
           }
-        }
         `;
 
-        // Run query and get order.
-        const res = await txn.query(query);
-        order = <Order>res.data;
-
-        if (!order) {
-          throw new UserInputError("Invalid orderId");
-        }
-
-        // Commit transaction.
-        await txn.commit();
-      } finally {
-        // Clean up.
-        await txn.discard();
+      // Run query and get order.
+      let data;
+      try {
+        data = <OrderData>await client.request(query);
+      } catch (error) {
+        throw new UserInputError("Invalid orderId");
       }
 
-      return order;
+      return data.getOrder;
     },
   },
   Mutation: {
-    createOrder: async (_: any, { data }) => {
-      // Create a new transaction.
-      const forRead = false;
-      const txn = getTransaction(forRead);
+    createOrder: async (_: any, { data: inputData }) => {
+      // Get an instance of Apollo Client.
+      const client = getClient();
 
-      let orderId;
+      const addition = {
+        ...inputData,
+        status: OrderStatus.Created,
+      };
 
-      const { ticketId } = data;
-
-      try {
-        // Create a query.
-        const query = `
-        {
-          dgraphGetTicket(func: has(title)) @filter(uid_in(~title, ${ticketId})) {
-            ticketId: uid
+      // Create a mutation.
+      const mutation = gql`
+        mutation {
+          addOrder(input: ${addition}) {
+            order {
+              orderId
+              status
+              ticket
+            }
           }
         }
-        `;
+      `;
 
-        // Run query.
-        const res = await txn.query(query);
-        const ticket = res.data;
-
-        if (!ticket) {
-          throw new UserInputError("Invalid ticketId");
-        }
-
-        // Run mutation and get orderId.
-        const assigned = await txn.mutate({
-          setJson: {
-            status: OrderStatus.Created,
-            ticket: ticketId,
-          },
-        });
-        orderId = assigned.data.uids["blank-0"];
-
-        console.log("All created nodes (map from blank node names to uids):");
-        Object.keys(assigned.data.uids).forEach((key) =>
-          console.log(`${key} => ${assigned.data.uids[key]}`)
-        );
-        console.log();
-
-        // Commit transaction.
-        await txn.commit();
-      } finally {
-        // Clean up.
-        await txn.discard();
+      // Run mutation.
+      let data;
+      try {
+        data = <Order>await client.request(mutation);
+      } catch (error) {
+        throw new UserInputError("Invalid tickedId");
       }
 
-      return {
-        orderId,
-        status: OrderStatus.Created,
-        ticket: ticketId as any,
-      };
+      return data;
     },
     cancelOrder: async (_: any, { orderId }) => {
-      // Create a new transaction.
-      const forRead = false;
-      const txn = getTransaction(forRead);
+      // Get an instance of Apollo Client.
+      const client = getClient();
 
-      let order;
+      const patch = {
+        filter: {
+          orderId,
+        },
+        set: {
+          status: OrderStatus.Cancelled,
+        },
+      };
 
-      try {
-        // Create a query.
-        const query = `
-        {
-          dgraphGetOrder(func: has(status)) @filter(uid_in(~status, ${orderId})) {
-            orderId: uid
-            status
-            ticket
+      // Create a mutation.
+      const mutation = gql`
+        mutation {
+          updateOrder(input: ${patch}) {
+            order {
+              orderId
+              status
+              ticket
+            }
           }
         }
-        `;
+      `;
 
-        // Run query and get order.
-        const res = await txn.query(query);
-        order = <Order>res.data;
-
-        if (!order) {
-          throw new UserInputError("Invalid orderId");
-        }
-
-        // Run mutation.
-        await txn.mutate({
-          setJson: {
-            orderId,
-            status: OrderStatus.Cancelled,
-            ticket: order.ticket,
-          },
-        });
-
-        // Commit transaction.
-        await txn.commit();
-      } finally {
-        // Clean up.
-        await txn.discard();
+      // Run mutation.
+      let data;
+      try {
+        data = <Order>await client.request(mutation);
+      } catch (errors) {
+        throw new UserInputError("Invalid orderId");
       }
 
-      return {
-        orderId,
-        status: OrderStatus.Cancelled,
-        ticket: order.ticket as any,
-      };
+      return data;
     },
     completeOrder: async (_: any, { orderId }) => {
-      // Create a new transaction.
-      const forRead = false;
-      const txn = getTransaction(forRead);
+      // Get an instance of Apollo Client.
+      const client = getClient();
 
-      let order;
+      const patch = {
+        filter: {
+          orderId,
+        },
+        set: {
+          status: OrderStatus.Complete,
+        },
+      };
 
-      try {
-        // Create a query.
-        const query = `
-        {
-          dgraphGetOrder(func: has(status)) @filter(uid_in(~status, ${orderId})) {
-            orderId: uid
-            status
-            ticket
+      // Create a mutation.
+      const mutation = gql`
+        mutation {
+          updateOrder(input: ${patch}) {
+            order {
+              orderId
+              status
+              ticket
+            }
           }
         }
-        `;
+      `;
 
-        // Run query and get order.
-        const res = await txn.query(query);
-        order = <Order>res.data;
-
-        // Run mutation.
-        await txn.mutate({
-          setJson: {
-            orderId,
-            status: OrderStatus.Complete,
-            ticket: order.ticket,
-          },
-        });
-
-        // Commit transaction.
-        await txn.commit();
-      } finally {
-        // Clean up.
-        await txn.discard();
+      // Run mutation.
+      let data;
+      try {
+        data = <Order>await client.request(mutation);
+      } catch (errors) {
+        throw new UserInputError("Invalid orderId");
       }
 
-      return {
-        orderId,
-        status: OrderStatus.Complete,
-        ticket: order.ticket as any,
-      };
+      return data;
     },
   },
 };
