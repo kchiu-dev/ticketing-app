@@ -1,5 +1,0 @@
-type Ticket @key(fields: "ticketId") {
-  ticketId: ID!
-  title: String!
-  price: Float!
-}

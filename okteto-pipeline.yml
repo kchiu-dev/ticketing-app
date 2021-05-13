@@ -15,11 +15,7 @@ deploy:
   - kustomize build manifests | kubectl apply -f -
   - sleep 1m
   - |
-    echo Register Dgraph schemas
-    TICKETS_POD=$(kubectl get pod -l app=tickets -o jsonpath="{.items[0].metadata.name}")
-    ORDERS_POD=$(kubectl get pod -l app=orders -o jsonpath="{.items[0].metadata.name}")
-    kubectl exec $TICKETS_POD -- curl -sX POST http://tickets-dgraph-srv:8080/admin/schema \
-      --data-binary @src/dgraph/input-schema.graphql
-    echo
-    kubectl exec $ORDERS_POD -- curl -sX POST http://orders-dgraph-srv:8080/admin/schema \
+    echo Register Dgraph schema
+    GATEWAY_DGRAPH_POD=$(kubectl get pod -l app=gateway-dgraph -o jsonpath="{.items[0].metadata.name}")
+    kubectl exec $GATEWAY_DGRAPH_POD -- curl -sX POST http://dgraph-srv:8080/admin/schema \
       --data-binary @src/dgraph/input-schema.graphql

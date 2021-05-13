@@ -6,8 +6,7 @@ resources:
   - orders.yml
   - ingress.yml
   # - gateway.yml
-  - tickets-dgraph.yml
-  - orders-dgraph.yml
+  - dgraph.yml
   # - gateway-dgraph.yml
 
 configMapGenerator:

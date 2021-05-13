@@ -24,21 +24,15 @@ jobs:
         with:
           timeout: 10m
 
-      - name: Publish GraphQL Dgraph schemas
+      - name: Publish GraphQL Dgraph schema
         env:
           APOLLO_KEY: ${{ secrets.TICKETING_GATEWAY_DGRAPH_KEY }}
         run: |
           npx -p @apollo/rover \
             rover subgraph publish ticketing-gateway-dgraph \
-            --routing-url http://tickets-dgraph-srv:8080/graphql \
-            --schema tickets/src/dgraph/schema.graphql \
-            --name tickets-dgraph \
-            --convert
-          npx -p @apollo/rover \
-            rover subgraph publish ticketing-gateway-dgraph \
-            --routing-url http://orders-dgraph-srv:8080/graphql \
-            --schema orders/src/dgraph/schema.graphql \
-            --name orders-dgraph \
+            --routing-url http://dgraph-srv:8080/graphql \
+            --schema gateway-dgraph/src/dgraph/schema.graphql \
+            --name dgraph \
             --convert
 
       - name: Publish GraphQL schemas
