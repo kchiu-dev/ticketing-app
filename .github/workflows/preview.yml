@@ -29,9 +29,9 @@ jobs:
           APOLLO_KEY: ${{ secrets.TICKETING_GATEWAY_DGRAPH_KEY }}
         run: |
           npx -p @apollo/rover \
-            rover subgraph publish ticketing-gateway-dgraph \
+            rover subgraph publish ticketing-gateway-dgraph-ex1l5e \
             --routing-url http://dgraph-srv:8080/graphql \
-            --schema gateway-dgraph/src/dgraph/schema.graphql \
+            --schema dgraph/schema.graphql \
             --name dgraph \
             --convert
 
