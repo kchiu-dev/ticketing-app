@@ -14,6 +14,3 @@ deploy:
   - cd manifests; kustomize edit set image okteto/gateway:buildTag=okteto.dev/gateway:$OKTETO_GIT_COMMIT
   - kustomize build manifests | kubectl apply -f -
   - sleep 1m
-  - |
-    echo Register Dgraph schema
-    curl -sX POST http://dgraph-srv:8080/admin/schema --data-binary @dgraph/input-schema.graphql
