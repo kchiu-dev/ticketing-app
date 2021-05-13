@@ -15,7 +15,8 @@ type Order @key(fields: "orderId") {
 }
 
 type Ticket @key(fields: "ticketId") @extends {
-	ticketId: String! @id @external
+	ticketId: ID! @external
+	order(filter: OrderFilter): Order!
 }
 
 #######################
@@ -299,12 +300,17 @@ type OrderAggregateResult {
 
 type TicketAggregateResult {
 	count: Int
-	ticketIdMin: String
-	ticketIdMax: String
+	ticketIdMin: ID
+	ticketIdMax: ID
 }
 
 type UpdateOrderPayload {
 	order(filter: OrderFilter, first: Int, offset: Int): [Order]
+	numUids: Int
+}
+
+type UpdateTicketPayload {
+	ticket(filter: TicketFilter, order: TicketOrder, first: Int, offset: Int): [Ticket]
 	numUids: Int
 }
 
@@ -318,7 +324,7 @@ enum OrderHasFilter {
 }
 
 enum TicketHasFilter {
-	ticketId
+	order
 }
 
 enum TicketOrderable {
@@ -335,7 +341,8 @@ input AddOrderInput {
 }
 
 input AddTicketInput {
-	ticketId: String!
+	ticketId: ID!
+	order: OrderRef!
 }
 
 input OrderFilter {
@@ -358,7 +365,7 @@ input OrderRef {
 }
 
 input TicketFilter {
-	ticketId: StringHashFilter
+	ticketId: [ID!]
 	has: [TicketHasFilter]
 	and: [TicketFilter]
 	or: [TicketFilter]
@@ -371,14 +378,25 @@ input TicketOrder {
 	then: TicketOrder
 }
 
+input TicketPatch {
+	order: OrderRef
+}
+
 input TicketRef {
-	ticketId: String!
+	ticketId: ID
+	order: OrderRef
 }
 
 input UpdateOrderInput {
 	filter: OrderFilter!
 	set: OrderPatch
 	remove: OrderPatch
+}
+
+input UpdateTicketInput {
+	filter: TicketFilter!
+	set: TicketPatch
+	remove: TicketPatch
 }
 
 #######################
@@ -399,7 +417,8 @@ type Mutation {
 	addOrder(input: [AddOrderInput!]!): AddOrderPayload
 	updateOrder(input: UpdateOrderInput!): UpdateOrderPayload
 	deleteOrder(filter: OrderFilter!): DeleteOrderPayload
-	addTicket(input: [AddTicketInput!]!, upsert: Boolean): AddTicketPayload
+	addTicket(input: [AddTicketInput!]!): AddTicketPayload
+	updateTicket(input: UpdateTicketInput!): UpdateTicketPayload
 	deleteTicket(filter: TicketFilter!): DeleteTicketPayload
 }
 
