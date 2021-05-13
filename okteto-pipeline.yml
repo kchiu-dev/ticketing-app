@@ -16,6 +16,4 @@ deploy:
   - sleep 1m
   - |
     echo Register Dgraph schema
-    GATEWAY_DGRAPH_POD=$(kubectl get pod -l app=gateway-dgraph -o jsonpath="{.items[0].metadata.name}")
-    kubectl exec $GATEWAY_DGRAPH_POD -- curl -sX POST http://dgraph-srv:8080/admin/schema \
-      --data-binary @src/dgraph/input-schema.graphql
+    curl -sX POST http://dgraph-srv:8080/admin/schema --data-binary @dgraph/input-schema.graphql
