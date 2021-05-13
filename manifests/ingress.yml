@@ -16,13 +16,6 @@ spec:
                 name: gateway-srv
                 port:
                   number: 4000
-          - path: /dgraph
-            pathType: Prefix
-            backend:
-              service:
-                name: dgraph-srv
-                port:
-                  number: 8080
           - path: /
             pathType: Prefix
             backend:

@@ -10,11 +10,6 @@ enum OrderStatus {
   COMPLETE
 }
 
-extend type Ticket @key(fields: "ticketId") {
-  ticketId: ID! @external
-  order: Order!
-}
-
 type Order @key(fields: "orderId") {
   orderId: ID!
   status: OrderStatus!
